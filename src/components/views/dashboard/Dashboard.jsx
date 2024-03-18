@@ -4,15 +4,17 @@ import useAuth from '../../../hooks/useAuth';
 import './dashboard.css'
 
 import NavigationPanel from '../../panels/navigationpanel/NavigationPanel';
+import SidebarPanel from '../../panels/sidebarpanel/Sidebar'
 import Panel from '../../panels/panel/Panel'
 import HeaderPanel from '../../panels/headerpanel/HeaderPanel'
 import DashboardSkeleton from '../../skeletons/DashboardSkeleton';
 
+import SpotifyLogo from '../../../images/Spotify_Logo_RGB_Black.png'
 export const UserContext = React.createContext()
 
-function Dashboard({logout}) {
+function Dashboard({logout, code}) {
     const server = useContext(ServerContext).server
-    const [appToken, spotifyToken] = useAuth()
+    const [appToken, spotifyAccessToken] = useAuth(code)
     const [profile, setProfile] = useState()
 
     function getUserProfile() {
@@ -34,13 +36,21 @@ function Dashboard({logout}) {
     }
 
     useEffect(() => {
+        if(!code) {
+            console.log("Need to authorize spotify.", code, spotifyAccessToken)
+        } else {
+            console.log("Authorized", code)
+        }
+    }, [code])
 
-        // console.log("CONTEXT", server)
-        // console.log("App and spot", appToken, spotifyToken)
+    useEffect(() => {
+
         if(appToken) {
             getUserProfile()
+
+            // Check for Spotify authentication
         }
-    }, [appToken, spotifyToken])
+    }, [appToken, spotifyAccessToken])
 
     useEffect(() => {
         if(profile) {
@@ -55,14 +65,26 @@ function Dashboard({logout}) {
                         {profile ?
                         <>
                             {/* <h1>Welcome to RE:COLLECTIVE, {profile.username}</h1>  */}
-                            <NavigationPanel />
+                            <div className="wrapper">
+                                <NavigationPanel />
+                            </div>
+                            {/* <NavigationPanel /> */}
 
                             {/* Second container to hold vertical panels */}
                             <div className="w-full flex flex-col gap-4">
-                                <HeaderPanel logout={logout}/>
-                                <Panel />
-                                <Panel />
+                                <HeaderPanel 
+                                    logout={logout}
+                                    code={code}
+                                    />
+                                <div className="flex gap-4">
+                                    <div className="flex flex-col gap-4">
+                                        <Panel />
+                                        <Panel />
+                                    </div>
+                                    <SidebarPanel />
+                                </div>
                                 {/* <button onClick={logout}>Logout</button> */}
+                                {/* <SidebarPanel /> */}
                             </div>
                             {/* Dashboard is a container that holds all Panel elements for a user
                             

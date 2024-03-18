@@ -14,9 +14,12 @@ import Registration from './views/Registration'
 const SERVER="http://localhost:3001"
 // const AUTH_SERVER="<LINK TO LIVE AUTH SERVER>"
 const AUTH_SERVER="http://localhost:3000"
+const DEV_URI = 'http://localhost:5173'
+const PROD_URI = '#'
+const SPOTIFY_URL= `https://accounts.spotify.com/authorize?client_id=634efc955c024f24bc4e1f409de20017&response_type=code&redirect_uri=${DEV_URI}&scope=streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state`
 
-const SPOTIFY_URL="#"
 
+const code = new URLSearchParams(window.location.search).get('code') 
 // Context
 export const ServerContext = React.createContext()
 
@@ -59,6 +62,13 @@ function App() {
         }).then((data) => {
 			setAuthenticated(true)
 			console.log("LOGIN DATA", data)
+			if(data.onBoarding) {
+				console.log("User has not set up their profile.", data.onBoarding)
+				window.location.href=SPOTIFY_URL
+			} else {
+				console.log("User has set up their profile", data.onBoarding)
+				window.location.href=SPOTIFY_URL
+			}
 
         }).catch((err) => {
         console.log("ERR LOGIN", err, username, password)
@@ -80,10 +90,24 @@ function App() {
 	}
 	useEffect(() => {
 
-		// fetch('http://localhost:3000')
+		fetch('http://localhost:3000/verifysession', {
+			credentials: "include"
+		})
+		.then((response) => {
+			if(!response.ok) {
+				throw new Error ("Cannot verify session")
+			}
+		}).then(() => {
+			setAuthenticated(true)
+		}).catch((err) => {
+			console.log("ERROR ", err)
+		})
 		// .then((response) => response.json())
 		// .then((data) => {
 		// 	console.log("DATA", data)
+			
+		// }).catch((err) => {
+		// 	console.log("Error verifying session", err)
 		// })
 	}, [])
 
@@ -92,14 +116,16 @@ function App() {
 			<div className="App">
 			<ServerContext.Provider value={{
 				server:SERVER,
-				auth_server: AUTH_SERVER
-
+				auth_server: AUTH_SERVER,
+				spotify_url: SPOTIFY_URL
 				}}>
 				<Routes>
 				<Route path="/" element={
-					authenticated ? 
+					authenticated ? // somewhere between authenticated and dashboard needs to be Spotify Authorization
+					// return code ? <Dashboard code={code} />: <Login authUrl={AUTH_URL}/>
 					<Dashboard 
 						logout={logout}
+						code={code}
 						/> 
 					:<Landing 
 						login={login}

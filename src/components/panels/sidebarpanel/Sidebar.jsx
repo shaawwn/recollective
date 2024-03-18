@@ -1,11 +1,13 @@
-// import {useState, useEffect, useContext} from 'react';
-// import {UserContext} from '../../views/dashboard/Dashboard'
-import './navigationpanel.css'
-function NavigationPanel() {
+import {useState, useEffect, useContext} from 'react';
+import {UserContext} from '../../views/dashboard/Dashboard'
+import './sidebar.css'
 
-    // const user = useContext(UserContext)
+function SidebarPanel() {
+
+    const user = useContext(UserContext)
     return (
-        <nav className="navigation panel">
+        <nav className="sidebar panel">
+            <h1>Feed Sidebar</h1>
             <p className="navigation__item">Your Profile</p>
             <p className="navigation__item">Library</p>
             <p className="navigation__item">Bins</p>
@@ -16,4 +18,4 @@ function NavigationPanel() {
     )
 }
 
-export default NavigationPanel;
+export default SidebarPanel;
