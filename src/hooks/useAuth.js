@@ -66,6 +66,15 @@ function useAuth(code) {
 
     function addSpotifyAccessToSession() {
         fetch(`http://localhost:3000/spotify`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                spotifyAccessToken: '',
+                spotifyRefreshToken: '',
+                spotifyExpiresIn: ''
+            }),
             credentials: "include"
         }).then((response) => {
             if(!response.ok) {
@@ -102,7 +111,7 @@ function useAuth(code) {
                 // console.log("STRICT MODE ACTIVE", spotifyAccessToken)
                 handleStrictMode()
             } else {
-                // console.log("No strict mode")
+                console.log("SPOTIFY FETCH", data)
                 setSpotifyAccessToken(data.access_token)
                 setSpotifyRefreshToken(data.refresh_token)
                 setSpotifyTokenExpiresIn(data.expires_in)
@@ -117,6 +126,7 @@ function useAuth(code) {
         })
     }, [code])
 
+    console.log("SPOTIFY TOKEN", spotifyAccessToken)
     return [appToken, spotifyAccessToken]
 }
 

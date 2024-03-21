@@ -12,7 +12,7 @@ import DashboardSkeleton from '../../skeletons/DashboardSkeleton';
 import SpotifyLogo from '../../../images/Spotify_Logo_RGB_Black.png'
 export const UserContext = React.createContext()
 
-function Dashboard({logout, code}) {
+function Dashboard({logout, code, setSpotifyAuthorized}) {
     const server = useContext(ServerContext).server
     const [appToken, spotifyAccessToken] = useAuth(code)
     const [profile, setProfile] = useState()
@@ -49,6 +49,10 @@ function Dashboard({logout, code}) {
             getUserProfile()
 
             // Check for Spotify authentication
+        }
+        if(spotifyAccessToken) {
+            console.log("SPOTIFY AUTHORIZED WITH TOKEN")
+            // setSpotifyAuthorized(true)
         }
     }, [appToken, spotifyAccessToken])
 

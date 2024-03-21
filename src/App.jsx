@@ -24,6 +24,7 @@ export const ServerContext = React.createContext()
 
 function App() {
   const [authenticated, setAuthenticated] = useState(false)
+  const [spotifyAuthorized, setSpotifyAuthorized] = useState(false)
 //   const [appToken, spotifyAccessToken] = useAuth(code)
 //   const [authenticated, appToken, spotifyToken, login, logout] = useAuth()
 
@@ -89,9 +90,9 @@ function App() {
 		})
 	}
 
+	function verifySession() {
 
-	useEffect(() => {
-		// console.log("VERIFYING SESSION", spotifyAccessToken, appToken)
+		// verifies if there is an active session and redirects to user's dashboard if there is one
 		fetch('http://localhost:3000/verifysession', {
 			credentials: "include"
 		})
@@ -103,27 +104,47 @@ function App() {
 		}).then((data) => {
 			setAuthenticated(true)
 			console.log("Verified", data)
-			// check for spotify authorization
-			// window.location.href=SPOTIFY_URL // but only do this once
+			
+			// if it gets to this point, verified, it then needs to verify spotify somehow
+
+			// however, it needs to only do it once, so if authenticated false => true, then and only then authorized spotify, I don't want it to run everytime something changes in the app
 
 			// on previous apps, this would be the Login page for Spotify, however, since there is an added layer for this app, that is no longer possible, but I still need to check/store the spotify accessTokens somehow
 		}).catch((err) => {
 			console.log("ERROR ", err)
-		})
+		})	
+	}
+
+	function verifySpotify() {
+
+	}
+
+	// If code, then the app has been redirected from spotify with successful authorization, the existence of the code itself is a sign of having been redirected (however, code=somenonsense) will also trigger this. So authorization should really only exist if a valid spotify accesstoken is granted.
+	useEffect(() => {
+
+		// verify the APP has a valid session
+		if(authenticated != true) {
+			verifySession()
+			// window.location.href=SPOTIFY_URL // verify spotify
+		}
+
+		// verify that Spotify is authorized.
+
 	}, [])
 
-	useEffect(() => {
-		fetch('http://localhost:3000/sessions/spotifytoken', {
-			method: "POST",
-			credentials: "include"
-		})
-		.then((response) => response.json())
-		.then((data) => {
-			console.log("sessiond ata", data)
-		}).catch((err) => {
-			console.log("Erro getting session route data")
-		})
-	}, [])
+	// useEffect(() => {
+	// 	fetch('http://localhost:3000/sessions/spotifytoken', {
+	// 		method: "POST",
+	// 		credentials: "include"
+	// 	})
+	// 	.then((response) => response.json())
+	// 	.then((data) => {
+	// 		console.log("sessiond ata", data)
+	// 	}).catch((err) => {
+	// 		console.log("Erro getting session route data")
+	// 	})
+	// }, [])
+
 	// useEffect(() => {
 	// 	// when authenticated, everytime the app reloads it needs to verify spotify access
 
@@ -144,6 +165,7 @@ function App() {
 					<Dashboard 
 						logout={logout}
 						code={code}
+						setSpotifyAuthorized={setSpotifyAuthorized}
 						/> 
 					:<Landing 
 						login={login}
