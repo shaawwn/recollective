@@ -64,6 +64,21 @@ function useAuth(code) {
 
     }
 
+    function addSpotifyAccessToSession() {
+        fetch(`http://localhost:3000/spotify`, {
+            credentials: "include"
+        }).then((response) => {
+            if(!response.ok) {
+                throw new Error ("Err adding spotify accessToken to user session")
+            }
+            return response.json()
+        }).then((data) => {
+            console.log("Token added to session object", data)
+        }).catch((err) => {
+            console.log("ERROR", err)
+        })
+    }
+    
     useEffect(() => {
         if(!appToken) {
             getAppToken()
@@ -94,6 +109,8 @@ function useAuth(code) {
                 strictMode.current = true
                 console.log("Setting strict mode TRUE", strictMode.current)
                 window.history.pushState({}, null, '/')
+
+                // I also want to add the accessToken to the app session object
             }
         }).catch((err) => {
             console.log("Error authenticating spotify", err)

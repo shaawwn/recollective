@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react'
 import {Routes, Route} from 'react-router-dom'
 import './style.css'
 import useAuth from './hooks/useAuth'
-// import Dashboard from './views/Dashboard'
 import Dashboard from '../src/components/views/dashboard/Dashboard'
 import Login from './components/Login';
 import Navbar from './components/Navbar'
@@ -25,6 +24,7 @@ export const ServerContext = React.createContext()
 
 function App() {
   const [authenticated, setAuthenticated] = useState(false)
+//   const [appToken, spotifyAccessToken] = useAuth(code)
 //   const [authenticated, appToken, spotifyToken, login, logout] = useAuth()
 
 	function checkAuth() {
@@ -88,8 +88,10 @@ function App() {
 			console.log("ERROR:", err)
 		})
 	}
-	useEffect(() => {
 
+
+	useEffect(() => {
+		// console.log("VERIFYING SESSION", spotifyAccessToken, appToken)
 		fetch('http://localhost:3000/verifysession', {
 			credentials: "include"
 		})
@@ -97,19 +99,35 @@ function App() {
 			if(!response.ok) {
 				throw new Error ("Cannot verify session")
 			}
-		}).then(() => {
+			return response.json()
+		}).then((data) => {
 			setAuthenticated(true)
+			console.log("Verified", data)
+			// check for spotify authorization
+			// window.location.href=SPOTIFY_URL // but only do this once
+
+			// on previous apps, this would be the Login page for Spotify, however, since there is an added layer for this app, that is no longer possible, but I still need to check/store the spotify accessTokens somehow
 		}).catch((err) => {
 			console.log("ERROR ", err)
 		})
-		// .then((response) => response.json())
-		// .then((data) => {
-		// 	console.log("DATA", data)
-			
-		// }).catch((err) => {
-		// 	console.log("Error verifying session", err)
-		// })
 	}, [])
+
+	useEffect(() => {
+		fetch('http://localhost:3000/sessions/spotifytoken', {
+			method: "POST",
+			credentials: "include"
+		})
+		.then((response) => response.json())
+		.then((data) => {
+			console.log("sessiond ata", data)
+		}).catch((err) => {
+			console.log("Erro getting session route data")
+		})
+	}, [])
+	// useEffect(() => {
+	// 	// when authenticated, everytime the app reloads it needs to verify spotify access
+
+	// }, [])
 
 	return (
 		

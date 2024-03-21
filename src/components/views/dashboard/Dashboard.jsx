@@ -35,13 +35,13 @@ function Dashboard({logout, code}) {
         })
     }
 
-    useEffect(() => {
-        if(!code) {
-            console.log("Need to authorize spotify.", code, spotifyAccessToken)
-        } else {
-            console.log("Authorized", code)
-        }
-    }, [code])
+    // useEffect(() => {
+    //     if(!code) {
+    //         console.log("Need to authorize spotify.", code, spotifyAccessToken)
+    //     } else {
+    //         console.log("Authorized", code)
+    //     }
+    // }, [code])
 
     useEffect(() => {
 
