@@ -126,7 +126,7 @@ function useAuth(code) {
         })
     }, [code])
 
-    console.log("SPOTIFY TOKEN", spotifyAccessToken)
+    // console.log("SPOTIFY TOKEN", spotifyAccessToken)
     return [appToken, spotifyAccessToken]
 }
 

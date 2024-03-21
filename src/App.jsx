@@ -103,8 +103,8 @@ function App() {
 			return response.json()
 		}).then((data) => {
 			setAuthenticated(true)
-			console.log("Verified", data)
-			
+			// console.log("Verified", data, code)
+			window.location.href=SPOTIFY_URL
 			// if it gets to this point, verified, it then needs to verify spotify somehow
 
 			// however, it needs to only do it once, so if authenticated false => true, then and only then authorized spotify, I don't want it to run everytime something changes in the app
@@ -120,17 +120,61 @@ function App() {
 	}
 
 	// If code, then the app has been redirected from spotify with successful authorization, the existence of the code itself is a sign of having been redirected (however, code=somenonsense) will also trigger this. So authorization should really only exist if a valid spotify accesstoken is granted.
+
 	useEffect(() => {
-
-		// verify the APP has a valid session
-		if(authenticated != true) {
+		if(code === null) {
+			console.log("Veryfing session with no code")
 			verifySession()
-			// window.location.href=SPOTIFY_URL // verify spotify
+		} else {
+			// code exists, but still need to verify session
+			fetch(`http://localhost:3000/verifysession`, {
+				credentials: "include"
+			}).then((response) => {
+				if(!response.ok) {
+					throw new Error ("error verifyiny session with code")
+				}
+				return response.json()
+			}).then((data) => {
+				// session verified, authorized spotify
+				console.log("Session is verified with spotify access grant code")
+				setAuthenticated(true)
+			}).catch((err) => {
+				console.log("ERROR:", err)
+			})
 		}
+		// if(authenticated !== true) {
+		// 	verifySession()
+		// }
+	})
 
-		// verify that Spotify is authorized.
+	// useEffect(() => {
 
-	}, [])
+	// 	if(code) {
+	// 		// it has been redirected from Spotify URL, however, it still needs to authorize, because can't assume that session is verified
+			
+	// 		// verify session without changing state
+	// 		fetch(`http://localhost:3000/verifysession`, {
+	// 			credentials: "include"
+	// 		}).then((response) => {
+	// 			if(!response.ok) {
+	// 				throw new Error("Cannot verify session")
+	// 			}
+	// 			return response.json()
+	// 		}).then((data) => {
+	// 			// verified and authorizing spotify
+	// 			console.log("Authorizing spotify....")
+				
+
+	// 			// session with APP is verified, continue to dashboard with code, if code is valid, no problem, if not, then spotify is not authorized and shoult then be reauthorized
+
+	// 			// howver, it should still only get to this point if the session has been authorized
+
+	// 		}).catch((err) => {
+	// 			console.log("Error:", err)
+	// 		})
+
+	// 	} 
+	// }, [])
 
 	// useEffect(() => {
 	// 	fetch('http://localhost:3000/sessions/spotifytoken', {
@@ -165,7 +209,6 @@ function App() {
 					<Dashboard 
 						logout={logout}
 						code={code}
-						setSpotifyAuthorized={setSpotifyAuthorized}
 						/> 
 					:<Landing 
 						login={login}
