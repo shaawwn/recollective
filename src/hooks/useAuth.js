@@ -64,16 +64,16 @@ function useAuth(code) {
 
     }
 
-    function addSpotifyAccessToSession() {
-        fetch(`http://localhost:3000/spotify`, {
+    function addSpotifyAccessToSession(accessToken, refreshToken, expiresIn) {
+        fetch(`http://localhost:3000/sessions/spotifytoken`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                spotifyAccessToken: '',
-                spotifyRefreshToken: '',
-                spotifyExpiresIn: ''
+                accessToken: accessToken,
+                refreshToken: refreshToken,
+                expiresIn: expiresIn
             }),
             credentials: "include"
         }).then((response) => {
@@ -112,11 +112,11 @@ function useAuth(code) {
                 handleStrictMode()
             } else {
                 console.log("SPOTIFY FETCH", data)
-                setSpotifyAccessToken(data.access_token)
-                setSpotifyRefreshToken(data.refresh_token)
-                setSpotifyTokenExpiresIn(data.expires_in)
+                setSpotifyAccessToken(data.accessToken)
+                setSpotifyRefreshToken(data.refreshToken)
+                setSpotifyTokenExpiresIn(data.expiresIn)
                 strictMode.current = true
-                console.log("Setting strict mode TRUE", strictMode.current)
+                addSpotifyAccessToSession(data.accessToken, data.refreshToken, data.expiresIn)
                 window.history.pushState({}, null, '/')
 
                 // I also want to add the accessToken to the app session object
@@ -126,7 +126,7 @@ function useAuth(code) {
         })
     }, [code])
 
-    // console.log("SPOTIFY TOKEN", spotifyAccessToken)
+    console.log("SPOTIFY TOKEN", spotifyAccessToken)
     return [appToken, spotifyAccessToken]
 }
 

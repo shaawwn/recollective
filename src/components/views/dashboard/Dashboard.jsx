@@ -1,4 +1,5 @@
 import React, {useState, useEffect, useContext} from 'react';
+import {PropTypes} from 'prop-types'
 import {ServerContext} from '../../../App'
 import useAuth from '../../../hooks/useAuth';
 import './dashboard.css'
@@ -9,7 +10,7 @@ import Panel from '../../panels/panel/Panel'
 import HeaderPanel from '../../panels/headerpanel/HeaderPanel'
 import DashboardSkeleton from '../../skeletons/DashboardSkeleton';
 
-import SpotifyLogo from '../../../images/Spotify_Logo_RGB_Black.png'
+// import SpotifyLogo from '../../../images/Spotify_Logo_RGB_Black.png'
 export const UserContext = React.createContext()
 
 function Dashboard({logout, code}) {
@@ -35,27 +36,42 @@ function Dashboard({logout, code}) {
         })
     }
 
-    // useEffect(() => {
-    //     if(!code) {
-    //         console.log("Need to authorize spotify.", code, spotifyAccessToken)
-    //     } else {
-    //         console.log("Authorized", code)
-    //     }
-    // }, [code])
-
     useEffect(() => {
 
         if(appToken) {
             getUserProfile()
-
-            // Check for Spotify authentication
         }
         if(spotifyAccessToken) {
-            console.log("SPOTIFY AUTHORIZED WITH TOKEN")
+            console.log("Spotify token")
+            // get spotify user information
+            fetch(`https://spotify.com/v1/me`, {
+                headers: {
+                    'Authorization': `Bearer ${spotifyAccessToken}`
+                }
+            }).then((response) => response.json())
+            .then((data) => {
+                console.log("SPOTIFY USER DATA", data)
+            })
+            // console.log("SPOTIFY AUTHORIZED WITH TOKEN")
             // setSpotifyAuthorized(true)
         }
-    }, [appToken, spotifyAccessToken])
+    }, [appToken])
 
+    useEffect(() => {
+        if(spotifyAccessToken) {
+            console.log("Spotify token")
+            fetch(`https://spotify.com/v1/me`, {
+                headers: {
+                    'Authorization': `Bearer ${spotifyAccessToken}`
+                }
+            }).then((response) => response.json())
+            .then((data) => {
+                console.log("SPOTIFY USER DATA", data)
+            })
+        }
+    }, [spotifyAccessToken])
+
+    
     useEffect(() => {
         if(profile) {
             console.log("PROFILE", profile)
@@ -104,6 +120,11 @@ function Dashboard({logout, code}) {
         </main>
         </UserContext.Provider>
     )
+}
+
+Dashboard.propTypes = {
+    logout: PropTypes.func.isRequired,
+    code: PropTypes.string.isRequired 
 }
 
 export default Dashboard;
