@@ -89,15 +89,22 @@ function App() {
 			return response.json()
 		}).then(() => {
 			setAuthenticated(true)
-			window.location.href=SPOTIFY_URL
+			// console.log("SESSION DATA", data)
+			// window.location.href=SPOTIFY_URL
 		}).catch((err) => {
 			console.log("ERROR ", err)
 		})	
 	}
 
+	// useEffect(() => {
+	// 	if(authenticated !== true) {
+	// 		verifySession()
+	// 	}
+	// }, [])
+
 	useEffect(() => {
 		if(code === null) {
-			console.log("Veryfing session with no code")
+			// console.log("Veryfing session with no code")
 			verifySession()
 		} else {
 			// code exists, but still need to verify session
@@ -115,7 +122,7 @@ function App() {
 				console.log("ERROR:", err)
 			})
 		}
-	})
+	}, [])
 
 
 	return (

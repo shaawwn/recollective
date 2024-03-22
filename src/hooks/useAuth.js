@@ -96,37 +96,84 @@ function useAuth(code) {
 
     useEffect(() => {
         // Fetch auth server spotify/login route with code
-        fetch(`http://localhost:3000/spotify/login`, {
-            method: "POST",
-            headers: {
-                "Content-Type": 'application/json'
-            },
-            body: JSON.stringify({
-                code: code
-            })
-        }).then((response) => response.json())
-        .then((data) => {
-            // console.log("SPOTIFY AUTH DATA", data, strictMode.current)
-            if(strictMode.current === true) {
-                // console.log("STRICT MODE ACTIVE", spotifyAccessToken)
-                handleStrictMode()
-            } else {
-                console.log("SPOTIFY FETCH", data)
+        if(!code) {
+            // check session for code
+            fetch(`http://localhost:3000/sessions/spotifytoken`, {
+                credentials: "include"
+            }).then((response) => {
+                if(!response.ok) {
+                    throw new Error("No spotify token in session")
+                }
+                return response.json()
+            }).then((data) => {
+                // console.log("Spotify token in session", data)
+                // set accesstokens
+
                 setSpotifyAccessToken(data.accessToken)
                 setSpotifyRefreshToken(data.refreshToken)
                 setSpotifyTokenExpiresIn(data.expiresIn)
-                strictMode.current = true
-                addSpotifyAccessToSession(data.accessToken, data.refreshToken, data.expiresIn)
-                window.history.pushState({}, null, '/')
+            })
+        } else {
+            fetch(`http://localhost:3000/spotify/login`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": 'application/json'
+                },
+                body: JSON.stringify({
+                    code: code
+                })
+            }).then((response) => response.json())
+            .then((data) => {
+                // console.log("SPOTIFY AUTH DATA", data, strictMode.current)
+                if(strictMode.current === true) {
+                    // console.log("STRICT MODE ACTIVE", spotifyAccessToken)
+                    handleStrictMode()
+                } else {
+                    console.log("SPOTIFY FETCH", data)
+                    setSpotifyAccessToken(data.accessToken)
+                    setSpotifyRefreshToken(data.refreshToken)
+                    setSpotifyTokenExpiresIn(data.expiresIn)
+                    strictMode.current = true
+                    addSpotifyAccessToSession(data.accessToken, data.refreshToken, data.expiresIn)
+                    window.history.pushState({}, null, '/')
+    
+                    // I also want to add the accessToken to the app session object
+                }
+            }).catch((err) => {
+                console.log("Error authenticating spotify", err)
+            })
+        }
+        // fetch(`http://localhost:3000/spotify/login`, {
+        //     method: "POST",
+        //     headers: {
+        //         "Content-Type": 'application/json'
+        //     },
+        //     body: JSON.stringify({
+        //         code: code
+        //     })
+        // }).then((response) => response.json())
+        // .then((data) => {
+        //     // console.log("SPOTIFY AUTH DATA", data, strictMode.current)
+        //     if(strictMode.current === true) {
+        //         // console.log("STRICT MODE ACTIVE", spotifyAccessToken)
+        //         handleStrictMode()
+        //     } else {
+        //         console.log("SPOTIFY FETCH", data)
+        //         setSpotifyAccessToken(data.accessToken)
+        //         setSpotifyRefreshToken(data.refreshToken)
+        //         setSpotifyTokenExpiresIn(data.expiresIn)
+        //         strictMode.current = true
+        //         addSpotifyAccessToSession(data.accessToken, data.refreshToken, data.expiresIn)
+        //         window.history.pushState({}, null, '/')
 
-                // I also want to add the accessToken to the app session object
-            }
-        }).catch((err) => {
-            console.log("Error authenticating spotify", err)
-        })
+        //         // I also want to add the accessToken to the app session object
+        //     }
+        // }).catch((err) => {
+        //     console.log("Error authenticating spotify", err)
+        // })
     }, [code])
 
-    console.log("SPOTIFY TOKEN", spotifyAccessToken)
+    // console.log("SPOTIFY TOKEN", spotifyAccessToken)
     return [appToken, spotifyAccessToken]
 }
 

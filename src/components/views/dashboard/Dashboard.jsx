@@ -42,25 +42,8 @@ function Dashboard({logout, code}) {
             getUserProfile()
         }
         if(spotifyAccessToken) {
-            console.log("Spotify token")
             // get spotify user information
-            fetch(`https://spotify.com/v1/me`, {
-                headers: {
-                    'Authorization': `Bearer ${spotifyAccessToken}`
-                }
-            }).then((response) => response.json())
-            .then((data) => {
-                console.log("SPOTIFY USER DATA", data)
-            })
-            // console.log("SPOTIFY AUTHORIZED WITH TOKEN")
-            // setSpotifyAuthorized(true)
-        }
-    }, [appToken])
-
-    useEffect(() => {
-        if(spotifyAccessToken) {
-            console.log("Spotify token")
-            fetch(`https://spotify.com/v1/me`, {
+            fetch(`https://api.spotify.com/v1/me`, {
                 headers: {
                     'Authorization': `Bearer ${spotifyAccessToken}`
                 }
@@ -69,14 +52,8 @@ function Dashboard({logout, code}) {
                 console.log("SPOTIFY USER DATA", data)
             })
         }
-    }, [spotifyAccessToken])
+    }, [appToken, spotifyAccessToken])
 
-    
-    useEffect(() => {
-        if(profile) {
-            console.log("PROFILE", profile)
-        }
-    }, [profile])
 
     return(
         // Create Context that can be used for all children elements
@@ -94,7 +71,8 @@ function Dashboard({logout, code}) {
                             <div className="w-full flex flex-col gap-4">
                                 <HeaderPanel 
                                     logout={logout}
-                                    code={code}
+                                    // code={code}
+                                    spotifyAccessToken={spotifyAccessToken}
                                     />
                                 <div className="flex gap-4">
                                     <div className="flex flex-col gap-4">
@@ -124,7 +102,7 @@ function Dashboard({logout, code}) {
 
 Dashboard.propTypes = {
     logout: PropTypes.func.isRequired,
-    code: PropTypes.string.isRequired 
+    code: PropTypes.string
 }
 
 export default Dashboard;

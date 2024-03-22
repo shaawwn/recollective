@@ -4,14 +4,15 @@ import {ServerContext} from '../../../App'
 import './headerpanel.css'
 import SpotifyLogo from '../../../images/Spotify_Logo_RGB_Black.png'
 
-function HeaderPanel({logout, code}) {
+function HeaderPanel({logout, spotifyAccessToken}) {
 
     const user = useContext(UserContext)
     const spotify = useContext(ServerContext).spotify_url
+
     return(
         <header className="header panel">
             <h1>Hello, {user.username}</h1>
-            {code ? 
+            {spotifyAccessToken ? 
                 <>
                     <p>Powered by Spotify</p> 
                     <a href="#">Logout of Spotify</a>
