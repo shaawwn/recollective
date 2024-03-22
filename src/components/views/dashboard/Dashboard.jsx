@@ -16,11 +16,10 @@ export const UserContext = React.createContext()
 
 function Dashboard({logout, code}) {
     const server = useContext(ServerContext).server
-    // const appToken = useContext(AuthContext).appToken
-    // const spotifyAccessToken = useContext(AuthContext).spotifyAccessToken
+    const appToken = useContext(AuthContext).appToken
+    const spotifyAccessToken = useContext(AuthContext).spotifyAccessToken
     // const spotifyRefreshToken = useContext(AuthContext).spotifyRefreshToken 
-    // console.log("TOKEN", appToken, spotifyAccessToken)
-    const [appToken, spotifyAccessToken] = useAuth(code)
+    // const [appToken, spotifyAccessToken] = useAuth(code)
     // const [appToken, spotifyAccessToken] = ['value', 'value']
     const [profile, setProfile] = useState()
 
@@ -49,13 +48,21 @@ function Dashboard({logout, code}) {
         }
         if(spotifyAccessToken) {
             // get spotify user information
-            fetch(`https://api.spotify.com/v1/me`, {
+            // fetch(`https://api.spotify.com/v1/me`, {
+            //     headers: {
+            //         'Authorization': `Bearer ${spotifyAccessToken}`
+            //     }
+            // }).then((response) => response.json())
+            // .then((data) => {
+            //     console.log("SPOTIFY USER DATA", data)
+            // })
+            fetch('http://localhost:3001/spotify/currentprofile', {
                 headers: {
                     'Authorization': `Bearer ${spotifyAccessToken}`
                 }
             }).then((response) => response.json())
             .then((data) => {
-                console.log("SPOTIFY USER DATA", data)
+                console.log("IN DASH", data)
             })
         }
     }, [appToken, spotifyAccessToken])

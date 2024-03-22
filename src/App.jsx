@@ -1,11 +1,11 @@
-import React, { useState, useEffect} from 'react'
+import React, { useState, useEffect, useRef} from 'react'
 // import {AuthProvider} from '../src/context/AuthProvider'
 import {Routes, Route} from 'react-router-dom'
 import './style.css'
 import Dashboard from '../src/components/views/dashboard/Dashboard'
 import Landing from './views/Landing'
 import Registration from './views/Registration'
-
+import useAuth from '../src/hooks/_useAuth'
 
 // const SERVER="<LINK TO LIVE SERVER>"
 const SERVER="http://localhost:3001"
@@ -23,10 +23,12 @@ export const AuthContext = React.createContext()
 
 function App() {
   	const [authenticated, setAuthenticated] = useState(false)
-	const [appToken, setAppToken] = useState()
-    const [spotifyAccessToken, setSpotifyAccessToken] = useState()
-    const [spotifyRefreshToken, setSpotifyRefreshToken] = useState()
-    const [spotifyExpiresIn, setSpotifyExpiresIn] = useState()
+	const [appToken, spotifyAccessToken] = useAuth(code)
+	// const [appToken, setAppToken] = useState()
+    // const [spotifyAccessToken, setSpotifyAccessToken] = useState()
+    // const [spotifyRefreshToken, setSpotifyRefreshToken] = useState()
+    // const [spotifyExpiresIn, setSpotifyExpiresIn] = useState()
+	const renderCount = useRef(0)
 
     function login() {
         // login to app and get appToken
@@ -97,62 +99,24 @@ function App() {
 
 
 	useEffect(() => {
-
-		// I guess this was a bunch of redundant code
-		// if(code === null) {
-		// 	// console.log("Veryfing session with no code")
-		// 	verifySession()
-		// } else {
-		// 	// code exists, but still need to verify session
-		// 	fetch(`http://localhost:3000/verifysession`, {
-		// 		credentials: "include"
-		// 	}).then((response) => {
-		// 		if(!response.ok) {
-		// 			throw new Error ("error verifyiny session with code")
-		// 		}
-		// 		return response.json()
-		// 	}).then(() => {
-		// 		// session verified, authorized spotify
-		// 		setAuthenticated(true)
-		// 	}).catch((err) => {
-		// 		console.log("ERROR:", err)
-		// 	})
-		// }
-
 		// verify a session on page load
 		verifySession()
 	}, [])
 
-	// useEffect(() => {
-	// 	if(code) {
-	// 		fetch('http://localhost:3000/spotify/login', {
-	// 			method: "POST",
-	// 			headers: {
-	// 				"Content-Type": "application/json"
-	// 			},
-	// 			body: JSON.stringify({code})
-	// 		}).then((response) => response.json())
-	// 		.then((data) => {
-	// 			console.log("GETTING TOKENS IN APP", data)
-	// 			// setAppToken()
-	// 			setSpotifyAccessToken(data.accessToken)
-	// 			setSpotifyRefreshToken(data.refreshToken)
-	// 			setSpotifyExpiresIn(data.expiresIn)
-	// 		})
-	// 	} else {
-	// 		console.log("NO CODE")
-	// 	}
-	// }, [code])
-
+	// RENDERING TEST
+	useEffect(() => {
+		renderCount.current = renderCount.current + 1;
+		console.log(`Rendered ${renderCount.current} times`);
+	  }); // No dependency array, runs after every render
 
 	return (
 		
 			<div className="App">
-				{/* <AuthContext.Provider value={{
+				<AuthContext.Provider value={{
 					appToken:appToken,
 					spotifyAccessToken:spotifyAccessToken,
-					spotifyRefreshToken:spotifyRefreshToken
-				}}> */}
+					// spotifyRefreshToken:spotifyRefreshToken
+				}}>
 					<ServerContext.Provider value={{
 						server:SERVER,
 						auth_server: AUTH_SERVER,
@@ -175,7 +139,7 @@ function App() {
 						/>} />
 						</Routes>
 					</ServerContext.Provider>
-				{/* </AuthContext.Provider> */}
+				</AuthContext.Provider>
 			</div>
 
 	)
