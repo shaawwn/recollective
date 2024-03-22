@@ -1,4 +1,5 @@
 import React, { useState, useEffect} from 'react'
+// import {AuthProvider} from '../src/context/AuthProvider'
 import {Routes, Route} from 'react-router-dom'
 import './style.css'
 import Dashboard from '../src/components/views/dashboard/Dashboard'
@@ -18,9 +19,14 @@ const SPOTIFY_URL= `https://accounts.spotify.com/authorize?client_id=634efc955c0
 const code = new URLSearchParams(window.location.search).get('code') 
 // Context
 export const ServerContext = React.createContext()
+export const AuthContext = React.createContext()
 
 function App() {
-  const [authenticated, setAuthenticated] = useState(false)
+  	const [authenticated, setAuthenticated] = useState(false)
+	const [appToken, setAppToken] = useState()
+    const [spotifyAccessToken, setSpotifyAccessToken] = useState()
+    const [spotifyRefreshToken, setSpotifyRefreshToken] = useState()
+    const [spotifyExpiresIn, setSpotifyExpiresIn] = useState()
 
     function login() {
         // login to app and get appToken
@@ -89,6 +95,7 @@ function App() {
 		})	
 	}
 
+
 	useEffect(() => {
 
 		// I guess this was a bunch of redundant code
@@ -111,35 +118,64 @@ function App() {
 		// 		console.log("ERROR:", err)
 		// 	})
 		// }
+
+		// verify a session on page load
 		verifySession()
 	}, [])
+
+	// useEffect(() => {
+	// 	if(code) {
+	// 		fetch('http://localhost:3000/spotify/login', {
+	// 			method: "POST",
+	// 			headers: {
+	// 				"Content-Type": "application/json"
+	// 			},
+	// 			body: JSON.stringify({code})
+	// 		}).then((response) => response.json())
+	// 		.then((data) => {
+	// 			console.log("GETTING TOKENS IN APP", data)
+	// 			// setAppToken()
+	// 			setSpotifyAccessToken(data.accessToken)
+	// 			setSpotifyRefreshToken(data.refreshToken)
+	// 			setSpotifyExpiresIn(data.expiresIn)
+	// 		})
+	// 	} else {
+	// 		console.log("NO CODE")
+	// 	}
+	// }, [code])
 
 
 	return (
 		
 			<div className="App">
-			<ServerContext.Provider value={{
-				server:SERVER,
-				auth_server: AUTH_SERVER,
-				spotify_url: SPOTIFY_URL
-				}}>
-				<Routes>
-				<Route path="/" element={
-					authenticated ? 
-					<Dashboard 
-						logout={logout}
-						code={code}
-						/> 
-					:<Landing 
-						login={login}
-						/>
-					}/>
-				<Route path="/users" />
-				<Route path="/register" element={<Registration 
-					setAuthenticated={setAuthenticated}
-				/>} />
-				</Routes>
-			</ServerContext.Provider>
+				{/* <AuthContext.Provider value={{
+					appToken:appToken,
+					spotifyAccessToken:spotifyAccessToken,
+					spotifyRefreshToken:spotifyRefreshToken
+				}}> */}
+					<ServerContext.Provider value={{
+						server:SERVER,
+						auth_server: AUTH_SERVER,
+						spotify_url: SPOTIFY_URL
+						}}>
+						<Routes>
+						<Route path="/" element={
+							authenticated ? 
+							<Dashboard 
+								logout={logout}
+								code={code}
+								/> 
+							:<Landing 
+								login={login}
+								/>
+							}/>
+						<Route path="/users" />
+						<Route path="/register" element={<Registration 
+							setAuthenticated={setAuthenticated}
+						/>} />
+						</Routes>
+					</ServerContext.Provider>
+				{/* </AuthContext.Provider> */}
 			</div>
 
 	)

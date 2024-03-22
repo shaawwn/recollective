@@ -1,6 +1,7 @@
 import React, {useState, useEffect, useContext} from 'react';
 import {PropTypes} from 'prop-types'
 import {ServerContext} from '../../../App'
+import {AuthContext} from '../../../App'
 import useAuth from '../../../hooks/useAuth';
 import './dashboard.css'
 
@@ -15,7 +16,12 @@ export const UserContext = React.createContext()
 
 function Dashboard({logout, code}) {
     const server = useContext(ServerContext).server
+    // const appToken = useContext(AuthContext).appToken
+    // const spotifyAccessToken = useContext(AuthContext).spotifyAccessToken
+    // const spotifyRefreshToken = useContext(AuthContext).spotifyRefreshToken 
+    // console.log("TOKEN", appToken, spotifyAccessToken)
     const [appToken, spotifyAccessToken] = useAuth(code)
+    // const [appToken, spotifyAccessToken] = ['value', 'value']
     const [profile, setProfile] = useState()
 
     function getUserProfile() {
