@@ -1,10 +1,7 @@
 import React, { useState, useEffect} from 'react'
 import {Routes, Route} from 'react-router-dom'
 import './style.css'
-// import useAuth from './hooks/useAuth'
 import Dashboard from '../src/components/views/dashboard/Dashboard'
-// import Login from './components/Login';
-// import Navbar from './components/Navbar'
 import Landing from './views/Landing'
 import Registration from './views/Registration'
 
@@ -24,8 +21,6 @@ export const ServerContext = React.createContext()
 
 function App() {
   const [authenticated, setAuthenticated] = useState(false)
-//   const [appToken, spotifyAccessToken] = useAuth(code)
-//   const [authenticated, appToken, spotifyToken, login, logout] = useAuth()
 
     function login() {
         // login to app and get appToken
@@ -89,39 +84,34 @@ function App() {
 			return response.json()
 		}).then(() => {
 			setAuthenticated(true)
-			// console.log("SESSION DATA", data)
-			// window.location.href=SPOTIFY_URL
 		}).catch((err) => {
 			console.log("ERROR ", err)
 		})	
 	}
 
-	// useEffect(() => {
-	// 	if(authenticated !== true) {
-	// 		verifySession()
-	// 	}
-	// }, [])
-
 	useEffect(() => {
-		if(code === null) {
-			// console.log("Veryfing session with no code")
-			verifySession()
-		} else {
-			// code exists, but still need to verify session
-			fetch(`http://localhost:3000/verifysession`, {
-				credentials: "include"
-			}).then((response) => {
-				if(!response.ok) {
-					throw new Error ("error verifyiny session with code")
-				}
-				return response.json()
-			}).then(() => {
-				// session verified, authorized spotify
-				setAuthenticated(true)
-			}).catch((err) => {
-				console.log("ERROR:", err)
-			})
-		}
+
+		// I guess this was a bunch of redundant code
+		// if(code === null) {
+		// 	// console.log("Veryfing session with no code")
+		// 	verifySession()
+		// } else {
+		// 	// code exists, but still need to verify session
+		// 	fetch(`http://localhost:3000/verifysession`, {
+		// 		credentials: "include"
+		// 	}).then((response) => {
+		// 		if(!response.ok) {
+		// 			throw new Error ("error verifyiny session with code")
+		// 		}
+		// 		return response.json()
+		// 	}).then(() => {
+		// 		// session verified, authorized spotify
+		// 		setAuthenticated(true)
+		// 	}).catch((err) => {
+		// 		console.log("ERROR:", err)
+		// 	})
+		// }
+		verifySession()
 	}, [])
 
 
@@ -135,8 +125,7 @@ function App() {
 				}}>
 				<Routes>
 				<Route path="/" element={
-					authenticated ? // somewhere between authenticated and dashboard needs to be Spotify Authorization
-					// return code ? <Dashboard code={code} />: <Login authUrl={AUTH_URL}/>
+					authenticated ? 
 					<Dashboard 
 						logout={logout}
 						code={code}

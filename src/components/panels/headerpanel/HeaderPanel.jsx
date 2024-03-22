@@ -1,8 +1,9 @@
-import {useState, useEffect, useContext} from 'react';
+import {useContext} from 'react';
+import {PropTypes} from 'prop-types'
 import {UserContext} from '../../views/dashboard/Dashboard'
 import {ServerContext} from '../../../App'
 import './headerpanel.css'
-import SpotifyLogo from '../../../images/Spotify_Logo_RGB_Black.png'
+// import SpotifyLogo from '../../../images/Spotify_Logo_RGB_Black.png'
 
 function HeaderPanel({logout, spotifyAccessToken}) {
 
@@ -14,8 +15,10 @@ function HeaderPanel({logout, spotifyAccessToken}) {
             <h1>Hello, {user.username}</h1>
             {spotifyAccessToken ? 
                 <>
-                    <p>Powered by Spotify</p> 
-                    <a href="#">Logout of Spotify</a>
+                    {/* Add spotify logo around here */}
+                    <p>Powered by Spotify</p>  
+
+                    <a className="logout-btn" href="#">Logout of Spotify</a>
                 </>
                 :<a href={spotify}>Authorize Spotify</a>}
             <button className="btn" onClick={logout}>Logout</button>
@@ -23,4 +26,9 @@ function HeaderPanel({logout, spotifyAccessToken}) {
     )
 }
 
+
+HeaderPanel.propTypes = {
+    logout: PropTypes.func,
+    spotifyAccessToken: PropTypes.string
+}
 export default HeaderPanel

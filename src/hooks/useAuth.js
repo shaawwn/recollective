@@ -106,9 +106,7 @@ function useAuth(code) {
                 }
                 return response.json()
             }).then((data) => {
-                // console.log("Spotify token in session", data)
                 // set accesstokens
-
                 setSpotifyAccessToken(data.accessToken)
                 setSpotifyRefreshToken(data.refreshToken)
                 setSpotifyTokenExpiresIn(data.expiresIn)
@@ -124,9 +122,7 @@ function useAuth(code) {
                 })
             }).then((response) => response.json())
             .then((data) => {
-                // console.log("SPOTIFY AUTH DATA", data, strictMode.current)
                 if(strictMode.current === true) {
-                    // console.log("STRICT MODE ACTIVE", spotifyAccessToken)
                     handleStrictMode()
                 } else {
                     console.log("SPOTIFY FETCH", data)

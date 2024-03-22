@@ -5,3 +5,11 @@
     width: 100%;
     /* background-color: red; */
 }
+
+.logout-btn {
+    border-radius: 5px;
+    background-color: #1DB954;
+    text-decoration: none;
+    color: white;
+    padding: .5rem;
+}
