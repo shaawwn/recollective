@@ -11,6 +11,9 @@ import Panel from '../../panels/panel/Panel'
 import HeaderPanel from '../../panels/headerpanel/HeaderPanel'
 import DashboardSkeleton from '../../skeletons/DashboardSkeleton';
 
+import {getCurrentUserProfile} from '../../../utils/spotifyGetters'
+
+
 // import SpotifyLogo from '../../../images/Spotify_Logo_RGB_Black.png'
 export const UserContext = React.createContext()
 
@@ -18,9 +21,6 @@ function Dashboard({logout, code}) {
     const server = useContext(ServerContext).server
     const appToken = useContext(AuthContext).appToken
     const spotifyAccessToken = useContext(AuthContext).spotifyAccessToken
-    // const spotifyRefreshToken = useContext(AuthContext).spotifyRefreshToken 
-    // const [appToken, spotifyAccessToken] = useAuth(code)
-    // const [appToken, spotifyAccessToken] = ['value', 'value']
     const [profile, setProfile] = useState()
 
     function getUserProfile() {
@@ -34,7 +34,7 @@ function Dashboard({logout, code}) {
             }
             return response.json()
         }).then((data) => {
-            // console.log("User data", data)
+            console.log("User data", data)
             setProfile(data.user)
         }).catch((err) => {
             console.log("Error: ", err)
@@ -42,28 +42,13 @@ function Dashboard({logout, code}) {
     }
 
     useEffect(() => {
-
+        // console.log("Calling useEffect with appToken and Spotify access")
         if(appToken) {
             getUserProfile()
         }
         if(spotifyAccessToken) {
-            // get spotify user information
-            // fetch(`https://api.spotify.com/v1/me`, {
-            //     headers: {
-            //         'Authorization': `Bearer ${spotifyAccessToken}`
-            //     }
-            // }).then((response) => response.json())
-            // .then((data) => {
-            //     console.log("SPOTIFY USER DATA", data)
-            // })
-            fetch('http://localhost:3001/spotify/currentprofile', {
-                headers: {
-                    'Authorization': `Bearer ${spotifyAccessToken}`
-                }
-            }).then((response) => response.json())
-            .then((data) => {
-                console.log("IN DASH", data)
-            })
+            // console.log("Spotifyaccess render", spotifyAccessToken)
+            getCurrentUserProfile(spotifyAccessToken)
         }
     }, [appToken, spotifyAccessToken])
 
