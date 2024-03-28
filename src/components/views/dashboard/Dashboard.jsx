@@ -42,12 +42,10 @@ function Dashboard({logout, code}) {
     }
 
     useEffect(() => {
-        // console.log("Calling useEffect with appToken and Spotify access")
         if(appToken) {
             getUserProfile()
         }
         if(spotifyAccessToken) {
-            // console.log("Spotifyaccess render", spotifyAccessToken)
             getCurrentUserProfile(spotifyAccessToken)
         }
     }, [appToken, spotifyAccessToken])
@@ -56,42 +54,47 @@ function Dashboard({logout, code}) {
     return(
         // Create Context that can be used for all children elements
         <UserContext.Provider value={profile}>
-                    <main className="dashboard red gap-4">
-                        {profile ?
-                        <>
-                            {/* <h1>Welcome to RE:COLLECTIVE, {profile.username}</h1>  */}
-                            <div className="wrapper">
-                                <NavigationPanel />
+            <main className="dashboard red gap-4">
+                {profile ?
+                <>
+                    {/* <h1>Welcome to RE:COLLECTIVE, {profile.username}</h1>  */}
+                    <div className="wrapper">
+                        <NavigationPanel />
+                    </div>
+                    {/* <NavigationPanel /> */}
+
+                    {/* Second container to hold vertical panels */}
+                    <div className="w-full flex flex-col gap-4">
+                        <HeaderPanel 
+                            logout={logout}
+                            />
+                        {/* {profile.onboarding === true ? <h1>Create First Playlist</h1> : null} */}
+                        <div className="flex gap-4">
+                            {profile.onboarding === true ? 
+                            <div className="flex flex-col gap-4">
+                                <Panel />
+                                <h1>Welcome to Re:Collective! Let's start by creating your first playlist!</h1>
                             </div>
-                            {/* <NavigationPanel /> */}
-
-                            {/* Second container to hold vertical panels */}
-                            <div className="w-full flex flex-col gap-4">
-                                <HeaderPanel 
-                                    logout={logout}
-                                    // code={code}
-                                    spotifyAccessToken={spotifyAccessToken}
-                                    />
-                                <div className="flex gap-4">
-                                    <div className="flex flex-col gap-4">
-                                        <Panel />
-                                        <Panel />
-                                    </div>
-                                    <SidebarPanel />
-                                </div>
-                                {/* <button onClick={logout}>Logout</button> */}
-                                {/* <SidebarPanel /> */}
+                            :<div className="flex flex-col gap-4">
+                                <Panel />
+                                <Panel />
                             </div>
-                            {/* Dashboard is a container that holds all Panel elements for a user
-                            
-                                The Dashboard itself is a flexbox that holds the navigation Panel on the left, and main content on the right.
+                            }
+                            <SidebarPanel />
+                        </div>
+                        {/* <button onClick={logout}>Logout</button> */}
+                        {/* <SidebarPanel /> */}
+                    </div>
+                    {/* Dashboard is a container that holds all Panel elements for a user
+                    
+                        The Dashboard itself is a flexbox that holds the navigation Panel on the left, and main content on the right.
 
-                                // Navigation Panel is collapsable
+                        // Navigation Panel is collapsable
 
-                                // Main panel is a flexbox that holds content vertically
-                            */}
-                        </>
-                        :<DashboardSkeleton />}
+                        // Main panel is a flexbox that holds content vertically
+                    */}
+                </>
+                :<DashboardSkeleton />}
             
         </main>
         </UserContext.Provider>

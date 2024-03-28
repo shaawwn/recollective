@@ -7,7 +7,7 @@ function getCurrentUserProfile(accessToken) {
         }
     }).then((response) => response.json())
     .then((data) => {
-        console.log("USER PROFILE", data)
+        // console.log("USER PROFILE", data)
     })
 }
 

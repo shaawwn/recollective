@@ -25,7 +25,6 @@ export const AuthContext = React.createContext()
 function App() {
 	const [authenticated, setAuthenticated] = useState(false)
 	const [appToken, spotifyAccessToken] = useAuth(code)
-	// console.log("APP TOKEN", appToken, spotifyAccessToken)
 	const renderCount = useRef(0)
 
 	const handleLoginSuccess = (data) => {
@@ -49,7 +48,7 @@ function App() {
 	}
 
 	function logout() {
-		console.log("AUTH SERVER", AUTH_SERVER)
+		// console.log("AUTH SERVER", AUTH_SERVER)
 		fetch(AUTH_SERVER + '/logout', {
 			method: "POST",
 			credentials: "include"
@@ -98,7 +97,6 @@ function App() {
 				<AuthContext.Provider value={{
 					appToken:appToken,
 					spotifyAccessToken:spotifyAccessToken,
-					// spotifyRefreshToken:spotifyRefreshToken
 				}}>
 					<ServerContext.Provider value={{
 						server:SERVER,

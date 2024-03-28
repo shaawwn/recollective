@@ -2,13 +2,15 @@ import {useContext} from 'react';
 import {PropTypes} from 'prop-types'
 import {UserContext} from '../../views/dashboard/Dashboard'
 import {ServerContext} from '../../../App'
+import {AuthContext} from '../../../App'
 import './headerpanel.css'
 // import SpotifyLogo from '../../../images/Spotify_Logo_RGB_Black.png'
 
-function HeaderPanel({logout, spotifyAccessToken}) {
+function HeaderPanel({logout}) {
 
     const user = useContext(UserContext)
     const spotify = useContext(ServerContext).spotify_url
+    const spotifyAccessToken = useContext(AuthContext).spotifyAccessToken
 
     return(
         <header className="header panel">
