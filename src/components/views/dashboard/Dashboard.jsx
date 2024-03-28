@@ -21,32 +21,35 @@ function Dashboard({logout, code}) {
     const server = useContext(ServerContext).server
     const appToken = useContext(AuthContext).appToken
     const spotifyAccessToken = useContext(AuthContext).spotifyAccessToken
-    const [profile, setProfile] = useState()
+    const profile = useContext(AuthContext).profile
+    // const [profile, setProfile] = useState()
 
-    function getUserProfile() {
-        fetch(server + '/profiles/me', {
-            headers: {
-                'Authorization': `Bearer ${appToken}`
-            }
-        }).then((response) => {
-            if(!response.ok) {
-                throw new Error("No user data")
-            }
-            return response.json()
-        }).then((data) => {
-            console.log("User data", data)
-            setProfile(data.user)
-        }).catch((err) => {
-            console.log("Error: ", err)
-        })
-    }
+    // function getUserProfile() {
+    //     fetch(server + '/profiles/me', {
+    //         headers: {
+    //             'Authorization': `Bearer ${appToken}`
+    //         }
+    //     }).then((response) => {
+    //         if(!response.ok) {
+    //             throw new Error("No user data")
+    //         }
+    //         return response.json()
+    //     }).then((data) => {
+    //         console.log("User data", data)
+    //         setProfile(data.user)
+    //     }).catch((err) => {
+    //         console.log("Error: ", err)
+    //     })
+    // }
 
     useEffect(() => {
         if(appToken) {
-            getUserProfile()
+            // getUserProfile()
+            
         }
         if(spotifyAccessToken) {
             getCurrentUserProfile(spotifyAccessToken)
+            console.log("PROFILE", profile)
         }
     }, [appToken, spotifyAccessToken])
 

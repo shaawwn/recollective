@@ -4,6 +4,7 @@ import './style.css'
 import Dashboard from '../src/components/views/dashboard/Dashboard'
 import Landing from './views/Landing'
 import Registration from './views/Registration'
+import Profile from './views/profiles/Profile'
 import useAuth from '../src/hooks/_useAuth'
 
 import {login} from '../src/utils/authentication'
@@ -25,6 +26,8 @@ export const AuthContext = React.createContext()
 function App() {
 	const [authenticated, setAuthenticated] = useState(false)
 	const [appToken, spotifyAccessToken] = useAuth(code)
+	const [profile, setProfile] = useState()
+
 	const renderCount = useRef(0)
 
 	const handleLoginSuccess = (data) => {
@@ -35,6 +38,7 @@ function App() {
 			console.log("User has set up their profile")
 			window.location.href=SPOTIFY_URL
 		}
+		console.log("User Profile set: ", data)
 	}
 
 	const handleLoginFailure = (data) => {
@@ -62,6 +66,24 @@ function App() {
 		})
 	}
 
+	function getUserProfile() {
+        fetch(SERVER + '/profiles/me', {
+            headers: {
+                'Authorization': `Bearer ${appToken}`
+            }
+        }).then((response) => {
+            if(!response.ok) {
+                throw new Error("No user data")
+            }
+            return response.json()
+        }).then((data) => {
+            console.log("User data", data)
+            setProfile(data.user)
+        }).catch((err) => {
+            console.log("Error: ", err)
+        })
+    }
+
 	function verifySession() {
 
 		// verifies if there is an active session and redirects to user's dashboard if there is one
@@ -73,8 +95,9 @@ function App() {
 				throw new Error ("Cannot verify session")
 			}
 			return response.json()
-		}).then(() => {
-			setAuthenticated(true)
+		}).then((data) => {
+			// console.log("Session verified", appToken, data)
+			setAuthenticated(true) 
 		}).catch((err) => {
 			console.log("ERROR ", err)
 		})	
@@ -83,9 +106,20 @@ function App() {
 	useEffect(() => {
 		// verify a session on page load
 		verifySession()
+
+		// if a session is verified, it still needs to get a token to get user data, etc
 	}, [])
 
+	useEffect(() => {
+		if(appToken) {
+			console.log("App token in APP", appToken)
+			getUserProfile()
+		}
+	}, [appToken])
+
 	// RENDERING TEST
+	
+	
 	useEffect(() => {
 		renderCount.current = renderCount.current + 1;
 		console.log(`Rendered ${renderCount.current} times`);
@@ -97,6 +131,7 @@ function App() {
 				<AuthContext.Provider value={{
 					appToken:appToken,
 					spotifyAccessToken:spotifyAccessToken,
+					profile: profile
 				}}>
 					<ServerContext.Provider value={{
 						server:SERVER,
@@ -104,20 +139,22 @@ function App() {
 						spotify_url: SPOTIFY_URL
 						}}>
 						<Routes>
-						<Route path="/" element={
-							authenticated ? 
-							<Dashboard 
-								logout={logout}
-								code={code}
-								/> 
-							:<Landing 
-								login={handleLogin}
-								/>
-							}/>
-						<Route path="/users" />
-						<Route path="/register" element={<Registration 
-							setAuthenticated={setAuthenticated}
-						/>} />
+							<Route path="/" element={
+								authenticated && profile ? // added profile conditional
+								<Dashboard 
+									logout={logout}
+									code={code}
+									/> 
+								:<Landing 
+									login={handleLogin}
+									/>
+								}/>
+								{/* As is, profile is allowed to render even w/o a profile set */}
+							<Route path={'/:profileID'} element={<Profile profile={profile}/>}/> 
+							<Route path="/register" element={<Registration 
+								setAuthenticated={setAuthenticated}
+							/>} />
+							<Route path="/404" />
 						</Routes>
 					</ServerContext.Provider>
 				</AuthContext.Provider>
