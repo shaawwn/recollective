@@ -28,25 +28,25 @@ function logout() {
     // TODO
 }
 
-// function verifySession() {
-//     fetch('http://localhost:3000/verifysession', {
-//         credentials: "include"
-//     })
-//     .then((response) => {
-//         if(!response.ok) {
-//             throw new Error ("Cannot verify session")
-//         }
-//         return response.json()
-//     }).then(() => {
-//         setAuthenticated(true)
-//     }).catch((err) => {
-//         console.log("ERROR ", err)
-//     })	
-// }
+function verifySession(handleVerifySessionSuccess) {
+    fetch('http://localhost:3000/verifysession', {
+        credentials: "include"
+    })
+    .then((response) => {
+        if(!response.ok) {
+            throw new Error ("Cannot verify session")
+        }
+        return response.json()
+    }).then(() => {
+        handleVerifySessionSuccess()
+    }).catch((err) => {
+        console.log("ERROR ", err)
+    })	
+}
 
 
 export {
     login,
     logout,
-    // verifySession
+    verifySession
 }

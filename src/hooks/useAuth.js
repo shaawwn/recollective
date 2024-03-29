@@ -125,7 +125,7 @@ function useAuth(code) {
                 if(strictMode.current === true) {
                     handleStrictMode()
                 } else {
-                    console.log("SPOTIFY FETCH", data)
+                    // console.log("SPOTIFY FETCH", data)
                     setSpotifyAccessToken(data.accessToken)
                     setSpotifyRefreshToken(data.refreshToken)
                     setSpotifyTokenExpiresIn(data.expiresIn)

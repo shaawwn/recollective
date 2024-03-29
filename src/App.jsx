@@ -5,9 +5,10 @@ import Dashboard from '../src/components/views/dashboard/Dashboard'
 import Landing from './views/Landing'
 import Registration from './views/Registration'
 import Profile from './views/profiles/Profile'
+import NoUserProfile from './views/profiles/404'
 import useAuth from '../src/hooks/_useAuth'
 
-import {login} from '../src/utils/authentication'
+import {login, verifySession} from '../src/utils/authentication'
 
 const SERVER="http://localhost:3001"
 const AUTH_SERVER="http://localhost:3000"
@@ -22,6 +23,7 @@ const code = new URLSearchParams(window.location.search).get('code')
 // Context
 export const ServerContext = React.createContext()
 export const AuthContext = React.createContext()
+export const ProfileContext = React.createContext()
 
 function App() {
 	const [authenticated, setAuthenticated] = useState(false)
@@ -51,8 +53,14 @@ function App() {
 		login(username, password, handleLoginSuccess, handleLoginFailure)
 	}
 
+	function handleVerifySessionSuccess() {
+		setAuthenticated(true)
+	}
+
+	function handleVerifySessionFailure() {
+		// not verified, so do nothing?
+	}
 	function logout() {
-		// console.log("AUTH SERVER", AUTH_SERVER)
 		fetch(AUTH_SERVER + '/logout', {
 			method: "POST",
 			credentials: "include"
@@ -84,35 +92,14 @@ function App() {
         })
     }
 
-	function verifySession() {
-
-		// verifies if there is an active session and redirects to user's dashboard if there is one
-		fetch('http://localhost:3000/verifysession', {
-			credentials: "include"
-		})
-		.then((response) => {
-			if(!response.ok) {
-				throw new Error ("Cannot verify session")
-			}
-			return response.json()
-		}).then((data) => {
-			// console.log("Session verified", appToken, data)
-			setAuthenticated(true) 
-		}).catch((err) => {
-			console.log("ERROR ", err)
-		})	
-	}
 
 	useEffect(() => {
 		// verify a session on page load
-		verifySession()
-
-		// if a session is verified, it still needs to get a token to get user data, etc
+		verifySession(handleVerifySessionSuccess)
 	}, [])
 
 	useEffect(() => {
 		if(appToken) {
-			console.log("App token in APP", appToken)
 			getUserProfile()
 		}
 	}, [appToken])
@@ -150,6 +137,7 @@ function App() {
 									/>
 								}/>
 								{/* As is, profile is allowed to render even w/o a profile set */}
+							<Route path={'/404'} element={<NoUserProfile />}/>
 							<Route path={'/:profileID'} element={<Profile profile={profile}/>}/> 
 							<Route path="/register" element={<Registration 
 								setAuthenticated={setAuthenticated}
