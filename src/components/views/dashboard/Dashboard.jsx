@@ -24,24 +24,6 @@ function Dashboard({logout, code}) {
     const profile = useContext(AuthContext).profile
     // const [profile, setProfile] = useState()
 
-    // function getUserProfile() {
-    //     fetch(server + '/profiles/me', {
-    //         headers: {
-    //             'Authorization': `Bearer ${appToken}`
-    //         }
-    //     }).then((response) => {
-    //         if(!response.ok) {
-    //             throw new Error("No user data")
-    //         }
-    //         return response.json()
-    //     }).then((data) => {
-    //         console.log("User data", data)
-    //         setProfile(data.user)
-    //     }).catch((err) => {
-    //         console.log("Error: ", err)
-    //     })
-    // }
-
     useEffect(() => {
         if(appToken) {
             // getUserProfile()
@@ -49,7 +31,7 @@ function Dashboard({logout, code}) {
         }
         if(spotifyAccessToken) {
             getCurrentUserProfile(spotifyAccessToken)
-            console.log("PROFILE", profile)
+            // console.log("PROFILE", profile)
         }
     }, [appToken, spotifyAccessToken])
 
@@ -57,14 +39,12 @@ function Dashboard({logout, code}) {
     return(
         // Create Context that can be used for all children elements
         <UserContext.Provider value={profile}>
-            <main className="dashboard red gap-4">
+            <main className="dashboard red gap-4"> 
                 {profile ?
                 <>
-                    {/* <h1>Welcome to RE:COLLECTIVE, {profile.username}</h1>  */}
                     <div className="wrapper">
                         <NavigationPanel />
                     </div>
-                    {/* <NavigationPanel /> */}
 
                     {/* Second container to hold vertical panels */}
                     <div className="w-full flex flex-col gap-4">
@@ -75,7 +55,7 @@ function Dashboard({logout, code}) {
                         <div className="flex gap-4">
                             {profile.onboarding === true ? 
                             <div className="flex flex-col gap-4">
-                                <Panel />
+                                {/* <Panel /> */}
                                 <h1>Welcome to Re:Collective! Let's start by creating your first playlist!</h1>
                             </div>
                             :<div className="flex flex-col gap-4">

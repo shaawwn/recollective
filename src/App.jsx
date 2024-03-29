@@ -8,7 +8,7 @@ import Profile from './views/profiles/Profile'
 import NoUserProfile from './views/profiles/404'
 import useAuth from '../src/hooks/_useAuth'
 
-import {login, verifySession} from '../src/utils/authentication'
+import {login, verifySession, verifySpotifyAccess} from '../src/utils/authentication'
 
 const SERVER="http://localhost:3001"
 const AUTH_SERVER="http://localhost:3000"
@@ -27,7 +27,7 @@ export const ProfileContext = React.createContext()
 
 function App() {
 	const [authenticated, setAuthenticated] = useState(false)
-	const [appToken, spotifyAccessToken] = useAuth(code)
+	const [appToken, spotifyAccessToken, spotifyRefreshToken] = useAuth(code)
 	const [profile, setProfile] = useState()
 
 	const renderCount = useRef(0)

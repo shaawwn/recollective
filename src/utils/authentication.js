@@ -28,6 +28,28 @@ function logout() {
     // TODO
 }
 
+function verifySpotifyAccess(spotifyRefreshToken, handleSpotifyRefresh) {
+    if(spotifyRefreshToken) {
+        fetch(`http://localhost:3000/spotify/refreshtoken`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "include",
+            body: JSON.stringify({
+                refreshToken: spotifyRefreshToken
+            })
+        }).then((response) => response.json())
+        .then((data) => {
+            handleSpotifyRefresh(data)
+        }).catch((err) => {
+            console.log("Error refreshing token", err)
+        })
+    } else {
+        console.log("Need to perform spotify auth flow", spotifyRefreshToken)
+    }
+
+}
 function verifySession(handleVerifySessionSuccess) {
     fetch('http://localhost:3000/verifysession', {
         credentials: "include"
@@ -48,5 +70,6 @@ function verifySession(handleVerifySessionSuccess) {
 export {
     login,
     logout,
-    verifySession
+    verifySession,
+    verifySpotifyAccess
 }

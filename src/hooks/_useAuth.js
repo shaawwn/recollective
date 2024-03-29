@@ -1,7 +1,7 @@
 import {useState, useEffect, useRef} from 'react'
+import {verifySpotifyAccess} from '../utils/authentication'
 
-
-
+const DEV_URI = 'http://localhost:5173'
 function useAuth(code) {
 
     const strictMode = useRef(false)
@@ -64,6 +64,12 @@ function useAuth(code) {
         })
     }
     
+    function handleSpotifyRefresh(data) {
+        // console.log("Handling spotify refresh", data)
+        setSpotifyAccessToken(data.accessToken)
+        setSpotifyTokenExpiresIn(data.expiresIn)
+    }
+
     function refreshSpotifyToken() {
         fetch(`http://localhost:3000/spotify/refreshtoken`, {
             method: "POST",
@@ -84,6 +90,8 @@ function useAuth(code) {
         })
     }
 
+
+    
     useEffect(() => {
         if(!appToken) {
             console.log("Refreshing app token")
@@ -99,7 +107,9 @@ function useAuth(code) {
     }, [spotifyRefreshToken, spotifyTokenExpiresIn])
 
     useEffect(() => {
-        // Fetch auth server spotify/login route with code
+        
+        // this checks the session for a token, but it doesn't account for the fact that the token may have expires
+        // just need to refresh a token again since there is no consequence to doing that
         if(!code) {
             // check session for code
             fetch(`http://localhost:3000/sessions/spotifytoken`, {
@@ -110,10 +120,7 @@ function useAuth(code) {
                 }
                 return response.json()
             }).then((data) => {
-                // set accesstokens
-                setSpotifyAccessToken(data.accessToken)
-                setSpotifyRefreshToken(data.refreshToken)
-                setSpotifyTokenExpiresIn(data.expiresIn)
+                verifySpotifyAccess(data.refreshToken, handleSpotifyRefresh)
             })
         } else {
             fetch(`http://localhost:3000/spotify/login`, {
@@ -142,8 +149,7 @@ function useAuth(code) {
         }
     }, [code])
 
-
-    return [appToken, spotifyAccessToken]
+    return [appToken, spotifyAccessToken, spotifyRefreshToken]
 
 }
 

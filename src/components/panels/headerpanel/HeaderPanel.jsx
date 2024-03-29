@@ -15,11 +15,11 @@ function HeaderPanel({logout}) {
     const spotifyAccessToken = useContext(AuthContext).spotifyAccessToken
 
     useEffect(() => {
-        if(profile) {
-            console.log("User")
-        } else {
-            console.log("No user")
-        }
+        // if(profile) {
+        //     console.log("User")
+        // } else {
+        //     console.log("No user")
+        // }
     }, [profile])
 
     return(
