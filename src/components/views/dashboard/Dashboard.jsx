@@ -17,7 +17,7 @@ import {getCurrentUserProfile} from '../../../utils/spotifyGetters'
 // import SpotifyLogo from '../../../images/Spotify_Logo_RGB_Black.png'
 export const UserContext = React.createContext()
 
-function Dashboard({logout, code}) {
+function Dashboard({logout, code, search}) {
     const server = useContext(ServerContext).server
     const appToken = useContext(AuthContext).appToken
     const spotifyAccessToken = useContext(AuthContext).spotifyAccessToken
@@ -50,6 +50,7 @@ function Dashboard({logout, code}) {
                     <div className="w-full flex flex-col gap-4">
                         <HeaderPanel 
                             logout={logout}
+                            search={search}
                             />
                         {/* {profile.onboarding === true ? <h1>Create First Playlist</h1> : null} */}
                         <div className="flex gap-4">

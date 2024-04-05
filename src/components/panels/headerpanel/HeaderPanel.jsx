@@ -6,8 +6,9 @@ import {AuthContext} from '../../../App'
 import './headerpanel.css'
 // import SpotifyLogo from '../../../images/Spotify_Logo_RGB_Black.png'
 import {Link} from 'react-router-dom'
+import SearchInput from '../../search/SearchInput'
 
-function HeaderPanel({logout}) {
+function HeaderPanel({logout, search}) {
 
     // const user = useContext(UserContext)
     const profile = useContext(AuthContext).profile
@@ -26,14 +27,15 @@ function HeaderPanel({logout}) {
         <header className="header panel">
             {profile ? 
                 <>  
-                    <Link to="/" className="text-3xl text-black cursor-pointer no-underline">Home</Link>
                     <h1>Hello, {profile.username}</h1>
                         {spotifyAccessToken ? 
                         <>
                             {/* Add spotify logo around here */}
-                            <p>Powered by Spotify</p>  
-
-                            <a className="logout-btn" href="#">Logout of Spotify</a>
+                            <SearchInput search={search}/>
+                            <div className="flex-col">
+                                <p>Powered by Spotify</p>  
+                                <a className="logout-btn" href="#">Logout of Spotify</a>
+                            </div>
                         </>
                         :<a href={spotify}>Authorize Spotify</a>}
                         <button className="btn" onClick={logout}>Logout</button>

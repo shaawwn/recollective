@@ -7,6 +7,7 @@ import Registration from './views/Registration'
 import Profile from './views/profiles/Profile'
 import NoUserProfile from './views/profiles/404'
 import useAuth from '../src/hooks/_useAuth'
+import useSearch from '../src/hooks/useSearch'
 
 import {login, verifySession, verifySpotifyAccess} from '../src/utils/authentication'
 
@@ -24,10 +25,12 @@ const code = new URLSearchParams(window.location.search).get('code')
 export const ServerContext = React.createContext()
 export const AuthContext = React.createContext()
 export const ProfileContext = React.createContext()
+export const SearchContext = React.createContext()
 
 function App() {
 	const [authenticated, setAuthenticated] = useState(false)
 	const [appToken, spotifyAccessToken, spotifyRefreshToken] = useAuth(code)
+	const [search, setTokens] = useSearch()
 	const [profile, setProfile] = useState()
 
 	const renderCount = useRef(0)
@@ -58,8 +61,9 @@ function App() {
 	}
 
 	function handleVerifySessionFailure() {
-		// not verified, so do nothing?
+		// not verified, so do nothing? Just show the login page
 	}
+
 	function logout() {
 		fetch(AUTH_SERVER + '/logout', {
 			method: "POST",
@@ -99,17 +103,19 @@ function App() {
 	}, [])
 
 	useEffect(() => {
-		if(appToken) {
+		if(appToken && spotifyAccessToken) {
 			getUserProfile()
+			setTokens({
+				appToken: appToken,
+				spotifyAccessToken: spotifyAccessToken
+			})
 		}
 	}, [appToken])
 
-	// RENDERING TEST
-	
-	
+
 	useEffect(() => {
 		renderCount.current = renderCount.current + 1;
-		console.log(`Rendered ${renderCount.current} times`);
+		console.log(`Rendered ${renderCount.current} times`); // uncomment for render count
 	}, []); 
 
 	return (
@@ -131,6 +137,7 @@ function App() {
 								<Dashboard 
 									logout={logout}
 									code={code}
+									search={search}
 									/> 
 								:<Landing 
 									login={handleLogin}
