@@ -19,10 +19,11 @@ function useSearch() {
     const searchTypes = ["album", "artist", "playlist", "track"]
 
     function search(queryString) {
-        // 
-        // console.log("Tokens used in search", tokens.appToken, tokens.spotifAccessToken)
+        console.log("Querying in search function", queryString)
+        searchApp(queryString)
         searchSpotify(queryString)
-        // searchApp(queryString)
+
+        // take the results from both queries and return them as a single object
     }
 
     function searchSpotify(queryString) {
@@ -34,7 +35,7 @@ function useSearch() {
             }
         }).then((response) => response.json())
         .then((data) => {
-            console.log("Search results: ", data)
+            console.log("Search results from Spotify: ", data)
             setSearchResults(data)
         }).catch((err) => {
             console.log("Err on search", err)
@@ -42,7 +43,14 @@ function useSearch() {
     }
 
     function searchApp(queryString) {
-        console.log("Querying app database...", queryString)
+        console.log("Querying app database...why is it different", queryString)
+        fetch(`http://localhost:3001/profiles/search?q=${queryString}`)
+        .then((response) => response.json())
+        .then((data) => {
+            console.log("Search results from app", data)
+        }).catch((err) => {
+            console.log("Err searching app", err, queryString)
+        })
     }
 
 
