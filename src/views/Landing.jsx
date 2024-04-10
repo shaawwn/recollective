@@ -7,8 +7,11 @@ import Navbar from '../components/Navbar'
 
 function Landing({login}) {
 
-    function register() {
-        console.log("Registering account.")
+    function handleSubmit(event) {
+        if(event.key === 'Enter') {
+            console.log("Clicking key")
+            login()
+        }
     }
 
     function handleClick() {
@@ -30,7 +33,7 @@ function Landing({login}) {
                 </section>
                 <section className="landing__login-form">
                     <input className="text-3xl" type="text" id="username-login" placeholder="username"/>
-                    <input className="text-3xl" type="text" id="username-password" placeholder="password" />
+                    <input className="text-3xl" type="text" id="username-password" placeholder="password" onKeyPress={(event) => handleSubmit(event)} />
                     <button onClick={handleClick}>Login</button>
                     <p>Don't have an account? <Link to="/register">Register</Link> here!</p>
                 </section>

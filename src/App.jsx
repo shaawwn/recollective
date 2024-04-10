@@ -60,10 +60,6 @@ function App() {
 		setAuthenticated(true)
 	}
 
-	function handleVerifySessionFailure() {
-		// not verified, so do nothing? Just show the login page
-	}
-
 	function logout() {
 		fetch(AUTH_SERVER + '/logout', {
 			method: "POST",
