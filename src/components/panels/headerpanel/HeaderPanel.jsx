@@ -31,7 +31,8 @@ function HeaderPanel({logout, search}) {
                         {spotifyAccessToken ? 
                         <>
                             {/* Add spotify logo around here */}
-                            <SearchInput search={search}/>
+                            <SearchInput search={search}
+                            />
                             <div className="flex-col">
                                 <p>Powered by Spotify</p>  
                                 <a className="logout-btn" href="#">Logout of Spotify</a>

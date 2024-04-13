@@ -12,3 +12,12 @@
 .navigation__item {
     font-size: 1.5rem;
 }
+
+.wrapper {
+    width: 15%;
+    /* background-color: red; */
+    /* min-height: 80vh; */
+    /* display: flex; */
+    flex-direction: column;
+    /* position: fixed;  */
+}

@@ -9,6 +9,7 @@ import NavigationPanel from '../../panels/navigationpanel/NavigationPanel';
 import SidebarPanel from '../../panels/sidebarpanel/Sidebar'
 import Panel from '../../panels/panel/Panel'
 import HeaderPanel from '../../panels/headerpanel/HeaderPanel'
+import PlaylistPanel from '../../panels/playlistpanel/PlaylistPanel'
 import DashboardSkeleton from '../../skeletons/DashboardSkeleton';
 
 import {getCurrentUserProfile} from '../../../utils/spotifyGetters'
@@ -42,33 +43,12 @@ function Dashboard({logout, code, search}) {
             <main className="dashboard red gap-4"> 
                 {profile ?
                 <>
-                    <div className="wrapper">
-                        <NavigationPanel />
-                    </div>
+                    <NavigationPanel />
+                    <LayoutContainer 
+                        logout={logout}
+                        search={search}
+                    />
 
-                    {/* Second container to hold vertical panels */}
-                    <div className="w-full flex flex-col gap-4">
-                        <HeaderPanel 
-                            logout={logout}
-                            search={search}
-                            />
-                        {/* {profile.onboarding === true ? <h1>Create First Playlist</h1> : null} */}
-                        <div className="flex gap-4">
-                            {profile.onboarding === true ? 
-                            <div className="flex flex-col gap-4">
-                                {/* <Panel /> */}
-                                <h1>Welcome to Re:Collective! Let's start by creating your first playlist!</h1>
-                            </div>
-                            :<div className="flex flex-col gap-4">
-                                <Panel />
-                                <Panel />
-                            </div>
-                            }
-                            <SidebarPanel />
-                        </div>
-                        {/* <button onClick={logout}>Logout</button> */}
-                        {/* <SidebarPanel /> */}
-                    </div>
                     {/* Dashboard is a container that holds all Panel elements for a user
                     
                         The Dashboard itself is a flexbox that holds the navigation Panel on the left, and main content on the right.
@@ -84,6 +64,40 @@ function Dashboard({logout, code, search}) {
         </UserContext.Provider>
     )
 }
+
+function PanelContainer({profile}) {
+
+    return(
+        <section className="flex gap-4 bg-red-500 h-full">
+                {/* Direct to playlist creation on first login */}
+                {profile.onboarding === true ?
+                // This is the div wrapper for planels in dashboard 
+                <div className="flex flex-col gap-4 w-full"> 
+                    <PlaylistPanel />
+                </div>
+                :<div className="flex flex-col gap-4 w-full">
+                    <Panel />
+                    <Panel />
+                </div>
+                }
+                <SidebarPanel />
+        </section>
+    )
+}
+function LayoutContainer({logout, search}) {
+    // component which holds panel elements within the dashboard
+    const profile = useContext(AuthContext).profile
+    return(
+        <section className="w-full flex flex-col gap-4">
+            <HeaderPanel 
+                logout={logout}
+                search={search}
+                />
+            <PanelContainer profile={profile} />
+        </section>
+    )
+}
+
 
 Dashboard.propTypes = {
     logout: PropTypes.func.isRequired,

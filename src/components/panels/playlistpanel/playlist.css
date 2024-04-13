@@ -1,0 +1,10 @@
+.panel__playlist {
+    /* width: 100%; */
+    /* background-color: red; */
+    height: 100%;
+}
+
+.panel__playlist__cover-image {
+    width: 125px;
+    height: 125px;
+}
