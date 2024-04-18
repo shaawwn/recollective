@@ -27,6 +27,10 @@ function Dashboard({logout, code, search}) {
     const profile = useContext(AuthContext).profile
     // const [profile, setProfile] = useState()
 
+    function handleOnboarding() {
+        // onboarding a user involves prompting them for additional details, as well as creating their first playlist
+        
+    }
     useEffect(() => {
         if(appToken) {
             // getUserProfile()

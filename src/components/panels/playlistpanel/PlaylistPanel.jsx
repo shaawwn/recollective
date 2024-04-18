@@ -4,6 +4,8 @@ import './playlist.css'
 import DefaultPlaylistCover from '../../../images/default.png'
 
 import SearchInput from '../../search/SearchInput'
+import TrackTable from '../../tracktable/TrackTable'
+
 import {PanelFunctionContext} from '../../utility/containers/PanelContainer'
 import {UserContext} from '../../views/dashboard/Dashboard'
 import {AuthContext} from '../../../App'
@@ -97,14 +99,6 @@ function PlaylistHeader({playlist}) {
     )
 }
 
-function TrackTable() {
-
-    return(
-        <section id="track-table" className="bg-black w-full">
-            <p className="text-white">Songs here in table</p>
-        </section>
-    )
-}
 export default PlaylistPanel
 
 // There are multiple states for a playlist panel, 
