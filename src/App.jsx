@@ -9,6 +9,7 @@ import NoUserProfile from './views/profiles/404'
 import useAuth from '../src/hooks/_useAuth'
 import useSearch from '../src/hooks/useSearch'
 
+// import NavigationPanel from './components/panels/navigationpanel/NavigationPanel'
 import {login, verifySession, verifySpotifyAccess} from '../src/utils/authentication'
 
 const SERVER="http://localhost:3001"

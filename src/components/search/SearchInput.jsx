@@ -1,4 +1,4 @@
-import {useState, useEffect, useRef} from 'react';
+import {useRef} from 'react';
 import PropTypes from 'prop-types'
 import './search.css'
 
@@ -7,17 +7,16 @@ function SearchInput({search}) {
 
     const queryString = useRef()
     const queryDelay = useRef()
-    function handleChange() {
-        const inputVal = document.getElementById('search-input').value
-        queryString.current = inputVal
 
+    function handleChange(value) {
+
+        queryString.current = value
         // Only call search after a small delay
         if(queryString.current === '') {
             if(queryDelay.current) {
                 clearTimeout(queryDelay.current)
             }
 
-            // set search results to nothing
             return false
         }
         if(queryDelay.current) {
@@ -27,12 +26,12 @@ function SearchInput({search}) {
         queryDelay.current = setTimeout(() => search(queryString.current), 500)
     }
 
-
+// Need to change from ID to whatever the search input is
 
 
     return(
         <>
-            <input id="search-input" className="search__input" placeholder="What do you want to listen to?" onChange={handleChange}/>
+            <input className="search__input" placeholder="What do you want to listen to?" onChange={(event) => handleChange(event.target.value)}/>
         </>
     )
 }
