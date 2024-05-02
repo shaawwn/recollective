@@ -10,6 +10,7 @@ function Card() {
             <img className="card__image" src={Chrono} />
             {/* Title */}
             <p className="card__tile">Chrono Trigger</p>
+            <p className="card__misc">Yasunori Mitsuda</p>
         </div>
     )
 }
