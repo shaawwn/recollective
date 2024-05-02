@@ -1,11 +1,11 @@
 
 /* Nav panel needs to be sticky */
 .navigation {
-    width: 12%;
+    width: 100%;
     min-height: 98vh;
     display: flex;
     flex-direction: column;
-    position: fixed; 
+    /* position: fixed;  */
     padding: 2rem;
 }
 

@@ -1,8 +1,8 @@
-import {useContext} from 'react'
+import {useEffect, useContext} from 'react'
 
-// Playlist Header
+import PlaylistHeader from '../../components/panels/playlistpanel'
 import SearchInput from '../../components/search/SearchInput'
-// Track Table
+import TrackTable from '../../components/tracktable/TrackTable'
 
 import {UserContext} from '../../App'
 import {AuthContext} from '../../App'
@@ -14,30 +14,10 @@ function CreatePlaylistMenu({playlist}) {
     const appToken = useContext(AuthContext).appToken
     const onboarding = true // remove for profile.onboarding
 
-    function onboardingCreatePlaylist() {
-        fetch('http://localhost:3001/playlist', {
-            method: "POST",
-            headers: {
-                'Authorization': `Bearer ${appToken}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                title: "My awesome test playlist"
-            })
-        }).then((response) => response.json())
-        .then((data) => {
-            console.log("CREATING PLAYLIST TEST", data.playlist)
-            // setPlaylist(data.playlist)
-            // set onboarding to equal false
-        }).catch((err) => {
-            console.log("ERR", err)
-        })
-    }
+
     useEffect(() => {
         // handle onboarding playlist creation
-        if(onboarding === true) {
-            onboardingCreatePlaylist()
-        }
+
     }, [])
     return(
         <section>
@@ -56,39 +36,39 @@ function CreatePlaylistMenu({playlist}) {
     )
 }
 
-function CreatePlaylistIntroduction() {
-    const profile = useContext(UserContext).profile
-    const appToken = useContext(AuthContext).appToken
-    // need to create a defauilt playlist
-    const [playlist, setPlaylist] = useState()
+// function CreatePlaylistIntroduction() {
+//     const profile = useContext(UserContext).profile
+//     const appToken = useContext(AuthContext).appToken
+//     // need to create a defauilt playlist
+//     const [playlist, setPlaylist] = useState()
 
-    useEffect(() => {
-        if(!playlist) {
-            fetch('http://localhost:3001/playlist', {
-                method: "POST",
-                headers: {
-                    'Authorization': `Bearer ${appToken}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    title: "My awesome test playlist"
-                })
-            }).then((response) => response.json())
-            .then((data) => {
-                console.log("CREATING PLAYLIST TEST", data.playlist)
-                setPlaylist(data.playlist)
-                // set onboarding to equal false
-            }).catch((err) => {
-                console.log("ERR", err)
-            })
-        } 
-    })
-    return(
-        <section>
-            <h1>Let&apos;s start by creating your first playlist!</h1>
-            {playlist ? <CreatePlaylistMenu playlist={playlist} />: null}
-        </section>
-    )
-}
+//     useEffect(() => {
+//         if(!playlist) {
+//             fetch('http://localhost:3001/playlist', {
+//                 method: "POST",
+//                 headers: {
+//                     'Authorization': `Bearer ${appToken}`,
+//                     'Content-Type': 'application/json'
+//                 },
+//                 body: JSON.stringify({
+//                     title: "My awesome test playlist"
+//                 })
+//             }).then((response) => response.json())
+//             .then((data) => {
+//                 console.log("CREATING PLAYLIST TEST", data.playlist)
+//                 setPlaylist(data.playlist)
+//                 // set onboarding to equal false
+//             }).catch((err) => {
+//                 console.log("ERR", err)
+//             })
+//         } 
+//     })
+//     return(
+//         <section>
+//             <h1>Let&apos;s start by creating your first playlist!</h1>
+//             {playlist ? <CreatePlaylistMenu playlist={playlist} />: null}
+//         </section>
+//     )
+// }
 
-export default CreatePlaylistIntroduction
+export default CreatePlaylistMenu

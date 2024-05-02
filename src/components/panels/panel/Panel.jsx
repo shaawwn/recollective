@@ -15,6 +15,7 @@ import Card from '../../cards/Card'
 
 */
 
+
 function Panel() {
     const user = useContext(UserContext)
     return(

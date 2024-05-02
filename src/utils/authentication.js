@@ -1,3 +1,8 @@
+const SERVER="http://localhost:3001"
+const AUTH_SERVER="http://localhost:3000"
+
+const DEV_URI = 'http://localhost:5173'
+const SPOTIFY_URL=`https://accounts.spotify.com/authorize?client_id=634efc955c024f24bc4e1f409de20017&response_type=code&redirect_uri=${DEV_URI}&scope=streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state`
 
 function login(username, password, handleLoginSuccess, handleLoginFailure) {
     // login to app and get appToken
@@ -24,8 +29,33 @@ function login(username, password, handleLoginSuccess, handleLoginFailure) {
     })
 }
 
-function logout() {
-    // TODO
+const handleLoginSuccess = (data) => {
+    if(data.onBoarding) {
+        console.log("User has not created profile")
+        window.location.href=SPOTIFY_URL
+    } else {
+        console.log("User has set up their profile")
+        window.location.href=SPOTIFY_URL
+    }
+    console.log("User Profile set: ", data)
+}
+
+const handleLoginFailure = (data) => {
+    console.log("Error logging in.", data)
+}
+
+function logout(setAuthenticated) {
+    fetch(AUTH_SERVER + '/logout', {
+        method: "POST",
+        credentials: "include"
+    }).then((response) => {
+        if(!response.ok) {
+            throw new Error ("There was an error logging out")
+        }
+        setAuthenticated(false)
+    }).catch((err) => {
+        console.log("ERROR:", err)
+    })
 }
 
 function verifySpotifyAccess(spotifyRefreshToken, handleSpotifyRefresh) {
@@ -48,9 +78,9 @@ function verifySpotifyAccess(spotifyRefreshToken, handleSpotifyRefresh) {
     } else {
         console.log("Need to perform spotify auth flow", spotifyRefreshToken)
     }
-
 }
-function verifySession(handleVerifySessionSuccess) {
+
+function verifySession(setAuthenticated) {
     fetch('http://localhost:3000/verifysession', {
         credentials: "include"
     })
@@ -60,7 +90,9 @@ function verifySession(handleVerifySessionSuccess) {
         }
         return response.json()
     }).then(() => {
-        handleVerifySessionSuccess()
+
+        setAuthenticated(true)
+        // handleVerifySessionSuccess()
     }).catch((err) => {
         console.log("ERROR ", err)
     })	
@@ -71,5 +103,7 @@ export {
     login,
     logout,
     verifySession,
-    verifySpotifyAccess
+    verifySpotifyAccess,
+    handleLoginSuccess,
+    handleLoginFailure
 }

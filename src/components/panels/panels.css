@@ -1,0 +1,20 @@
+
+.hub-panel {
+    max-width: 100%;
+    overflow: hidden;
+    background-color: green;
+}
+
+.recently-played {
+    max-width: 100%;
+    background-color: purple;
+}
+
+.scroll-container {
+    display: flex;
+    flex-wrap: no-wrap;
+    position: relative;
+    overflow: scroll;
+    max-width: 100%;
+    background-color: yellow;
+}

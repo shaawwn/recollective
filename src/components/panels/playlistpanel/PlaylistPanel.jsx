@@ -3,6 +3,7 @@ import {useContext, useEffect, useState} from 'react';
 import './playlist.css'
 import DefaultPlaylistCover from '../../../images/default.png'
 
+import PlaylistHeader from './PlaylistHeader'
 import SearchInput from '../../search/SearchInput'
 import TrackTable from '../../tracktable/TrackTable'
 
@@ -10,18 +11,51 @@ import {PanelFunctionContext} from '../../utility/containers/PanelContainer'
 import {UserContext} from '../../views/dashboard/Dashboard'
 import {AuthContext} from '../../../App'
 
-function PlaylistPanel() {
+function PlaylistPanel({playlist}) {
     const onboarding = true
     const profile = useContext(UserContext).profile
+    const appToken = useContext(AuthContext).appToken
+
+    function toggleOnboarding() {
+
+        fetch(`http://localhost:3001/profiles/onboarding`, {
+            method: "PATCH",
+            credentials: "include",
+            headers: {
+                'Authorization': `Bearer ${appToken}`,
+                'Content-Type': 'application/json'
+            }
+        }).then((response) => response.json())
+        .then((data) => {
+            console.log("Toggling onboarding to false", data)
+        }).catch((err) => {
+            console.log("Error toggling onboarding", err)
+        })
+    }
+
+    useEffect(() => {
+        if(onboarding === true) {
+            // toggleOnboarding()
+            // console.log("Toggling onboard")
+        }
+    }, [])
+
     return(
         <section className="panel panel__playlist">
-            {onboarding === true ? <CreatePlaylistIntroduction 
+            {/* {onboarding === true ? <CreatePlaylistIntroduction 
                 profile={profile}
             />
             :
             <CreatePlaylistMenu 
                 profile={profile}
-            />}
+            />} */}
+
+            {/* Playlist header with modifiable attribute fields */}
+
+            {/* search input to search for and add new songs */}
+
+            {/* track table with songs in playlist */}
+            <PlaylistHeader playlist={playlist}/>
         </section>
     )
 }
@@ -81,23 +115,23 @@ function CreatePlaylistMenu({playlist}) {
 }
 
 // this needs to take profile information
-function PlaylistHeader({playlist}) {
-    const profile = useContext(UserContext).profile
-    console.log("PLAYLIST IN HEADER", playlist)
-    return(
-        <div id="playlist-meta"className="flex">
-        <img className="panel__playlist__cover-image"src={DefaultPlaylistCover}></img>
-        <div className="flex flex-col">
-            <h2>{playlist.title}</h2>
-            <p>
-                Here is a user created playlist with a simple description
-            </p>
-            <p>{playlist.author}</p>
-            <p>Ambient, ethereal, lofi</p>
-        </div>
-    </div>
-    )
-}
+// function PlaylistHeader({playlist}) {
+//     const profile = useContext(UserContext).profile
+//     console.log("PLAYLIST IN HEADER", playlist)
+//     return(
+//         <div id="playlist-meta"className="flex">
+//         <img className="panel__playlist__cover-image"src={DefaultPlaylistCover}></img>
+//         <div className="flex flex-col">
+//             <h2>{playlist.title}</h2>
+//             <p>
+//                 Here is a user created playlist with a simple description
+//             </p>
+//             <p>{playlist.author}</p>
+//             <p>Ambient, ethereal, lofi</p>
+//         </div>
+//     </div>
+//     )
+// }
 
 export default PlaylistPanel
 

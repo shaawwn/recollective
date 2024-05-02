@@ -1,0 +1,23 @@
+.vertical-flex-container {
+    background-color: orange;
+    /* The problem is 'max-width' here is 100vw */
+    width: 85%;
+}
+
+.panel-container {
+    background-color: red;
+    max-width: 100%;
+    justify-content: space-between;
+    /* position: relative; */
+    /* overflow: hidden; */
+}
+
+.panel-container__wrapper {
+    /* max-width: 70%; */
+    width: 100%;
+    overflow: hidden;
+    /* background-color: pink; */
+    display: flex;
+    flex-direction: column;
+    /* gap-4 w-full in html */
+}

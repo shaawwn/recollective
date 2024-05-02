@@ -1,23 +1,26 @@
 // import {useContext} from 'react';
 import PropTypes from 'prop-types'
+import './utility.css'
 // import {AuthContext} from '../../../App'
 
 /*
 
     Layout container differs from PanelContainer in that Panel container is the container that directly holds panels, whereas layout container is a styling component that may contain multiple containers
+
+    All LayoutContainer is is a flex column container to holder Header and Main page content, that's IT.
 */
 
-function LayoutContainer({children}) {
-    // component which holds panel elements within the dashboard
-    // const profile = useContext(AuthContext).profile
+
+function VerticalFlexContainer({children}) {
+
     return(
-        <section className="w-full flex flex-col gap-4">
+        <section className="vertical-flex-container w-full flex flex-col gap-4">
             {children}
         </section>
     )
-}
+} 
 
-LayoutContainer.propTypes = {
+VerticalFlexContainer.propTypes = {
     children: PropTypes.arrayOf(PropTypes.element)
 }
-export default LayoutContainer
+export default VerticalFlexContainer
