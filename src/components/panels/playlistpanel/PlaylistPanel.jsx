@@ -1,6 +1,6 @@
 import {useContext, useEffect, useState} from 'react';
 // import {PropTypes} from 'prop-types';
-import './playlist.css'
+// import './playlist.css'
 import DefaultPlaylistCover from '../../../images/default.png'
 
 import PlaylistHeader from './PlaylistHeader'

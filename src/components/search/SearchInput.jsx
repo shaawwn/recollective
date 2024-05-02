@@ -1,6 +1,6 @@
 import {useRef} from 'react';
 import PropTypes from 'prop-types'
-import './search.css'
+// import './search.css'
 
 
 function SearchInput({search}) {

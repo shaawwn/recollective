@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react';
-import './card.css'
+// import './card.css'
 import Chrono from '../../images/chrono.jpeg'
 
 function Card() {

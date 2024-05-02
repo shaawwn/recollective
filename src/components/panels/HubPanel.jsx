@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react';
-import './panels.css'
+// import './panels.css'
 import Card from '../cards/Card'
 import PlaylistGridView from './PlaylistGridView'
 

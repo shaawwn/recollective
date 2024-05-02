@@ -1,6 +1,6 @@
 import {useState, useEffect, useContext} from 'react';
 import {UserContext} from '../../views/dashboard/Dashboard'
-import './sidebar.css'
+// import './sidebar.css'
 
 function SidebarPanel() {
 
