@@ -99,7 +99,7 @@ function Dashboard({logout, code, search}) {
                             search={search}
                         />
                         <PanelContainer>
-                            {profile.onboarding === false ?
+                            {profile.onboarding === true ?
                                 <>
                                     <PlaylistPanel />
                                 </>   
