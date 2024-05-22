@@ -1,16 +1,29 @@
 import {useState, useEffect} from 'react';
 // import './panels.css'
 import Card from '../cards/Card'
-import PlaylistGridView from './PlaylistGridView'
+import PlaylistGridView from './PlaylistGridPanel'
+import BinPanel from './BinPanel'
 
-function HubPanel() {
 
+function HubPanel({mainPanel}) {
 
     return (
         <section className="hub-panel panel flex flex-col gap-4">
-            {/* <h1>Recently or Popular playlists</h1> */}
-            <RecentlyPlayed />
-            <PlaylistGridView />
+            {/* If recently Play, render, else recommend */}
+
+            {/* Or, have the panel or null that gets placed at the top */}
+            {mainPanel ? <h1>Main Panel</h1> : <RecentlyPlayed />}
+            {/* <RecentlyPlayed /> */}
+            <BinPanel />
+
+            {/* If user playlists display, otherwise recommendations */}
+            <PlaylistGridView 
+                filterType={'user'}
+            />
+            <PlaylistGridView 
+                filterType={'all'}
+            />
+
         </section>
     )
 }
@@ -18,21 +31,18 @@ function HubPanel() {
 function RecentlyPlayed() {
 
     return(
-        <section className="recently-played flex flex-col gap-4">
+        <section className="recently-played panel flex flex-col gap-4">
             <h1>Recently played</h1>
             <div className="scroll-container">
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-
-                {/* This is where the break is */}
-                <Card />
                 {/* <Card />
                 <Card />
+                <Card />
+                <Card />
+                <Card />
                 <Card /> */}
+
+                {/* This is where the break is */}
+                {/* <Card /> */}
             </div>
 
         </section>

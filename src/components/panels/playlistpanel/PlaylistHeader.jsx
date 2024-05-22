@@ -10,19 +10,24 @@ import DefaultPlaylistCover from '../../../images/default.png'
 */
 
 function PlaylistHeader({playlist}) {
-
+    console.log("playlist", playlist)
     const profile = useContext(UserContext).profile
 
     return(
         <div id="playlist-meta" className="flex">
             <img className="panel__playlist__cover-image" src={DefaultPlaylistCover}></img>
             <div className="flex flex-col">
-                <h2>{playlist ? playlist.title : 'null'}</h2>
+                <h2>{playlist ? playlist.name : 'null'}</h2>
                 <p>
-                    Here is a user created playlist with a simple description
+                    {playlist.description}
                 </p>
                 <p>{playlist ? playlist.author : 'null'}</p>
-                <p>Ambient, ehtereal, lofi</p>
+                <p>
+                    {playlist.tags.map((tag, index) => 
+                        <span key={index}>{tag} </span>
+                    )}
+
+                </p>
             </div>
         </div>
     )

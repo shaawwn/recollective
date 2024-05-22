@@ -6,7 +6,7 @@ import {PlayerContext} from '../../../App'
 import './dashboard.css'
 
 import HubPanel from '../../panels/HubPanel'
-import PlaylistGridView from '../../panels/PlaylistGridView'
+import PlaylistGridView from '../../panels/PlaylistGridPanel'
 import NavigationPanel from '../../panels/navigationpanel/NavigationPanel';
 import SidebarPanel from '../../panels/sidebarpanel/Sidebar'
 import Panel from '../../panels/panel/Panel'
@@ -19,6 +19,7 @@ import DashboardSkeleton from '../../skeletons/DashboardSkeleton';
 import {getCurrentUserProfile} from '../../../utils/spotifyGetters'
 
 
+
 // import SpotifyLogo from '../../../images/Spotify_Logo_RGB_Black.png'
 export const UserContext = React.createContext() // this is redundant since AuthContext alreeady provides Profile
 
@@ -28,6 +29,23 @@ function Dashboard({logout, code, search}) {
     const spotifyAccessToken = useContext(AuthContext).spotifyAccessToken
     const profile = useContext(AuthContext).profile
     const currentlyPlaying = useContext(PlayerContext).currentlyPlaying
+    const [currentView, setCurrentView] = useState({view: 'hub', id: null}) // view: '<playlist/profile/album>', 'id': '<profile/playlistID>'
+
+    
+    const [mainPanel, setMainPanel] = useState()
+
+    // hub, playlist, grid content, etc
+    const [viewport, setViewport] = useState(currentView.view)
+
+    function displayViewport() {
+        if(viewport === 'hub') {
+            // display hub
+        } else if(viewport === 'playlist') {
+            // display playlist w/ playlist ID
+        } else if(viewport === 'myPlaylists') {
+            // display users playlists in grid view
+        }
+    }
 
     function handleOnboarding() {
         // onboarding a user involves prompting them for additional details, as well as creating their first playlist
@@ -52,16 +70,37 @@ function Dashboard({logout, code, search}) {
 
     // As for what renders in Dashboard, this needs to be refined.
 
-    function toRender() {
-        // What should be rendered in Dashboard? panels can change depending on what a user has selected. Default View is Users recent playlists, followed by all playlists, followed by users followed playlists and so on. However, clicking on a playlist in a panel should then bring up that playlist.
+    function renderPanels(viewport) {
+        //hub
+        if(viewport === 'hub') {
+            return renderHubPanel()
+        } else if(viewport === 'playlist') {
+            return renderPlaylist(currentView.id)
+           
+        } else {
+            return(
+                <div>
+                    <h1>Render something here</h1>
+                </div>
+            )
+        }
+    }
 
-        // it is still in the dashboard, however, instead of playlist panels, it would display the playlistPanel instead.
+    function renderHubPanel() {
+        return(
+            <HubPanel mainPanel={mainPanel}/>
+        )
+    }
+
+    function renderPlaylist(playlistID) {
+        // needs to make a vall to server to fetch playlist
+        return <PlaylistPanel playlistID={playlistID}/>
     }
 
 
     useEffect(() => {
         if(appToken) {
-            console.log("App token")
+            // console.log("Profile with APP token", profile)
             // if(profile.onboarding === true) {
             //     fetch('http://localhost:3001/playlist', {
             //         headers: {
@@ -78,7 +117,7 @@ function Dashboard({logout, code, search}) {
 
         // Get Spotify profile data
         if(spotifyAccessToken) {
-            console.log("Spotify access")
+            // console.log("Spotify access")
             // getCurrentUserProfile(spotifyAccessToken)
         }
 
@@ -93,35 +132,34 @@ function Dashboard({logout, code, search}) {
                 {profile ?
                 <>
                     <NavigationPanel />
+
                     <VerticalFlexContainer>
                         <HeaderPanel 
                             logout={logout}
                             search={search}
+                            setCurrentView={setCurrentView}
                         />
+
                         <PanelContainer>
-                            {profile.onboarding === true ?
+                            {/* Only open when user first signs up to create their first playlist */}
+                            {profile.onboarding === false ?
                                 <>
+                                    <SwitchViews setViewport={setViewport}/>
                                     <PlaylistPanel />
                                 </>   
                             :
+                            // Normal view
                                 <>
-                                    <HubPanel />
-                                    {/* <SidebarPanel /> */}
-                                    {/* <PlaylistGridView /> */}
+                                <SwitchViews setViewport={setViewport}/>
+                                {renderPanels(viewport)}
+                                {/* {viewport === 'hub' ? <HubPanel mainPanel={mainPanel} /> : null} */}
+                                
                                 </>
                         }
                         </PanelContainer>
 
                     </VerticalFlexContainer>
 
-                    {/* Dashboard is a container that holds all Panel elements for a user
-                    
-                        The Dashboard itself is a flexbox that holds the navigation Panel on the left, and main content on the right.
-
-                        // Navigation Panel is collapsable
-
-                        // Main panel is a flexbox that holds content vertically
-                    */}
                 </>
                 :<DashboardSkeleton />}
             
@@ -130,6 +168,27 @@ function Dashboard({logout, code, search}) {
     )
 }
 
+
+//
+function SwitchViews({setViewport}) {
+    // on the click of a button switch the hub hasboard panel view
+    // hub, playlist, profile, search, bins, artist
+
+    function handleClick(view) {
+        console.log("Changing to: ", view)
+        setViewport(view)
+    }
+    return(
+        <div className="flex">
+            <button className="btn" onClick={() => handleClick('hub')}>Hub</button>
+            <button className="btn" onClick={() => handleClick('playlist')}>Playlist</button>
+            <button className="btn" onClick={() => handleClick('album')}>Album</button>
+            <button className="btn" onClick={() => handleClick('artist')}>Artist</button>
+            <button className="btn" onClick={() => handleClick('profile')}>Profile</button>
+            <button className="btn" onClick={() => handleClick('bin')}>Bin</button>
+        </div>
+    )
+}
 
 
 Dashboard.propTypes = {

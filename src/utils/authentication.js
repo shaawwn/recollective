@@ -23,8 +23,10 @@ function login(username, password, handleLoginSuccess, handleLoginFailure) {
     }
     return response.json()
     }).then((data) => {
+        console.log("Fetchin")
         handleLoginSuccess(data)
     }).catch((err) => {
+        console.log("Error fetching")
         handleLoginFailure(err)
     })
 }

@@ -8,7 +8,7 @@ import {AuthContext} from '../../../App'
 import {Link} from 'react-router-dom'
 import SearchInput from '../../search/SearchInput'
 
-function HeaderPanel({logout, search}) {
+function HeaderPanel({logout, search,setCurrentView}) {
 
     // const user = useContext(UserContext)
     const profile = useContext(AuthContext).profile
@@ -16,13 +16,9 @@ function HeaderPanel({logout, search}) {
     const spotifyAccessToken = useContext(AuthContext).spotifyAccessToken
 
     useEffect(() => {
-        // if(profile) {
-        //     console.log("User")
-        // } else {
-        //     console.log("No user")
-        // }
-    }, [profile])
 
+    }, [profile])
+    
     return(
         <header className="header panel">
             {profile ? 
@@ -39,6 +35,7 @@ function HeaderPanel({logout, search}) {
                             </div>
                         </>
                         :<a href={spotify}>Authorize Spotify</a>}
+                        <ControlPanel setCurrentView={setCurrentView}/>
                         <button className="btn" onClick={logout}>Logout</button>
                 </>
                 : <button className="btn" onClick={'#'}>Login</button>}
@@ -55,7 +52,47 @@ function HeaderPanel({logout, search}) {
     )
 }
 
+function ControlPanel({setCurrentView}) {
+    // hub component for buttons to create playlists/bins modify content, etc
+    const appToken = useContext(AuthContext).appToken
 
+    function createPlaylist() {
+        // post request to create a playlist
+        
+        fetch('http://localhost:3001/playlist', {
+            method: "POST",
+            headers: {
+                'Authorization': `Bearer ${appToken}`
+            }
+        }).then((response) => response.json())
+        .then((data) => {
+            console.log("Creating playlist", data.playlist._id)
+            setCurrentView({view: 'playlist', id: data.playlist._id})
+            // set viewport here before changing, and pass playlist ID data._id
+        })
+    }
+
+    function openCreatePlaylist() {
+        createPlaylist()
+        setViewport('playlist')
+        console.log("Creating playlist and opening")
+    }
+
+    function openCreateBin() {
+        console.log("Creating bin and opening")
+    }
+
+    function handleCreatePlaylist() {
+
+        createPlaylist()
+    }
+    return(
+        <div>
+            <button className="btn" onClick={openCreatePlaylist}>+ Playlist</button>
+            <button className="btn" onClick={openCreateBin}>+ Bin</button>
+        </div>
+    )
+}
 HeaderPanel.propTypes = {
     logout: PropTypes.func,
     spotifyAccessToken: PropTypes.string

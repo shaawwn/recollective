@@ -8,6 +8,7 @@ import {Link} from 'react-router-dom'
 function NavigationPanel() {
 
     // const user = useContext(UserContext)
+    
     return (
         <div className="wrapper">
             <nav className="navigation panel">

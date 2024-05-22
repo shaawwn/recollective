@@ -48,7 +48,7 @@
 
 .recently-played {
     max-width: 100%;
-    background-color: purple;
+    /* background-color: purple; */
 }
 
 .scroll-container {
@@ -93,7 +93,7 @@
 
 .grid-view {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     grid-gap: 10px;
 }
 /* || CARDS */
