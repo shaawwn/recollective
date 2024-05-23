@@ -74,7 +74,7 @@ function ControlPanel({setCurrentView}) {
 
     function openCreatePlaylist() {
         createPlaylist()
-        setViewport('playlist')
+        // setViewport('playlist')
         console.log("Creating playlist and opening")
     }
 

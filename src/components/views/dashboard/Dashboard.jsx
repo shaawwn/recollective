@@ -47,34 +47,14 @@ function Dashboard({logout, code, search}) {
         }
     }
 
-    function handleOnboarding() {
-        // onboarding a user involves prompting them for additional details, as well as creating their first playlist
-        fetch('http://localhost:3001/playlist', {
-            method: "POST",
-            headers: {
-                'Authorization': `Bearer ${appToken}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                title: "My awesome test playlist"
-            })
-        }).then((response) => response.json())
-        .then((data) => {
-            console.log("CREATING PLAYLIST IN DASHBOARD ONBOARDING", data.playlist)
-            // setPlaylist(data.playlist)
-            // set onboarding to equal false
-        }).catch((err) => {
-            console.log("ERR", err)
-        })
-    }
 
     // As for what renders in Dashboard, this needs to be refined.
 
-    function renderPanels(viewport) {
+    function renderPanels() {
         //hub
-        if(viewport === 'hub') {
+        if(currentView.view === 'hub') {
             return renderHubPanel()
-        } else if(viewport === 'playlist') {
+        } else if(currentView.view === 'playlist') {
             return renderPlaylist(currentView.id)
            
         } else {
@@ -123,6 +103,7 @@ function Dashboard({logout, code, search}) {
 
     }, [appToken, spotifyAccessToken])
 
+
     return(
         <UserContext.Provider value={{
             profile
@@ -150,8 +131,8 @@ function Dashboard({logout, code, search}) {
                             :
                             // Normal view
                                 <>
-                                <SwitchViews setViewport={setViewport}/>
-                                {renderPanels(viewport)}
+                                <SwitchViews setCurrentView={setCurrentView}/>
+                                {renderPanels(currentView.view)}
                                 {/* {viewport === 'hub' ? <HubPanel mainPanel={mainPanel} /> : null} */}
                                 
                                 </>
@@ -170,13 +151,13 @@ function Dashboard({logout, code, search}) {
 
 
 //
-function SwitchViews({setViewport}) {
+function SwitchViews({setCurrentView}) {
     // on the click of a button switch the hub hasboard panel view
     // hub, playlist, profile, search, bins, artist
 
     function handleClick(view) {
         console.log("Changing to: ", view)
-        setViewport(view)
+        setCurrentView({view: view, id: "664faf85e74d227435a9e4d5"})
     }
     return(
         <div className="flex">

@@ -63,7 +63,9 @@
 .panel__playlist {
     /* width: 100%; */
     /* background-color: red; */
-    height: 100%;
+    /* height: 100%; */
+    display: flex;
+    flex-direction: column;
 }
 
 .panel__playlist__cover-image {

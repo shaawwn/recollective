@@ -23,9 +23,9 @@ function PlaylistHeader({playlist}) {
                 </p>
                 <p>{playlist ? playlist.author : 'null'}</p>
                 <p>
-                    {playlist.tags.map((tag, index) => 
+                    {/* {playlist.tags.map((tag, index) => 
                         <span key={index}>{tag} </span>
-                    )}
+                    )} */}
 
                 </p>
             </div>
