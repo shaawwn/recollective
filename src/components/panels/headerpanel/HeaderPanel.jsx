@@ -31,7 +31,7 @@ function HeaderPanel({logout, search,setCurrentView}) {
                             />
                             <div className="flex-col">
                                 <p>Powered by Spotify</p>  
-                                <a className="logout-btn" href="#">Logout of Spotify</a>
+                                <a className="logout-btn" href="https://www.spotify.com/logout">Logout of Spotify</a>
                             </div>
                         </>
                         :<a href={spotify}>Authorize Spotify</a>}
@@ -55,8 +55,75 @@ function HeaderPanel({logout, search,setCurrentView}) {
 function ControlPanel({setCurrentView}) {
     // hub component for buttons to create playlists/bins modify content, etc
     const appToken = useContext(AuthContext).appToken
+    const spotifyAccessToken = useContext(AuthContext).spotifyAccessToken
+    const spotifyProfile = useContext(AuthContext).spotifyProfile
+    
+    function importSpotifyPlaylists() {
+        // import a users spotify playlists, which creates playlist objects in the App db
+        
+        // get users playlists
 
-    function createPlaylist() {
+        // create playlists in the app for that user
+        fetch(`https://api.spotify.com/v1/me/playlists`, {
+            headers: {
+                'Authorization': `Bearer ${spotifyAccessToken}`
+            }
+        }).then((response) => response.json())
+        .then((data) => {
+            console.log("IMPORTING USERS PLAYLISTS", data)
+            data.items.forEach((item) => {
+                console.log("Playlist: ", item.name)
+                fetch('http://localhost:3001/playlist', {
+                    method: "POST",
+                    headers: {
+                        'Authorization': `Bearer ${appToken}`
+                    },
+                    body: JSON.stringify({
+                        spotifyID: item.id
+                    })
+                }).then((response) => response.json())
+                .then((data) => {
+                    console.log("Creating playlist", data.playlist._id)
+                })
+            })
+        })
+    }
+
+    function createSpotifyPlaylist() {
+        // need spotify userID
+        fetch(`https://api.spotify.com/v1/users/${spotifyProfile.id}/playlists`, {
+            method: "POST",
+            headers: {
+                'Authorization': `Bearer ${spotifyAccessToken}`
+            },
+            body: JSON.stringify({
+                name: "My awesome playlist"
+            })
+        }).then((response) => response.json())
+        .then((data) => {
+            // successful response 201 returns created playlist
+            console.log("Created Spotify Playlist", data)
+            // createAppPlaylist(data.id)
+        })
+    }
+
+    function createAppPlaylist(spotifyID) {
+        fetch('http://localhost:3001/playlist', {
+            method: "POST",
+            headers: {
+                'Authorization': `Bearer ${appToken}`
+            },
+            body: JSON.stringify({
+                spotifyID: spotifyID
+            })
+        }).then((response) => response.json())
+        .then((data) => {
+            console.log("Creating playlist", data.playlist._id)
+            setCurrentView({view: 'playlist', id: data.playlist._id})
+            // set viewport here before changing, and pass playlist ID data._id
+        })
+    }
+    function _createAppPlaylist() {
         // post request to create a playlist
         
         fetch('http://localhost:3001/playlist', {
@@ -73,7 +140,7 @@ function ControlPanel({setCurrentView}) {
     }
 
     function openCreatePlaylist() {
-        createPlaylist()
+        createSpotifyPlaylist()
         // setViewport('playlist')
         console.log("Creating playlist and opening")
     }
@@ -82,14 +149,12 @@ function ControlPanel({setCurrentView}) {
         console.log("Creating bin and opening")
     }
 
-    function handleCreatePlaylist() {
 
-        createPlaylist()
-    }
     return(
         <div>
             <button className="btn" onClick={openCreatePlaylist}>+ Playlist</button>
             <button className="btn" onClick={openCreateBin}>+ Bin</button>
+            <button className="btn" onClick={importSpotifyPlaylists}>Import Playlists</button>
         </div>
     )
 }

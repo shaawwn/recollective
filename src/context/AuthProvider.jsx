@@ -1,19 +1,24 @@
-import {createContext, useContext, useState, useCallback} from 'react';
+import {createContext, useContext, useState, useCallback, useEffect} from 'react';
 
-// import useAuth from '../hooks/useAuth';
+import useAuth from '../hooks/_useAuth';
+import useSearch from '../hooks/useSearch'
+import {verifySession} from '../utils/authentication'
 
-const AuthContext = createContext();
+export const AuthContext = createContext();
 
-export const useAuth = () => useContext(AuthContext)
+// export const useAuth = () => useContext(AuthContext)
 
 
-export const AuthProvider = ({ children }) => {
-    const [appToken, setAppToken] = useState()
-    const [spotifyAccessToken, setSpotifyAccessToken] = useState()
+export const AuthProvider = ({ children, code }) => {
+    const [appToken, setAppToken] = useAuth(code)
+    const [spotifyAccessToken, setSpotifyAccessToken] = useAuth(code)
     const [spotifyRefreshToken, setSpotifyRefrshToke] = useState()
     const [spotifyExiresIn, setSpotifyExpiresIn] = useState()
+    const [spotifyProfile, setSpotifyProfile] = useState()
+    const [profile, setProfile] = useState()
+    const [authenticated, setAuthenticated] = useState(false)
+    const [search, setTokens] = useSearch()
 
-    console.log("AUTH PROVIDER LOADING")
 
 
     // Your auth logic here
@@ -33,9 +38,30 @@ export const AuthProvider = ({ children }) => {
     }
     
     const value = {
+      appToken,
       spotifyAccessToken,
-      fetchAccessToken
+      profile,
+      spotifyProfile
     }
+
+    const handleVerifySession = () => {
+      verifySession(setAuthenticated)
+    }
+
+    useEffect(() => {
+      // verify a session on page load
+      handleVerifySession()
+    }, [])
+  
+    useEffect(() => {
+      if(appToken && spotifyAccessToken) {
+        setTokens({
+          appToken: appToken,
+          spotifyAccessToken: spotifyAccessToken
+        })
+        // getCurrentUserProfile(spotifyAccessToken, setSpotifyProfile)
+      } 
+    }, [appToken, spotifyAccessToken])
     return (
       <AuthContext.Provider value={value}>
         {children}

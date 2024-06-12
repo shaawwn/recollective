@@ -103,14 +103,12 @@
 .card {
     display: flex;
     flex-direction: column;
-    /* padding: .5rem; */
-    /* background-color: rgba(189, 189, 189, 0.5); */
-    /* text-align: center; */
     border-radius: 10px;
 }
 
 .card:hover {
-    background-color: rgba(0,0,0,0.9)
+    background-color: rgba(0,0,0,0.1)
+
 }
 .card__image {
     width: 150px;

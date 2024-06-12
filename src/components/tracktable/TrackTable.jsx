@@ -13,7 +13,7 @@ function TrackTable({tracks}) {
 
             {tracks.length > 0 ?
                 tracks.map((track,index) => 
-                    <TrackTableRow key={() => genKey(track.name, index)} track={track} />
+                    <TrackTableRow key={() => genKey(track.name, index)} track={track.track} />
                 )
             :<h1 className="text-white">You haven&apos;t added anything yet!</h1>    
             }
@@ -22,10 +22,18 @@ function TrackTable({tracks}) {
 }
 
 function TrackTableRow({track}) {
+    // console.log("Row", track)
+
+    function handleClick(trackID) {
+
+        let spotifyUri = 'spotify:track:' + trackID
+        console.log("Removing from playlist", spotifyUri)
+    }
 
     return(
-        <div>
+        <div className="flex justify-between">
             <p style={{color: 'white'}}>{track.name}</p>
+            <button className="p-2" onClick={() => handleClick(track.id)}>-</button>
         </div>
     )
 }
@@ -43,6 +51,7 @@ TrackTable.propTypes = {
 
 TrackTableRow.propTypes = {
     track: PropTypes.shape({
+        id: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired,
         artist: PropTypes.string.isRequired,
         album: PropTypes.string.isRequired,

@@ -58,8 +58,8 @@ function useSearch() {
         // console.log("Loading useSearch...", tokens)
         
     }, [tokens])
-
-    return [search, setTokens]
+    // console.log("SEARCH RESULTS AT RETURN", searchResults)
+    return [search, setTokens, searchResults]
 }
 
 export default useSearch;

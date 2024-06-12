@@ -2,6 +2,7 @@ import React, {useState, useEffect, useContext} from 'react';
 import {PropTypes} from 'prop-types'
 import {ServerContext} from '../../../App'
 import {AuthContext} from '../../../App'
+// import {AuthContext} from '../../../context/AuthProvider'
 import {PlayerContext} from '../../../App'
 import './dashboard.css'
 
@@ -18,24 +19,33 @@ import DashboardSkeleton from '../../skeletons/DashboardSkeleton';
 
 import {getCurrentUserProfile} from '../../../utils/spotifyGetters'
 
-
+import usePlaylist from '../../../hooks/usePlaylist'
 
 // import SpotifyLogo from '../../../images/Spotify_Logo_RGB_Black.png'
 export const UserContext = React.createContext() // this is redundant since AuthContext alreeady provides Profile
 
 function Dashboard({logout, code, search}) {
+
+    // State and context
     const server = useContext(ServerContext).server
     const appToken = useContext(AuthContext).appToken
     const spotifyAccessToken = useContext(AuthContext).spotifyAccessToken
     const profile = useContext(AuthContext).profile
-    const currentlyPlaying = useContext(PlayerContext).currentlyPlaying
+    const spotifyProfile = useContext(AuthContext).spotifyProfile
     const [currentView, setCurrentView] = useState({view: 'hub', id: null}) // view: '<playlist/profile/album>', 'id': '<profile/playlistID>'
 
-    
     const [mainPanel, setMainPanel] = useState()
 
     // hub, playlist, grid content, etc
     const [viewport, setViewport] = useState(currentView.view)
+
+    // the currently playling playlist/album
+    const [playlist, setPlaylist, setActive] = usePlaylist()
+    
+
+
+
+    // Methods and functions
 
     function displayViewport() {
         if(viewport === 'hub') {
@@ -77,7 +87,6 @@ function Dashboard({logout, code, search}) {
         return <PlaylistPanel playlistID={playlistID}/>
     }
 
-
     useEffect(() => {
         if(appToken) {
             // console.log("Profile with APP token", profile)
@@ -97,7 +106,7 @@ function Dashboard({logout, code, search}) {
 
         // Get Spotify profile data
         if(spotifyAccessToken) {
-            // console.log("Spotify access")
+
             // getCurrentUserProfile(spotifyAccessToken)
         }
 
@@ -106,7 +115,11 @@ function Dashboard({logout, code, search}) {
 
     return(
         <UserContext.Provider value={{
-            profile
+            profile,
+            setCurrentView,
+            playlist,
+            setPlaylist,
+            setActive
         }}>
             {/* main here IS Dashboard */}
             <main className="dashboard red gap-4"> 
@@ -150,7 +163,8 @@ function Dashboard({logout, code, search}) {
 }
 
 
-//
+// This is just for testing
+// eslint-disable-next-line react/prop-types
 function SwitchViews({setCurrentView}) {
     // on the click of a button switch the hub hasboard panel view
     // hub, playlist, profile, search, bins, artist

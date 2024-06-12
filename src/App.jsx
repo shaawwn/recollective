@@ -16,12 +16,13 @@ import useProfile from '../src/hooks/useProfile'
 
 // import NavigationPanel from './components/panels/navigationpanel/NavigationPanel'
 import {login, logout, verifySession, handleLoginSuccess, handleLoginFailure} from '../src/utils/authentication'
+import {getCurrentUserProfile} from '../src/utils/spotifyGetters'
 
 const SERVER="http://localhost:3001"
 const AUTH_SERVER="http://localhost:3000"
 
 const DEV_URI = 'http://localhost:5173'
-const SPOTIFY_URL=`https://accounts.spotify.com/authorize?client_id=634efc955c024f24bc4e1f409de20017&response_type=code&redirect_uri=${DEV_URI}&scope=streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state`
+const SPOTIFY_URL=`https://accounts.spotify.com/authorize?client_id=634efc955c024f24bc4e1f409de20017&response_type=code&redirect_uri=${DEV_URI}&scope=streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state%20playlist-modify-private%20playlist-modify-public%20playlist-read-private`
 
 const code = new URLSearchParams(window.location.search).get('code') 
 // Context
@@ -31,12 +32,15 @@ export const ProfileContext = React.createContext()
 export const SearchContext = React.createContext()
 export const PlayerContext = React.createContext()
 
+// import {AuthProvider} from '../src/context/AuthProvider'
+
 function App() {
 	const [authenticated, setAuthenticated] = useState(false)
 	const [appToken, spotifyAccessToken] = useAuth(code)
 	const [search, setTokens] = useSearch()
 	// const [profile, setProfile] = useState()
 	const profile = useProfile(appToken, SERVER)
+	const [spotifyProfile, setSpotifyProfile] = useState()
 	const [currentlyPlaying, currentPlaylist] = usePlayer(appToken, spotifyAccessToken)
 
 	const renderCount = useRef(0)
@@ -66,6 +70,7 @@ function App() {
 				appToken: appToken,
 				spotifyAccessToken: spotifyAccessToken
 			})
+			getCurrentUserProfile(spotifyAccessToken, setSpotifyProfile)
 		} 
 	}, [appToken, spotifyAccessToken])
 
@@ -77,10 +82,12 @@ function App() {
 	return (
 		
 			<div className="App">
+
 				<AuthContext.Provider value={{
 					appToken:appToken,
 					spotifyAccessToken:spotifyAccessToken,
-					profile: profile
+					profile: profile,
+					spotifyProfile: spotifyProfile
 				}}>
 					<ServerContext.Provider value={{
 						server:SERVER,
@@ -93,7 +100,7 @@ function App() {
 						}}>
 						<Routes>
 							<Route path="/" element={
-								authenticated && profile ? // added profile conditional
+								authenticated && profile && spotifyProfile ? // added profile conditional
 								<Dashboard 
 									logout={handleLogout}
 									code={code}
@@ -103,7 +110,6 @@ function App() {
 									login={handleLogin}
 									/>
 								}/>
-								{/* As is, profile is allowed to render even w/o a profile set */}
 							<Route path={'/404'} element={<NoUserProfile />}/>
 							<Route path={'/:profileID'} element={<Profile profile={profile}/>}/> 
 							<Route path="/register" element={<Registration 

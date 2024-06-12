@@ -1,12 +1,16 @@
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useContext} from 'react';
 // import './panels.css'
 import Card from '../cards/Card'
 import PlaylistGridView from './PlaylistGridPanel'
 import BinPanel from './BinPanel'
-
-
+import {AuthContext} from '../../App'
+// Need Spotify user account id for here
 function HubPanel({mainPanel}) {
+    const spotifyProfile = useContext(AuthContext).spotifyProfile
 
+    useEffect(() => {
+        // console.log("Hub profile", spotifyProfile)
+    }, [])
     return (
         <section className="hub-panel panel flex flex-col gap-4">
             {/* If recently Play, render, else recommend */}
@@ -19,6 +23,7 @@ function HubPanel({mainPanel}) {
             {/* If user playlists display, otherwise recommendations */}
             <PlaylistGridView 
                 filterType={'user'}
+                spotifyProfile={spotifyProfile}
             />
             <PlaylistGridView 
                 filterType={'all'}
@@ -48,6 +53,7 @@ function RecentlyPlayed() {
         </section>
     )
 }
+
 
 // function PlaylistGridView() {
 

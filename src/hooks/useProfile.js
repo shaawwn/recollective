@@ -16,7 +16,7 @@ function useProfile(appToken, server) {
             }
             return response.json()
         }).then((data) => {
-            console.log("User data", data)
+            // console.log("User data", data)
             setProfile(data.user)
         }).catch((err) => {
             console.log("Error: ", err)

@@ -9,7 +9,7 @@ function SearchInput({search}) {
     const queryDelay = useRef()
 
     function handleChange(value) {
-
+        console.log("QUERY VALUE", value)
         queryString.current = value
         // Only call search after a small delay
         if(queryString.current === '') {

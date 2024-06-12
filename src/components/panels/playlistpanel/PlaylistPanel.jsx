@@ -6,11 +6,13 @@ import useSearch from '../../../hooks/useSearch'
 
 import PlaylistHeader from './PlaylistHeader'
 import SearchInput from '../../search/SearchInput'
+import SearchDropdown from '../../search/SearchDropdown'
 import TrackTable from '../../tracktable/TrackTable'
 
 // import {PanelFunctionContext} from '../../utility/containers/PanelContainer'
 import {UserContext} from '../../views/dashboard/Dashboard'
 import {AuthContext} from '../../../App'
+import usePlaylist from '../../../hooks/usePlaylist'
 
 
 // const PLAYLIST = {
@@ -1575,64 +1577,91 @@ import {AuthContext} from '../../../App'
 
 
 function PlaylistPanel({playlistID}) {
-    console.log("playlistID in panel", playlistID)
     const onboarding = true
     const profile = useContext(UserContext).profile
     const appToken = useContext(AuthContext).appToken
     const spotifyAccessToken = useContext(AuthContext).spotifyAccessToken
-    const [playlist, setPlaylist] = useState()
-    const [ownedPlaylist, setOwnedPlaylist] = useState() // this is important because it determines if a user has the ability to edit the playlist
-    const [search, setTokens] = useSearch()
+    // const [playlist, setPlaylist] = useState()
+    const [playlist, setActive, owned] = usePlaylist(playlistID, appToken, spotifyAccessToken)
+    const [ownedPlaylist, setOwnedPlaylist] = useState() 
+    const [search, setTokens, searchResults] = useSearch()
 
-
-    // function toggleOnboarding() {
-
-    //     fetch(`http://localhost:3001/profiles/onboarding`, {
-    //         method: "PATCH",
-    //         credentials: "include",
-    //         headers: {
-    //             'Authorization': `Bearer ${appToken}`,
-    //             'Content-Type': 'application/json'
-    //         }
-    //     }).then((response) => response.json())
-    //     .then((data) => {
-    //         console.log("Toggling onboarding to false", data)
-    //     }).catch((err) => {
-    //         console.log("Error toggling onboarding", err)
-    //     })
-    // }
 
     function checkOwnedPlaylist(profileID, playlistID) {
-      // check if the current profile is the owner of the playlist
       if(profileID === playlistID) {
         return true
       }
       return false
 
     }
-    function getPlaylist() {
-      fetch(`http://localhost:3001/playlist/${playlistID}`, {
-        headers: {
-          'Authorization': `Bearer ${appToken}`
-        }
-      }).then((response) => response.json())
-      .then((data) => {
-        console.log("Fetching playlist", data)
-        if(checkOwnedPlaylist(profile._id, data.playlist[0].profile)) {
-          setOwnedPlaylist(true)
-        } else {
-          setOwnedPlaylist(false)
-        }
-        setPlaylist(data.playlist[0])
-      })
-    }
+
+    // function getPlaylist() {
+    //   _getSpotifyPlaylist(_getAppPlaylist())
+    // }
+
+    // function _getAppPlaylist() {
+    //   fetch(`http://localhost:3001/playlist/${playlistID}`, {
+    //     headers: {
+    //       'Authorization': `Bearer ${appToken}`
+    //     }
+    //   }).then((response) => response.json())
+    //   .then((data) => {
+    //     // console.log("Fetching playlist", data)
+    //     if(checkOwnedPlaylist(profile._id, data.playlist[0].profile)) {
+    //       setOwnedPlaylist(true)
+    //     } else {
+    //       setOwnedPlaylist(false)
+    //     }
+    //     checkOwnedPlaylist(profileID, playlistID)
+    //     setPlaylist(data.playlist[0])
+    //   })
+    // }
+    // function _getSpotifyPlaylist() {
+    //   // using spotify ID, get playlist, using app ID, get app specific playlist details
+    //   fetch(`https://api.spotify.com/v1/playlists/${playlistID}`, {
+    //     headers: {
+    //       'Authorization': `Bearer ${spotifyAccessToken}`
+    //     }
+    //   }).then((response) => response.json())
+    //   .then((data) => {
+    //     // console.log("getting spotify playlist", data)
+        
+    //     // console.log("Fetching playlist", data, profile._id)
+    //     // if(checkOwnedPlaylist(profile._id, data.playlist[0].profile)) {
+    //     //   setOwnedPlaylist(true)
+    //     // } else {
+    //     //   // console.log("Not owner")
+    //     //   setOwnedPlaylist(false)
+    //     // }
+
+    //     setOwnedPlaylist(true)
+    //     setPlaylist(data)
+    //   })
+    // }
+    // APP
+    // function getPlaylist() {
+    //   fetch(`http://localhost:3001/playlist/${playlistID}`, {
+    //     headers: {
+    //       'Authorization': `Bearer ${appToken}`
+    //     }
+    //   }).then((response) => response.json())
+    //   .then((data) => {
+    //     console.log("Fetching playlist", data)
+    //     if(checkOwnedPlaylist(profile._id, data.playlist[0].profile)) {
+    //       setOwnedPlaylist(true)
+    //     } else {
+    //       setOwnedPlaylist(false)
+    //     }
+    //     setPlaylist(data.playlist[0])
+    //   })
+    // }
 
     
     useEffect(() => {
         if(onboarding === true) {
           // TODO
         }
-        getPlaylist()
+        console.log("PLAYLIST", owned)
         if(appToken && spotifyAccessToken) {
           setTokens({
             appToken: appToken,
@@ -1641,17 +1670,41 @@ function PlaylistPanel({playlistID}) {
         }
     }, [])
 
+    useEffect(() => {
+      if(playlist) {
+        console.log("PLAYLIST", playlist)
+        console.log("OWNED", owned)
+      }
+    }, [playlist])
+
     return(
         <section className="panel panel__playlist">
-            {/* {onboarding === true ? 
-
-            {/* search input to search for and add new songs */}
-
             {playlist? 
               <>
-                <PlaylistHeader playlist={playlist} />
-                <SearchInput search={search}/> 
-                <TrackTable tracks={playlist.tracks.items}/>
+                <PlaylistHeader 
+                    playlist={playlist} 
+                    owned={owned ? true: false}
+                    />
+                    <div className="flex">
+                        {owned ?
+                            <div className="flex flex-col">
+                                <SearchInput 
+                                    search={search}
+                                    />
+                                <SearchDropdown 
+                                    searchResults={searchResults}
+                                />
+                                
+                            </div>
+   
+                            :null
+                        }
+                        <TrackTable 
+                            tracks={playlist.tracks.items}
+                            owned={ownedPlaylist ? true: false}
+                        />
+                    </div>
+
               </>
             :null
             }
@@ -1691,5 +1744,11 @@ PlaylistPanel.propTypes = {
 
 export default PlaylistPanel
 
-// There are multiple states for a playlist panel, 
 
+/**
+ * 
+ * An Ap playlist is an object that includes the URI to a spotify playlist, that ID is what's used to populate and controls the playlist tracktable.
+ * 
+ * playlist.spotifyPlaylist.items....etc
+ * 
+ */
