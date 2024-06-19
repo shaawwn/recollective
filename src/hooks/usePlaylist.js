@@ -5,10 +5,11 @@ import usePlayer from './usePlayer'
     Manages playlist state and methods to pass tracks to usePlayer
 
 */
-function usePlaylist(playlistID, appToken, spotifyAccessToken) {
+function usePlaylist(appToken, spotifyAccessToken) {
 
     const [playlist, setPlaylist] = useState()
     const [currentPlaylist, setCurrentPlaylist] = useState()
+    const [playlistID, setPlaylistID] = useState()
     const [active, setActive] = useState(false) // true if PLAYING playlist or adding tracks, false if just browsing playlist
     const [owned, setOwned] = useState(true) // if playlist authoer, set true, can modify playlist
      const [album, setAlbum] = useState(false) // if album cannot modify
@@ -93,7 +94,7 @@ function usePlaylist(playlistID, appToken, spotifyAccessToken) {
     }, [playlist])
 
 
-    return [playlist, setActive, owned]
+    return [playlist, setPlaylistID, setActive, owned]
 
 }
 

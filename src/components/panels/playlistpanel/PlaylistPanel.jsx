@@ -1576,14 +1576,19 @@ import usePlaylist from '../../../hooks/usePlaylist'
 //   }
 
 
-function PlaylistPanel({playlistID}) {
+function PlaylistPanel({playlist}) {
+    console.log("PLAYLIST IN PLAYLIST", playlist)
     const onboarding = true
     const profile = useContext(UserContext).profile
     const appToken = useContext(AuthContext).appToken
     const spotifyAccessToken = useContext(AuthContext).spotifyAccessToken
     // const [playlist, setPlaylist] = useState()
-    const [playlist, setActive, owned] = usePlaylist(playlistID, appToken, spotifyAccessToken)
-    const [ownedPlaylist, setOwnedPlaylist] = useState() 
+
+    // const playlist = useContext(UserContext).playlist
+    const setActive = useContext(UserContext).setActive
+    // const setPlaylistID = useContext(UserContext).setPlaylistID
+    // const [playlist, setActive, owned] = usePlaylist(playlistID, appToken, spotifyAccessToken)
+    const [owned, setOwned] = useState(true) 
     const [search, setTokens, searchResults] = useSearch()
 
 
@@ -1595,85 +1600,26 @@ function PlaylistPanel({playlistID}) {
 
     }
 
-    // function getPlaylist() {
-    //   _getSpotifyPlaylist(_getAppPlaylist())
-    // }
-
-    // function _getAppPlaylist() {
-    //   fetch(`http://localhost:3001/playlist/${playlistID}`, {
-    //     headers: {
-    //       'Authorization': `Bearer ${appToken}`
-    //     }
-    //   }).then((response) => response.json())
-    //   .then((data) => {
-    //     // console.log("Fetching playlist", data)
-    //     if(checkOwnedPlaylist(profile._id, data.playlist[0].profile)) {
-    //       setOwnedPlaylist(true)
-    //     } else {
-    //       setOwnedPlaylist(false)
-    //     }
-    //     checkOwnedPlaylist(profileID, playlistID)
-    //     setPlaylist(data.playlist[0])
-    //   })
-    // }
-    // function _getSpotifyPlaylist() {
-    //   // using spotify ID, get playlist, using app ID, get app specific playlist details
-    //   fetch(`https://api.spotify.com/v1/playlists/${playlistID}`, {
-    //     headers: {
-    //       'Authorization': `Bearer ${spotifyAccessToken}`
-    //     }
-    //   }).then((response) => response.json())
-    //   .then((data) => {
-    //     // console.log("getting spotify playlist", data)
-        
-    //     // console.log("Fetching playlist", data, profile._id)
-    //     // if(checkOwnedPlaylist(profile._id, data.playlist[0].profile)) {
-    //     //   setOwnedPlaylist(true)
-    //     // } else {
-    //     //   // console.log("Not owner")
-    //     //   setOwnedPlaylist(false)
-    //     // }
-
-    //     setOwnedPlaylist(true)
-    //     setPlaylist(data)
-    //   })
-    // }
-    // APP
-    // function getPlaylist() {
-    //   fetch(`http://localhost:3001/playlist/${playlistID}`, {
-    //     headers: {
-    //       'Authorization': `Bearer ${appToken}`
-    //     }
-    //   }).then((response) => response.json())
-    //   .then((data) => {
-    //     console.log("Fetching playlist", data)
-    //     if(checkOwnedPlaylist(profile._id, data.playlist[0].profile)) {
-    //       setOwnedPlaylist(true)
-    //     } else {
-    //       setOwnedPlaylist(false)
-    //     }
-    //     setPlaylist(data.playlist[0])
-    //   })
-    // }
-
     
     useEffect(() => {
         if(onboarding === true) {
           // TODO
         }
-        console.log("PLAYLIST", owned)
+        // console.log("PLAYLIST", owned)
         if(appToken && spotifyAccessToken) {
           setTokens({
             appToken: appToken,
             spotifyAccessToken: spotifyAccessToken
           })
+          // setPlaylistID(playlistID)
+
         }
     }, [])
 
     useEffect(() => {
       if(playlist) {
         console.log("PLAYLIST", playlist)
-        console.log("OWNED", owned)
+        // console.log("OWNED", owned)
       }
     }, [playlist])
 
@@ -1701,7 +1647,7 @@ function PlaylistPanel({playlistID}) {
                         }
                         <TrackTable 
                             tracks={playlist.tracks.items}
-                            owned={ownedPlaylist ? true: false}
+                            owned={owned ? true: false}
                         />
                     </div>
 
@@ -1739,7 +1685,7 @@ function PlaylistPanel({playlistID}) {
 // }
 
 PlaylistPanel.propTypes = {
-  playlistID: PropTypes.string.isRequired
+  // playlistID: PropTypes.string.isRequired
 }
 
 export default PlaylistPanel

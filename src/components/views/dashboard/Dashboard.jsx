@@ -40,7 +40,7 @@ function Dashboard({logout, code, search}) {
     const [viewport, setViewport] = useState(currentView.view)
 
     // the currently playling playlist/album
-    const [playlist, setPlaylist, setActive] = usePlaylist()
+    const [playlist, setPlaylistID, setActive] = usePlaylist(appToken, spotifyAccessToken)
     
 
 
@@ -65,7 +65,9 @@ function Dashboard({logout, code, search}) {
         if(currentView.view === 'hub') {
             return renderHubPanel()
         } else if(currentView.view === 'playlist') {
-            return renderPlaylist(currentView.id)
+            // usePlaylist here? Then pass playlist to PlaylistPanel
+
+            return renderPlaylist()
            
         } else {
             return(
@@ -82,9 +84,17 @@ function Dashboard({logout, code, search}) {
         )
     }
 
-    function renderPlaylist(playlistID) {
+    function renderPlaylist() {
         // needs to make a vall to server to fetch playlist
-        return <PlaylistPanel playlistID={playlistID}/>
+
+        // return <PlaylistPanel playlist={playlistID}/>
+        console.log("PLAYLIST IN FUNCTION", playlist)
+
+        // Don't even render this unless playlist exists
+        if(playlist) {
+            return <PlaylistPanel playlist={playlist} />
+        }
+        // return <PlaylistPanel playlist={playlist}/>
     }
 
     useEffect(() => {
@@ -118,7 +128,7 @@ function Dashboard({logout, code, search}) {
             profile,
             setCurrentView,
             playlist,
-            setPlaylist,
+            setPlaylistID,
             setActive
         }}>
             {/* main here IS Dashboard */}
@@ -135,7 +145,6 @@ function Dashboard({logout, code, search}) {
                         />
 
                         <PanelContainer>
-                            {/* Only open when user first signs up to create their first playlist */}
                             {profile.onboarding === false ?
                                 <>
                                     <SwitchViews setViewport={setViewport}/>
@@ -145,6 +154,8 @@ function Dashboard({logout, code, search}) {
                             // Normal view
                                 <>
                                 <SwitchViews setCurrentView={setCurrentView}/>
+
+
                                 {renderPanels(currentView.view)}
                                 {/* {viewport === 'hub' ? <HubPanel mainPanel={mainPanel} /> : null} */}
                                 

@@ -8,9 +8,15 @@ import DefaultImage from '../../images/default.png'
 function Card({playlist}) {
 
     const setCurrentView = useContext(UserContext).setCurrentView
+    const setPlaylistID = useContext(UserContext).setPlaylistID
     function handleClick() {
         // clicking on a playlist should open the playlist
         setCurrentView({view: "playlist", id: playlist.id})
+        
+
+        // Set playlist here? So that way, it updates usePlaylist, which then can pass the playlist to playlistPanel
+        setPlaylistID(playlist.id)
+
         console.log("Opening playlist...", playlist.id)
     }
 
