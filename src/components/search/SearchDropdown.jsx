@@ -55,7 +55,7 @@ function SearchDropdown({searchResults}) {
         }
     }
     useEffect(() => {
-
+      console.log("SEARCH RESULTS", searchResults)
     }, [searchResults])
     
     
@@ -170,7 +170,8 @@ SearchDropdown.propTypes = {
 SearchDropdownRow.propTypes = {
     result: PropTypes.shape({
         name: PropTypes.string,
-        id: PropTypes.string
+        id: PropTypes.string,
+        uri: PropTypes.string
     })
 }
 export default SearchDropdown

@@ -8,7 +8,7 @@ import {AuthContext} from '../../../App'
 import {Link} from 'react-router-dom'
 import SearchInput from '../../search/SearchInput'
 
-function HeaderPanel({logout, search,setCurrentView}) {
+function HeaderPanel({logout, search, setCurrentView}) {
 
     // const user = useContext(UserContext)
     const profile = useContext(AuthContext).profile
@@ -158,8 +158,11 @@ function ControlPanel({setCurrentView}) {
         </div>
     )
 }
+
 HeaderPanel.propTypes = {
     logout: PropTypes.func,
-    spotifyAccessToken: PropTypes.string
+    spotifyAccessToken: PropTypes.string,
+    search: PropTypes.func,
+    setCurrentView: PropTypes.func
 }
 export default HeaderPanel

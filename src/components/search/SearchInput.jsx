@@ -13,13 +13,13 @@ function SearchInput({search}) {
         queryString.current = value
         // Only call search after a small delay
         if(queryString.current === '') {
+            console.log("There is nothing to search.")
             if(queryDelay.current) {
                 clearTimeout(queryDelay.current)
             }
-
+            search(queryString.current)
             return false
-        }
-        if(queryDelay.current) {
+        } else if(queryDelay.current) {
             clearTimeout(queryDelay.current)
         }
 

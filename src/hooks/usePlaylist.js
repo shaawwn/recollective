@@ -8,22 +8,22 @@ import usePlayer from './usePlayer'
 function usePlaylist(appToken, spotifyAccessToken) {
 
     const [playlist, setPlaylist] = useState()
-    const [currentPlaylist, setCurrentPlaylist] = useState()
+    // const [currentPlaylist, setCurrentPlaylist] = useState()
     const [playlistID, setPlaylistID] = useState()
     const [active, setActive] = useState(false) // true if PLAYING playlist or adding tracks, false if just browsing playlist
     const [owned, setOwned] = useState(true) // if playlist authoer, set true, can modify playlist
-     const [album, setAlbum] = useState(false) // if album cannot modify
+    //  const [album, setAlbum] = useState(false) // if album cannot modify
 
-    function getPlaylist() {
-        fetch(`http://localhost:3001/playlist/${playlistID}`, {
-            headers: {
-                'Authorization': `Bearer ${appToken}`
-            }
-        }).then((response) => response.json())
-        .then((data) => {
-            console.log("Current palylist Data", data)
-        })
-    }
+    // function getPlaylist() {
+    //     fetch(`http://localhost:3001/playlist/${playlistID}`, {
+    //         headers: {
+    //             'Authorization': `Bearer ${appToken}`
+    //         }
+    //     }).then((response) => response.json())
+    //     .then((data) => {
+    //         console.log("Current palylist Data", data)
+    //     })
+    // }
 
     function getSpotifyPlaylist() {
         // using spotify ID, get playlist, using app ID, get app specific playlist details
@@ -36,25 +36,26 @@ function usePlaylist(appToken, spotifyAccessToken) {
           setPlaylist(data)
         })
       }
-    function selectTrack() {
-        // clicking on a track will start to play it
-    }
 
-    function shuffle() {
+    // function selectTrack() {
+    //     // clicking on a track will start to play it
+    // }
 
-    }
+    // function shuffle() {
 
-    function repeat() {
+    // }
 
-    }
+    // function repeat() {
 
-    function repeatSingleTrack() {
+    // }
 
-    }
+    // function repeatSingleTrack() {
 
-    function loop() {
+    // }
 
-    }
+    // function loop() {
+
+    // }
 
     function addTracksToPlaylist(playlistID, tracksToAdd, position) {
         // tracksToAdd is a list of spotify track URIS to add to the playlist, position is where in the playlist to add tracks
@@ -69,9 +70,9 @@ function usePlaylist(appToken, spotifyAccessToken) {
                 position: position
             })
         }).then((response) => response.json())
-        .then((data) => {
+        .then(() => {
             // responds with a snapshot ID of the playlist if successful
-            console.log("Adding track to playlist", tracksToAdd[0], data)
+            // console.log("Adding track to playlist", tracksToAdd[0], data)
             getSpotifyPlaylist()
         })
     }
@@ -90,17 +91,14 @@ function usePlaylist(appToken, spotifyAccessToken) {
             }
         )
         }).then((response) => response.json())
-        .then((data) => {
-            console.log("Removing track to playlist", data)
+        .then(() => {
+            // console.log("Removing track to playlist", data)
             getSpotifyPlaylist()
-            // need to set the updated playlist to be current playlist 
-
         })
     }
 
     useEffect(() => {
         if(playlistID) {
-            // fetch playlist data
             // getPlaylist()
             getSpotifyPlaylist()
         }

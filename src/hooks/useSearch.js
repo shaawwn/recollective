@@ -20,8 +20,14 @@ function useSearch() {
 
     function search(queryString) {
         console.log("Querying in search function", queryString)
-        searchApp(queryString)
-        searchSpotify(queryString)
+        if(queryString === '') {
+            setSearchResults([])
+        } else {
+            searchApp(queryString)
+            searchSpotify(queryString)
+        }
+        // searchApp(queryString)
+        // searchSpotify(queryString)
 
         // take the results from both queries and return them as a single object
     }

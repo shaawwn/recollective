@@ -15,16 +15,17 @@ import HeaderPanel from '../../panels/headerpanel/HeaderPanel'
 import PlaylistPanel from '../../panels/playlistpanel/PlaylistPanel'
 import VerticalFlexContainer from '../../utility/containers/VerticalFlexContainer'
 import PanelContainer from '../../../components/utility/containers/PanelContainer'
+import SearchPanel from '../../search/SearchPanel'
 import DashboardSkeleton from '../../skeletons/DashboardSkeleton';
 
 import {getCurrentUserProfile} from '../../../utils/spotifyGetters'
 
 import usePlaylist from '../../../hooks/usePlaylist'
-
+import useSearch from '../../../hooks/useSearch'
 // import SpotifyLogo from '../../../images/Spotify_Logo_RGB_Black.png'
 export const UserContext = React.createContext() // this is redundant since AuthContext alreeady provides Profile
 
-function Dashboard({logout, code, search}) {
+function Dashboard({logout, code}) {
 
     // State and context
     const server = useContext(ServerContext).server
@@ -41,6 +42,7 @@ function Dashboard({logout, code, search}) {
 
     // the currently playling playlist/album
     const [playlist, setPlaylistID, setActive, owned, removeTrackFromPlaylist, addTracksToPlaylist] = usePlaylist(appToken, spotifyAccessToken)
+    const [search, setTokens, searchResults] = useSearch()
     
 
 
@@ -58,17 +60,15 @@ function Dashboard({logout, code, search}) {
     }
 
 
-    // As for what renders in Dashboard, this needs to be refined.
-
     function renderPanels() {
         //hub
         if(currentView.view === 'hub') {
             return renderHubPanel()
         } else if(currentView.view === 'playlist') {
-            // usePlaylist here? Then pass playlist to PlaylistPanel
-
             return renderPlaylist()
            
+        } else if(currentView.view === 'search') {
+            return renderSearchPanel()
         } else {
             return(
                 <div>
@@ -85,18 +85,19 @@ function Dashboard({logout, code, search}) {
     }
 
     function renderPlaylist() {
-        // needs to make a vall to server to fetch playlist
-
-        // return <PlaylistPanel playlist={playlistID}/>
-        console.log("PLAYLIST IN FUNCTION", playlist)
-
         // Don't even render this unless playlist exists
         if(playlist) {
             return <PlaylistPanel playlist={playlist} />
         }
-        // return <PlaylistPanel playlist={playlist}/>
     }
 
+    function renderSearchPanel() {
+
+        // when there are searchResults in the header panel, render search Panel
+        return(
+            <SearchPanel />
+        )
+    }
     useEffect(() => {
         if(appToken) {
             // console.log("Profile with APP token", profile)
@@ -114,14 +115,28 @@ function Dashboard({logout, code, search}) {
             // }
         }
 
-        // Get Spotify profile data
         if(spotifyAccessToken) {
-
             // getCurrentUserProfile(spotifyAccessToken)
+        }
+
+        if(appToken && spotifyAccessToken) {
+            setTokens({
+                appToken,
+                spotifyAccessToken
+            })
         }
 
     }, [appToken, spotifyAccessToken])
 
+    useEffect(() => {
+        if(Object.keys(searchResults).length > 0) {
+            console.log("search resultsin dashboard", searchResults)
+            setCurrentView({view: "search", id: null})
+            // renderSearchPanel()
+        } else {
+            console.log("Search results in ELSE", searchResults)
+        }
+    }, [searchResults])
 
     return(
         <UserContext.Provider value={{
@@ -194,6 +209,7 @@ function SwitchViews({setCurrentView}) {
             <button className="btn" onClick={() => handleClick('artist')}>Artist</button>
             <button className="btn" onClick={() => handleClick('profile')}>Profile</button>
             <button className="btn" onClick={() => handleClick('bin')}>Bin</button>
+            <button className="btn" onClick={() => handleClick('search')}>Search Result</button>
         </div>
     )
 }
