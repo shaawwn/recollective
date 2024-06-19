@@ -1,4 +1,4 @@
-import {useContext, useEffect, useState} from 'react';
+import {useContext, useEffect} from 'react';
 import {PropTypes} from 'prop-types';
 import useSearch from '../../../hooks/useSearch'
 // import './playlist.css'
@@ -10,9 +10,9 @@ import SearchDropdown from '../../search/SearchDropdown'
 import TrackTable from '../../tracktable/TrackTable'
 
 // import {PanelFunctionContext} from '../../utility/containers/PanelContainer'
-import {UserContext} from '../../views/dashboard/Dashboard'
+// import {UserContext} from '../../views/dashboard/Dashboard'
 import {AuthContext} from '../../../App'
-import usePlaylist from '../../../hooks/usePlaylist'
+// import usePlaylist from '../../../hooks/usePlaylist'
 
 
 // const PLAYLIST = {
@@ -1579,26 +1579,26 @@ import usePlaylist from '../../../hooks/usePlaylist'
 function PlaylistPanel({playlist}) {
     console.log("PLAYLIST IN PLAYLIST", playlist)
     const onboarding = true
-    const profile = useContext(UserContext).profile
+    // const profile = useContext(UserContext).profile
     const appToken = useContext(AuthContext).appToken
     const spotifyAccessToken = useContext(AuthContext).spotifyAccessToken
     // const [playlist, setPlaylist] = useState()
 
     // const playlist = useContext(UserContext).playlist
-    const setActive = useContext(UserContext).setActive
+    // const setActive = useContext(UserContext).setActive
     // const setPlaylistID = useContext(UserContext).setPlaylistID
     // const [playlist, setActive, owned] = usePlaylist(playlistID, appToken, spotifyAccessToken)
-    const [owned, setOwned] = useState(true) 
+    // const [owned, setOwned] = useState(true) 
+    const owned = true
     const [search, setTokens, searchResults] = useSearch()
 
 
-    function checkOwnedPlaylist(profileID, playlistID) {
-      if(profileID === playlistID) {
-        return true
-      }
-      return false
-
-    }
+    // function checkOwnedPlaylist(profileID, playlistID) {
+    //   if(profileID === playlistID) {
+    //     return true
+    //   }
+    //   return false
+    // }
 
     
     useEffect(() => {
@@ -1664,29 +1664,64 @@ function PlaylistPanel({playlist}) {
     )
 }
 
-// These are sub components of the main playlist panel, and include the functionality of creating a new playlist
 
-/*
-    The meat of creating a playlist, includes inputs for name, description, adding tags, and a small search bar for adding songs
-*/
-// function CreatePlaylistMenu({playlist}) {
-//     const search = useContext(PanelFunctionContext).search
-//     return(
-//         <section>
-//             {/* Header for metadata like in spotify */}
-//             <PlaylistHeader 
-//                 playlist={playlist}
-//             />
-//             <SearchInput search={search}/>
-//             <TrackTable />
-
-//         </section>
-//     )
-// }
 
 PlaylistPanel.propTypes = {
-  // playlistID: PropTypes.string.isRequired
-}
+  playlist: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    description: PropTypes.string,
+    public: PropTypes.bool,
+    collaborative: PropTypes.bool,
+    uri: PropTypes.string.isRequired,
+    href: PropTypes.string.isRequired,
+    images: PropTypes.arrayOf(
+        PropTypes.shape({
+            url: PropTypes.string.isRequired
+        })
+    ),
+    owner: PropTypes.shape({
+        display_name: PropTypes.string,
+        id: PropTypes.string.isRequired,
+        uri: PropTypes.string,
+        href: PropTypes.string
+    }).isRequired,
+    tracks: PropTypes.shape({
+        href: PropTypes.string.isRequired,
+        total: PropTypes.number.isRequired,
+        items: PropTypes.arrayOf(
+            PropTypes.shape({
+                added_at: PropTypes.string,
+                added_by: PropTypes.shape({
+                    id: PropTypes.string,
+                    href: PropTypes.string,
+                    uri: PropTypes.string
+                }),
+                track: PropTypes.shape({
+                    id: PropTypes.string.isRequired,
+                    name: PropTypes.string.isRequired,
+                    artists: PropTypes.arrayOf(
+                        PropTypes.shape({
+                            name: PropTypes.string.isRequired,
+                            id: PropTypes.string.isRequired
+                        })
+                    ),
+                    album: PropTypes.shape({
+                        name: PropTypes.string.isRequired,
+                        images: PropTypes.arrayOf(
+                            PropTypes.shape({
+                                url: PropTypes.string.isRequired
+                            })
+                        )
+                    }).isRequired
+                }).isRequired
+            })
+        )
+    }).isRequired
+  }).isRequired
+};
+
+
 
 export default PlaylistPanel
 

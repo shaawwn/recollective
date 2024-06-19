@@ -40,7 +40,7 @@ function Dashboard({logout, code, search}) {
     const [viewport, setViewport] = useState(currentView.view)
 
     // the currently playling playlist/album
-    const [playlist, setPlaylistID, setActive] = usePlaylist(appToken, spotifyAccessToken)
+    const [playlist, setPlaylistID, setActive, owned, removeTrackFromPlaylist, addTracksToPlaylist] = usePlaylist(appToken, spotifyAccessToken)
     
 
 
@@ -129,7 +129,9 @@ function Dashboard({logout, code, search}) {
             setCurrentView,
             playlist,
             setPlaylistID,
-            setActive
+            setActive,
+            removeTrackFromPlaylist,
+            addTracksToPlaylist
         }}>
             {/* main here IS Dashboard */}
             <main className="dashboard red gap-4"> 

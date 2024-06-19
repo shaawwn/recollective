@@ -56,31 +56,48 @@ function usePlaylist(appToken, spotifyAccessToken) {
 
     }
 
-    function addTrack() {
-        fetch(`https://api.spotify.com/v1/playlists/${'playlistid'}/tracks`, {
+    function addTracksToPlaylist(playlistID, tracksToAdd, position) {
+        // tracksToAdd is a list of spotify track URIS to add to the playlist, position is where in the playlist to add tracks
+
+        fetch(`https://api.spotify.com/v1/playlists/${playlistID}/tracks`, {
             method: "POST",
             headers: {
                 'Authorization': `Bearer ${spotifyAccessToken}`
-            }
+            },
+            body: JSON.stringify({
+                uris: tracksToAdd,
+                position: position
+            })
         }).then((response) => response.json())
         .then((data) => {
-            console.log("Adding track to playlist", data)
+            // responds with a snapshot ID of the playlist if successful
+            console.log("Adding track to playlist", tracksToAdd[0], data)
+            getSpotifyPlaylist()
         })
     }
 
-    function removeTrack(playlistID, trackToRemove) {
-        // trackToRemove is spotify URI of track spotify:track:trackToRemove
+    function removeTrackFromPlaylist(playlistID, trackToRemove, snapshotID) {
         fetch(`https://api.spotify.com/v1/playlists/${playlistID}/tracks`, {
             method: "DELETE",
             headers: {
                 'Authorization': `Bearer ${spotifyAccessToken}`
             },
-            body: JSON.stringify({tracks: [trackToRemove]})
+            body: JSON.stringify(
+                {tracks: [
+                    {"uri": trackToRemove}
+                ],
+                snapshot_id: snapshotID
+            }
+        )
         }).then((response) => response.json())
         .then((data) => {
             console.log("Removing track to playlist", data)
+            getSpotifyPlaylist()
+            // need to set the updated playlist to be current playlist 
+
         })
     }
+
     useEffect(() => {
         if(playlistID) {
             // fetch playlist data
@@ -94,7 +111,7 @@ function usePlaylist(appToken, spotifyAccessToken) {
     }, [playlist])
 
 
-    return [playlist, setPlaylistID, setActive, owned]
+    return [playlist, setPlaylistID, setActive, owned, removeTrackFromPlaylist, addTracksToPlaylist]
 
 }
 

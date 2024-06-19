@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useEffect, useState, useContext} from 'react';
 import PropTypes from 'prop-types'
 
 
@@ -11,14 +11,17 @@ import PropTypes from 'prop-types'
     profiles
 
 */
+
+import {UserContext} from '../views/dashboard/Dashboard'
+
 function SearchDropdown({searchResults}) {
     console.log("Search dropdown", searchResults)
 
     const [filter, setFilter] = useState('tracks') // default returns tracks
 
-    function filterResults() {
-        // toggle the different results tracks/artists/albums/playlists
-    }
+    // function filterResults() {
+    //     // toggle the different results tracks/artists/albums/playlists
+    // }
 
     function handleClick(filterString) {
         setFilter(filterString)
@@ -75,32 +78,94 @@ function SearchDropdown({searchResults}) {
 function SearchDropdownRow({result}) {
     // console.log("Search row item", result)
 
-    function addTrackToPlaylist() {
+    const addTracksToPlaylist = useContext(UserContext).addTracksToPlaylist
 
-    }
+    const playlist = useContext(UserContext).playlist
 
-    function removeTrackFromPlaylist() {
-
-    }
-
-    function handleClick(trackID) {
-        console.log("Adding or removing", trackID, result.name)
+    function handleClick(uri) {
+        // console.log("Adding or removing", trackID, result.name)
+        // console.log()
+        addTracksToPlaylist(playlist.id, [uri], 0)
     }
 
     return(
         <div className="flex justify-between">
             <p>{result.name} </p>
-            <button onClick={() => handleClick(result.id)}className="p-1">+</button> 
+            <button onClick={() => handleClick(result.uri)}className="p-1">+</button> 
         </div>
 
     )
 }
 
+// SearchDropdown.propTypes = {
+//     searchResults: PropTypes.shape({
+//         tracks: PropTypes.string
+//     })
+// }
 SearchDropdown.propTypes = {
     searchResults: PropTypes.shape({
-        tracks: PropTypes.string
+      albums: PropTypes.shape({
+        items: PropTypes.arrayOf(PropTypes.shape({
+          id: PropTypes.string.isRequired,
+          name: PropTypes.string.isRequired,
+          images: PropTypes.arrayOf(PropTypes.shape({
+            url: PropTypes.string
+          })),
+          release_date: PropTypes.string,
+          total_tracks: PropTypes.number
+        }))
+      }),
+      artists: PropTypes.shape({
+        items: PropTypes.arrayOf(PropTypes.shape({
+          id: PropTypes.string.isRequired,
+          name: PropTypes.string.isRequired,
+          followers: PropTypes.shape({
+            total: PropTypes.number
+          }),
+          genres: PropTypes.arrayOf(PropTypes.string),
+          images: PropTypes.arrayOf(PropTypes.shape({
+            url: PropTypes.string
+          }))
+        }))
+      }),
+      tracks: PropTypes.shape({
+        items: PropTypes.arrayOf(PropTypes.shape({
+          id: PropTypes.string.isRequired,
+          name: PropTypes.string.isRequired,
+          album: PropTypes.shape({
+            id: PropTypes.string.isRequired,
+            name: PropTypes.string.isRequired,
+            images: PropTypes.arrayOf(PropTypes.shape({
+              url: PropTypes.string
+            }))
+          }),
+          artists: PropTypes.arrayOf(PropTypes.shape({
+            id: PropTypes.string.isRequired,
+            name: PropTypes.string.isRequired
+          })),
+          duration_ms: PropTypes.number,
+          popularity: PropTypes.number
+        }))
+      }),
+      playlists: PropTypes.shape({
+        items: PropTypes.arrayOf(PropTypes.shape({
+          id: PropTypes.string.isRequired,
+          name: PropTypes.string.isRequired,
+          description: PropTypes.string,
+          images: PropTypes.arrayOf(PropTypes.shape({
+            url: PropTypes.string
+          })),
+          owner: PropTypes.shape({
+            id: PropTypes.string.isRequired,
+            display_name: PropTypes.string
+          }),
+          tracks: PropTypes.shape({
+            total: PropTypes.number
+          })
+        }))
+      })
     })
-}
+  };
 
 SearchDropdownRow.propTypes = {
     result: PropTypes.shape({
