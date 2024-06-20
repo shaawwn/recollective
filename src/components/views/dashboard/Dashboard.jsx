@@ -130,7 +130,6 @@ function Dashboard({logout, code}) {
 
     useEffect(() => {
         if(Object.keys(searchResults).length > 0) {
-            console.log("search resultsin dashboard", searchResults)
             setCurrentView({view: "search", id: null})
             // renderSearchPanel()
         } else {

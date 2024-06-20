@@ -2,6 +2,16 @@ import {useRef} from 'react';
 import PropTypes from 'prop-types'
 // import './search.css'
 
+/*
+    Two search Inputs:
+         - in playlist
+         - in headerpanel
+
+    They return different things, playlist returns a track table with search results that can be added to the playlist
+    Headerpanel search changes the view in the dashboard to the searchResults page
+
+    Then again, it looks like all it is is a gui wrapper for the search functions and just calls search as needed
+*/
 
 function SearchInput({search}) {
 
@@ -9,7 +19,7 @@ function SearchInput({search}) {
     const queryDelay = useRef()
 
     function handleChange(value) {
-        console.log("QUERY VALUE", value)
+
         queryString.current = value
         // Only call search after a small delay
         if(queryString.current === '') {

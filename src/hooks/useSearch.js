@@ -19,7 +19,7 @@ function useSearch() {
     const searchTypes = ["album", "artist", "playlist", "track"]
 
     function search(queryString) {
-        console.log("Querying in search function", queryString)
+
         if(queryString === '') {
             setSearchResults([])
         } else {
