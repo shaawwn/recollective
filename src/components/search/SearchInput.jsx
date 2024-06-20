@@ -1,4 +1,4 @@
-import {useRef} from 'react';
+import {useRef, useContext, useEffect} from 'react';
 import PropTypes from 'prop-types'
 // import './search.css'
 
@@ -13,10 +13,13 @@ import PropTypes from 'prop-types'
     Then again, it looks like all it is is a gui wrapper for the search functions and just calls search as needed
 */
 
+import {UserContext} from '../views/dashboard/Dashboard'
+
 function SearchInput({search}) {
 
     const queryString = useRef()
     const queryDelay = useRef()
+    const currentView = useContext(UserContext).currentView
 
     function handleChange(value) {
 
@@ -38,10 +41,11 @@ function SearchInput({search}) {
 
 // Need to change from ID to whatever the search input is
 
-
     return(
         <>
-            <input className="search__input" placeholder="What do you want to listen to?" onChange={(event) => handleChange(event.target.value)}/>
+            <input className="search__input" 
+               placeholder="What do you want to listen to?" onChange={(event) => handleChange(event.target.value)}
+               />
         </>
     )
 }

@@ -18,8 +18,16 @@ function useSearch() {
 
     const searchTypes = ["album", "artist", "playlist", "track"]
 
-    function search(queryString) {
+    function clearSearch() {
+        // clear all search
+    }
 
+    function clearInput() {
+        // clear search input only
+
+    }
+
+    function search(queryString) {
         if(queryString === '') {
             setSearchResults([])
         } else {

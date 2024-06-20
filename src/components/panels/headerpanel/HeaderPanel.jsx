@@ -10,7 +10,6 @@ import SearchInput from '../../search/SearchInput'
 
 function HeaderPanel({logout, search, setCurrentView}) {
 
-    // const user = useContext(UserContext)
     const profile = useContext(AuthContext).profile
     const spotify = useContext(ServerContext).spotify_url
     const spotifyAccessToken = useContext(AuthContext).spotifyAccessToken
@@ -27,7 +26,8 @@ function HeaderPanel({logout, search, setCurrentView}) {
                         {spotifyAccessToken ? 
                         <>
                             {/* Add spotify logo around here */}
-                            <SearchInput search={search}
+                            <SearchInput 
+                                search={search}
                             />
                             <div className="flex-col">
                                 <p>Powered by Spotify</p>  

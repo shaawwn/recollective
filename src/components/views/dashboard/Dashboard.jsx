@@ -95,24 +95,14 @@ function Dashboard({logout, code}) {
 
         // when there are searchResults in the header panel, render search Panel
         return(
-            <SearchPanel />
+            <SearchPanel 
+                searchResults={searchResults}
+            />
         )
     }
     useEffect(() => {
         if(appToken) {
-            // console.log("Profile with APP token", profile)
-            // if(profile.onboarding === true) {
-            //     fetch('http://localhost:3001/playlist', {
-            //         headers: {
-            //             'Authorization': `Bearer ${appToken}`
-            //         }
-            //     }).then((response) => response.json())
-            //     .then((data) => {
-            //         console.log("User playlists? ", data)
-            //     }).catch((err) => {
-            //         console.log("Error fetchign user playlists from app.", err)
-            //     })
-            // }
+            // TODO ?
         }
 
         if(spotifyAccessToken) {
@@ -145,13 +135,16 @@ function Dashboard({logout, code}) {
             setPlaylistID,
             setActive,
             removeTrackFromPlaylist,
-            addTracksToPlaylist
+            addTracksToPlaylist,
+            currentView
         }}>
             {/* main here IS Dashboard */}
             <main className="dashboard red gap-4"> 
                 {profile ?
                 <>
-                    <NavigationPanel />
+                    <NavigationPanel 
+                        setCurrentView={setCurrentView}
+                    />
 
                     <VerticalFlexContainer>
                         <HeaderPanel 
