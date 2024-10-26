@@ -1,0 +1,9 @@
+/node_modules
+/dist
+__tests__/
+
+.env
+.eslintrc.cjs
+scratchpad.js
+
+.DS_Store
