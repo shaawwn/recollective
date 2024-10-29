@@ -1,5 +1,7 @@
 import{useState, useEffect} from 'react'
-import {useAuthContext, useApiContext} from '../context/barrel'
+import {useApiContext} from '../context/barrel'
+
+import {useAuthContext} from '../App'
 
 
 
@@ -7,7 +9,7 @@ export default function useBin() {
 
     const [bin, setBin] = useState()
     const [binID, setBinID] = useState()
-    const {accessToken} = useAuthContext()
+    const {accessToken} = useAuthContext() || {}
     const {spotifyApi, recollectiveApi} = useApiContext()
 
     async function fetchBin() {

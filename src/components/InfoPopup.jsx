@@ -7,12 +7,16 @@ import {BinPlaybackButton} from './barrel'
 
 export default function InfoPopup({item, coords}) {
     const {spotifyPlayerApi, recollectiveApi} = useApiContext()
-    const {activeDevices} = useWebplayerContext()
+    const {activeDevices = []} = useWebplayerContext() || {}
 
     function handleClick(e) {
         e.stopPropagation()
         const activeDeviceID= activeDevices.find(device => device.name === "RecollectiveApp");
 
+        if(!activeDeviceID) {
+            alert("Error on playback: No active device.")
+            return
+        }
         if(item.type === 'bin') {
             const playlistPool = recollectiveApi.startBinPlayback(item)
             // console.log("Get all the uris for the bin and use that", item)

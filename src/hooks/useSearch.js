@@ -1,13 +1,12 @@
 import { useState } from 'react'
-import {useAuthContext} from '../context/AuthContext'
+// import {useAuthContext} from '../context/AuthContext'
 
+import {useAuthContext} from '../App'
 
 export default function useSearch(setSearchResultsView) {
-    const accessToken = useAuthContext().accessToken
+    const {accessToken} = useAuthContext() || {}
     const [searchResults, setSearchResults] = useState()
     const searchTypes = ['track', 'artist', 'playlist', 'album']
-
-
 
     async function search(queryString) {
         return fetch(`https://api.spotify.com/v1/search?q=${queryString}&type=${searchTypes}`, {

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import PropTypes from 'prop-types';
 
 import useAuth from '../hooks/useAuth'
@@ -14,6 +14,10 @@ export function useAuthContext() {
 export default function AuthProvider({children, code}) {
 
     const accessToken = useAuth(code)
+
+    useEffect(() => {
+
+    }, [code])
 
     return(
         <AuthContext.Provider value={{

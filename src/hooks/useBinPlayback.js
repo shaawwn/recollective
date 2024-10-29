@@ -6,7 +6,8 @@ import {useWebplayerContext} from '../Dashboard'
 export default function useBinPlayback(bin) {
 
     const {spotifyApi, spotifyPlayerApi} = useApiContext()
-    const {activeDevices} = useWebplayerContext()
+    const {activeDevices = []} = useWebplayerContext() || {}
+    // console.log("active devices", activeDevices)
 
     async function startPlayback() {
         const activeDevice= activeDevices.find(device => device.name === "RecollectiveApp");

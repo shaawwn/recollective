@@ -12,6 +12,7 @@ const PlaylistContext = React.createContext()
 const AlbumContext = React.createContext()
 const BinContext = React.createContext()
 const WebplayerContext = React.createContext()
+
 // eslint-disable-next-line react-refresh/only-export-components
 export function useDashboardContext() {
     return useContext(DashboardContext)
@@ -32,6 +33,7 @@ export function useWebplayerContext() {
 export function useAlbumContext() {
     return useContext(AlbumContext)
 }
+
 export default function Dashboard() {
    
     const {user} = useUserContext()
@@ -47,7 +49,7 @@ export default function Dashboard() {
 
 
     const {webPlayback, player, is_paused, is_active, current_track, appDeviceId, activeDevices, setActiveDevices} = useWebplayer()
-
+    // console.log("Dashboard useWebplayer", player)
     
     // Context Values
     const dashboardContextValue = {
@@ -237,7 +239,6 @@ export default function Dashboard() {
             
         )
     }
-
 
     return(
         <DashboardContext.Provider value={dashboardContextValue}>

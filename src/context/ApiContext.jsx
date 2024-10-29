@@ -3,7 +3,8 @@ import PropTypes from 'prop-types'
 import RecollectiveApi from '../utils/RecollectiveApi'
 import SpotifyApi from '../utils/SpotifyApi'
 import SpotifyPlayerApi from '../utils/SpotifyPlayerApi'
-import {useAuthContext} from './AuthContext'
+// import {useAuthContext} from './AuthContext'
+import {useAuthContext} from '../App'
 import {useUserContext} from './UserContext'
 
 const ApiContext = React.createContext()
@@ -16,7 +17,7 @@ export function useApiContext() {
 
 export default function ApiProvider({children}) {
 
-    const {accessToken} = useAuthContext()
+    const {accessToken} = useAuthContext() || {}
     const {user} = useUserContext()
     const [spotifyApi, setSpotifyApi] = useState()
     const [spotifyPlayerApi, setSpotifyPlayerApi] = useState()

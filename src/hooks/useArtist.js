@@ -1,11 +1,12 @@
 import {useState, useEffect} from 'react'
 import {useApiContext} from '../context/ApiContext'
-import {useAuthContext} from '../context/AuthContext'
+// import {useAuthContext} from '../context/AuthContext'
+import {useAuthContext} from '../App'
 
 
 export default function useArtist() {
     const [artistID, setArtistID] = useState()
-    const {accessToken} = useAuthContext()
+    const {accessToken} = useAuthContext() || {}
     const {spotifyApi} = useApiContext()
 
     const [artist, setArtist] = useState()

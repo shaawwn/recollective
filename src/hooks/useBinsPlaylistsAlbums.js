@@ -1,11 +1,13 @@
 import {useState, useEffect} from 'react'
 // import {useAuthContext, useApiContext} from '../context/barrel'
 import {useApiContext} from '../context/ApiContext'
-import {useAuthContext} from '../context/AuthContext'
+// import {useAuthContext} from '../context/AuthContext'
 import {useUserContext} from '../context/UserContext'
 
+import {useAuthContext} from '../App'
+
 export default function useBinsPlaylistsAlbums() {
-    const {accessToken} = useAuthContext()
+    const {accessToken} = useAuthContext() || {}
     const {user} = useUserContext()
     const {spotifyApi, recollectiveApi} = useApiContext()
     const [bins, setBins] = useState([])
@@ -54,6 +56,7 @@ export default function useBinsPlaylistsAlbums() {
     // so now, I just need to refresh this when I add new bins, albums, or playlists
     useEffect(() => {
         if(accessToken && spotifyApi && recollectiveApi) {
+
             getBins()
             getPlaylists()
             getAlbums()

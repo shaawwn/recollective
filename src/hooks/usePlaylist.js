@@ -1,6 +1,7 @@
 import React, {useState, useEffect, useContext} from 'react'
 import {useApiContext} from '../context/ApiContext'
-import {useAuthContext} from '../context/AuthContext'
+// import {useAuthContext} from '../context/AuthContext'
+import {useAuthContext} from '../App'
 /**
  * 
  * Playlist holds a playlist *object* as well as a list of tracks in that playlist
@@ -26,7 +27,7 @@ import {useAuthContext} from '../context/AuthContext'
 export default function usePlaylist() {
     const [playlistID, setPlaylistID] = useState()
     const [playlist, setPlaylist] = useState()
-    const {accessToken} = useAuthContext()
+    const {accessToken} = useAuthContext() || {}
     const {spotifyApi} = useApiContext()
     const [refresh, setRefresh] = useState(false)
     // const [isOwner, setIsOwner] = useState(false) // set true if owner

@@ -1,7 +1,7 @@
 import {useState, useEffect, useRef} from 'react';
 
-import {useApiContext, useAuthContext, useUserContext} from '../context/barrel'
-
+import {useApiContext, useUserContext} from '../context/barrel'
+import {useAuthContext} from '../App'
 /**
  * 
  * Web player needs to track multiple things:
@@ -25,8 +25,8 @@ import {useApiContext, useAuthContext, useUserContext} from '../context/barrel'
  * I guess I could init the player here and really centralize the controls, the webplayer component itself would only need to be passed the palyer object.
  */
 export default function useWebplayer() {
-
-    const {accessToken} = useAuthContext()
+    
+    const {accessToken} = useAuthContext() || {}
     const {user} = useUserContext()
     const {spotifyApi, recollectiveApi, spotifyPlayerApi} = useApiContext()
 
@@ -46,6 +46,7 @@ export default function useWebplayer() {
         player.current.removeListener('not_ready')
         player.current.removeListener('player_state_changed') 
         player.current.disconnect()
+        player.current = null
     }
 
     async function getActiveDevices() {
@@ -59,14 +60,16 @@ export default function useWebplayer() {
 
 
     }
+
     function initWebplayer() {
-        window.onSpotifyWebPlaybackSDKReady = () => {
+
+        if(window.Spotify || window.onSpotifyWebPlaybackSDKReady) {
             player.current = new window.Spotify.Player({
                 name: 'RecollectiveApp',
                 getOAuthToken: cb => { cb(accessToken); },
                 volume: 0.5
             });
-
+            console.log("init webplayer", player)
             player.current.addListener('ready', ({ device_id }) => {
                 // console.log('Ready with Device ID', device_id);
                 setAppDeviceId(device_id)
@@ -85,8 +88,6 @@ export default function useWebplayer() {
                 if (!state) {
                     return;
                 }
-                // console.log("Player state changed.", state)
-                // console.log("Currently track: ", state.track_window.current_track)
                 setTrack(state.track_window.current_track);
                 setPaused(state.paused); // pause on switch
 
@@ -96,12 +97,50 @@ export default function useWebplayer() {
                 });
             
             }));
+            console.log("Connecting player", player)
             player.current.connect();
-        };
+        }
+        // window.onSpotifyWebPlaybackSDKReady = () => {
+
+        //     player.current = new window.Spotify.Player({
+        //         name: 'RecollectiveApp',
+        //         getOAuthToken: cb => { cb(accessToken); },
+        //         volume: 0.5
+        //     });
+        //     console.log("init webplayer", player)
+        //     player.current.addListener('ready', ({ device_id }) => {
+        //         // console.log('Ready with Device ID', device_id);
+        //         setAppDeviceId(device_id)
+
+        //         // fetch devices
+        //         // spotifyPlayerApi.getDevices()
+        //         getActiveDevices()
+
+        //     });
+
+        //     player.current.addListener('not_ready', ({ device_id }) => {
+        //         console.log('Device ID has gone offline', device_id);
+        //     });
+
+        //     player.current.addListener('player_state_changed', ( state => {
+        //         if (!state) {
+        //             return;
+        //         }
+        //         setTrack(state.track_window.current_track);
+        //         setPaused(state.paused); // pause on switch
+
+            
+        //         player.current.getCurrentState().then( state => { 
+        //             (!state)? setActive(false) : setActive(true) 
+        //         });
+            
+        //     }));
+        //     console.log("Connecting player", player)
+        //     player.current.connect();
+        // };
     }
 
     useEffect(() => {
-
         const webplayerScript = document.querySelector('#spotify-webplayer-sdk') // this has been hardcoded into the base html file, so it will always exist
         if(user?.spotify.product === 'premium') {
             setPremium(true)
@@ -111,10 +150,13 @@ export default function useWebplayer() {
 
 
         if(player.current) {
-            disconnect()
+            // player.current *can* = undefined, so need to make this check more robust
+            console.log("disconnecting player")
+            disconnect() 
         }
 
         if(accessToken && spotifyPlayerApi) {
+
             webplayerScript.src = "https://sdk.scdn.co/spotify-player.js"; 
             webplayerScript.async = true
             initWebplayer()
@@ -135,15 +177,5 @@ export default function useWebplayer() {
 
     }, [accessToken, spotifyPlayerApi])
 
-    // console.log("use context update", current_track)
-
     return {webPlayback, player, is_paused, is_active, current_track, appDeviceId, activeDevices, setActiveDevices}
 }
-
-// const [is_paused, setPaused] = useState(false) // icon change
-// const [is_active, setActive] = useState(false) // visual cue for active device in menu
-// const [current_track, setTrack] = useState() // content that is displayed in track_details
-// const [appDeviceId, setAppDeviceId] = useState() // maybe no need
-// const [activeDevices, setActiveDevices] = useState() // list of devices to switch to in menu
-// const [webPlayback, setWebplayback] = useState() // out of date object
-// const player = useRef() // the palyer instance from spotify

@@ -1,15 +1,17 @@
 
 import Chance from 'chance'
 import HistoryNavigator from './HistoryNavigator'
-import {useUserContext} from '../context/UserContext'
+import {useUserContext} from '../context/barrel'
 import {useDashboardContext} from '../Dashboard'
 import {useApiContext} from '../context/ApiContext'
+
 
 const chance = new Chance()
 
 
 export default function Navbar() {
     const {user} = useUserContext()
+
     const redirectUri = import.meta.env.VITE_REDIRECT_URI
     const {spotifyApi} = useApiContext()
     const {setPlaylistView, addPage} = useDashboardContext()

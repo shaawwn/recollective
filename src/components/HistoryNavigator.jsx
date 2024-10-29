@@ -76,7 +76,7 @@ export default function HistoryNavigator() {
         <div className="flex">
             <FontAwesomeIcon onClick={back} icon={faCaretLeft} size="2x"/>
 
-            {history.current['current'].next ?
+            {history.current['current']?.next ?
                 <FontAwesomeIcon onClick={forward} icon={faCaretRight} size="2x" />
             :<FontAwesomeIcon className="invis" icon={faCaretRight} size="2x"/>
             }

@@ -2,9 +2,10 @@ import React, {useState, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
 
 
-import SpotifyApi from '../utils/SpotifyApi'
-import RecollectiveApi from '../utils/RecollectiveApi'
-import {useAuthContext} from './AuthContext'
+// import SpotifyApi from '../utils/SpotifyApi'
+// import RecollectiveApi from '../utils/RecollectiveApi'
+// import {useAuthContext} from './AuthContext'
+import {useAuthContext} from '../App'
 const UserContext = React.createContext()
 
 
@@ -16,7 +17,8 @@ export function useUserContext() {
 
 export default function UserProvider({children}) {
 
-    const accessToken = useAuthContext().accessToken
+    // const accessToken = useAuthContext().accessToken 
+    const {accessToken} = useAuthContext() || {}
     const [spotifyApi, setSpotifyApi] = useState()
     const [recollectiveApi, setRecollectiveApi] = useState()
     const [user, setUser] = useState()
@@ -52,6 +54,7 @@ export default function UserProvider({children}) {
             }
             return response.json()
         }).then((appData) => {
+
             setUser({
                 spotify: data,
                 recollective: appData
@@ -85,11 +88,8 @@ export default function UserProvider({children}) {
             console.log(err)
         })
     }
-    function getBinsAndPlaylist() {
-        // use spotify to get playlists
 
-        // use recollective to get bins
-    }
+
 
 
     function initUser() {

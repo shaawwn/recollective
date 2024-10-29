@@ -1,38 +1,42 @@
-// import {useState, useEffect} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import {getAuthUrl} from './utils/auth.js'
 import {validateCode} from './utils/utils.js'
 import Dashboard from './Dashboard.jsx'
 import Login from './Login.jsx'
 
+import useAuth from './hooks/useAuth.js'
+
+const AuthContext = React.createContext()
+
+// eslint-disable-next-line react-refresh/only-export-components
+export function useAuthContext() {
+	return useContext(AuthContext)
+}
 const code = validateCode(window.location.search)
 
 const AUTH_URL = getAuthUrl()
 
-import { UserProvider, AuthProvider, ApiProvider} from './context/barrel.js'
+import { UserProvider, ApiProvider} from './context/barrel.js' // removed AuthProvider
 
 function App() {
 
-	// UPDATES BETWEEN THESE LINES
-	// const [user, setUser] = useState()// put user here, then check for user in some funciton.
+	const accessToken = useAuth(code)
 
-
-
-	// UPDATES BEFORE
 	return (
 		<>
-			{code ?
-				<AuthProvider code={code}>
-					<UserProvider>
-						<ApiProvider>
+			<AuthContext.Provider value={{accessToken}}>
+				<UserProvider>
+					<ApiProvider>
+						{accessToken ? 
 							<Dashboard />
-						</ApiProvider>
-					</UserProvider>
-				</AuthProvider>
-
-			: <Login auth_url={AUTH_URL}/>
-			}
+						:<Login auth_url={AUTH_URL} />
+						}
+					</ApiProvider>
+				</UserProvider>
+			</AuthContext.Provider>
 		</>
 	)
 }
+
 
 export default App

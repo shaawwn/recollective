@@ -11,12 +11,15 @@ function useAuth(code) {
     
     useEffect(() => {
         // Spotify uses a one-time use code, which causes problems with React Strict Mode, this ensures the code is only used once
+        if(!code) {
+            return
+        }
         if(codeRef.current) { 
             return accessToken
         } else {
             codeRef.current = code
         }
-
+     
         fetch('http://localhost:3001/login', {
             method: "POST",
             headers: {
@@ -28,13 +31,11 @@ function useAuth(code) {
             if(!response.ok) {
                 throw new Error("error fetching spotify access tokens")
             }
-            console.log("response")
             return response.json()
         }).then((data) => {
             setAccessToken(data.accessToken)
             setRefreshToken(data.refreshToken)
             setExpiresIn(data.expiresIn)
-            console.log("Auth data", data)
             window.history.pushState({}, null, '/')
         }).catch((err) => {
             console.log("err", err)
