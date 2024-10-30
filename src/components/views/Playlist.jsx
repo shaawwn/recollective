@@ -23,7 +23,7 @@ export default function Playlist({playlist}) {
                     description={playlist.overview.description}
                     isOwner={playlist.isOwner}
                 />
-                <TrackTable tracks={playlist.tracks}/>
+                <TrackTable tracks={playlist.tracks} type="playlist"/>
                 <PlaylistBuilder />
                 </>
 

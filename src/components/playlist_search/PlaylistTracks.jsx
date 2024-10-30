@@ -9,7 +9,7 @@ export default function PlaylistTracks({playlist}) {
             {playlist ? 
                 <>  
                     <ContentHeader content={playlist}/>
-                    <TrackTable tracks={playlist.tracks}/>
+                    <TrackTable tracks={playlist.tracks} type="playlist"/>
                 </>
             :<h2>Loading playlist...</h2>
             }

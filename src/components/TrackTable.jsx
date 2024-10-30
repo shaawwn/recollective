@@ -8,9 +8,9 @@ import {useDashboardContext, usePlaylistContext} from '../Dashboard'
 
 import {TrackTableRow} from './barrel'
 
-export default function TrackTable({tracks}) {
-    const {playlist} = usePlaylistContext()
-
+export default function TrackTable({type, tracks}) {
+    const {playlist} = usePlaylistContext() || {} // this is for checking if playlist exists, which needs extra functionality like adding/removing 
+    console.log("Track table tracks", tracks)
     return(
         <section className="track-table">
             <div className="track-table__header">
@@ -38,7 +38,7 @@ export default function TrackTable({tracks}) {
             <hr></hr>
             <div className="track-table__rows">
                 {tracks.map((track, index) => 
-                    <TrackTableRow key={track.name + index}track={track} playlist={playlist}/>
+                    <TrackTableRow key={track.name + index}track={track} type={type}/>
                 )}
             </div>
 
@@ -49,5 +49,6 @@ export default function TrackTable({tracks}) {
 
 
 TrackTable.propTypes = {
+    type: PropTypes.string.isRequired,
     tracks: PropTypes.array.isRequired
 }
