@@ -11,6 +11,7 @@ import {InfoPopup} from './barrel'
  */
 
 export default function StaticGrid({items}) {
+
     // set grids size with 'size' (20, 30, 10, etc)
 
     // const [popup, setPopup] = useState(false) // only have 1 popup at a time
@@ -34,8 +35,8 @@ export default function StaticGrid({items}) {
 }
 
 export function GridItem({item}) {
-    
-    const {setPlaylistView, setAlbumView, setBinView, addPage} = useDashboardContext()
+
+    const {setPlaylistView, setAlbumView, setBinView, addPage} = useDashboardContext() || {}
 
     // there can only be on popupat a time, so if a grid item is NOT hovered over, it should be logically impossible for a popup to appear
 

@@ -35,7 +35,7 @@ export function useAlbumContext() {
 }
 
 export default function Dashboard() {
-   
+    
     const {user} = useUserContext()
     const [view, setView] = useState('home') // home is default view
     const {artist, setArtistID, clearArtistState} = useArtist()
@@ -49,7 +49,11 @@ export default function Dashboard() {
 
 
     const {webPlayback, player, is_paused, is_active, current_track, appDeviceId, activeDevices, setActiveDevices} = useWebplayer()
-    // console.log("Dashboard useWebplayer", player)
+
+    // render checks
+    // const renderCount = useRef(0)
+    // renderCount.current++
+    // console.log("Renders: ", renderCount.current)
     
     // Context Values
     const dashboardContextValue = {

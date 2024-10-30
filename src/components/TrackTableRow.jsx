@@ -11,11 +11,13 @@ import {useDashboardContext, usePlaylistContext, useAlbumContext, useWebplayerCo
 
 export default function TrackTableRow({track}) {
     const {spotifyPlayerApi} = useApiContext()
-    const {activeDevices} = useWebplayerContext()
+    const {activeDevices} = useWebplayerContext() || {}
     const {setAlbumView, setArtistView, addPage} = useDashboardContext()
-    const {playlist, removeFromPlaylist} = usePlaylistContext()
-    const {album} = useAlbumContext()
+    const {playlist, removeFromPlaylist} = usePlaylistContext() || {}
+    const {album} = useAlbumContext() || {}
 
+    console.log("PLAYLIST", playlist)
+    console.log("ALBUM", album)
     function handleNavClick(type, id) {
         if(type === 'album') {
             // nav to album page
@@ -35,11 +37,15 @@ export default function TrackTableRow({track}) {
         const activeDeviceID= activeDevices.find(device => device.name === "RecollectiveApp");
         let offset;
 
+        // so a -1 means it was NOT in the array
         if(playlist) {
+            console.log("Playlist TRCK")
             offset = playlist.tracks.indexOf(track)
         } else if(album) {
+            console.log("TRCK", track)
             offset = album.tracks.indexOf(track)
         } 
+        console.log("OFFSET", track)
 
         const context = playlist?.overview.uri || album?.overview.uri || ''
 

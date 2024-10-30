@@ -63,7 +63,8 @@ export default function useWebplayer() {
 
     function initWebplayer() {
 
-        if(window.Spotify || window.onSpotifyWebPlaybackSDKReady) {
+        if(window.Spotify) {
+            // console.log("Calling in spoitify check")
             player.current = new window.Spotify.Player({
                 name: 'RecollectiveApp',
                 getOAuthToken: cb => { cb(accessToken); },
@@ -99,45 +100,45 @@ export default function useWebplayer() {
             }));
             console.log("Connecting player", player)
             player.current.connect();
-        }
-        // window.onSpotifyWebPlaybackSDKReady = () => {
+        } 
+        window.onSpotifyWebPlaybackSDKReady = () => {
+            console.log("Calling on webplayback ready")
+            player.current = new window.Spotify.Player({
+                name: 'RecollectiveApp',
+                getOAuthToken: cb => { cb(accessToken); },
+                volume: 0.5
+            });
+            console.log("init webplayer", player)
+            player.current.addListener('ready', ({ device_id }) => {
+                // console.log('Ready with Device ID', device_id);
+                setAppDeviceId(device_id)
 
-        //     player.current = new window.Spotify.Player({
-        //         name: 'RecollectiveApp',
-        //         getOAuthToken: cb => { cb(accessToken); },
-        //         volume: 0.5
-        //     });
-        //     console.log("init webplayer", player)
-        //     player.current.addListener('ready', ({ device_id }) => {
-        //         // console.log('Ready with Device ID', device_id);
-        //         setAppDeviceId(device_id)
+                // fetch devices
+                // spotifyPlayerApi.getDevices()
+                getActiveDevices()
 
-        //         // fetch devices
-        //         // spotifyPlayerApi.getDevices()
-        //         getActiveDevices()
+            });
 
-        //     });
+            player.current.addListener('not_ready', ({ device_id }) => {
+                console.log('Device ID has gone offline', device_id);
+            });
 
-        //     player.current.addListener('not_ready', ({ device_id }) => {
-        //         console.log('Device ID has gone offline', device_id);
-        //     });
-
-        //     player.current.addListener('player_state_changed', ( state => {
-        //         if (!state) {
-        //             return;
-        //         }
-        //         setTrack(state.track_window.current_track);
-        //         setPaused(state.paused); // pause on switch
+            player.current.addListener('player_state_changed', ( state => {
+                if (!state) {
+                    return;
+                }
+                setTrack(state.track_window.current_track);
+                setPaused(state.paused); // pause on switch
 
             
-        //         player.current.getCurrentState().then( state => { 
-        //             (!state)? setActive(false) : setActive(true) 
-        //         });
+                player.current.getCurrentState().then( state => { 
+                    (!state)? setActive(false) : setActive(true) 
+                });
             
-        //     }));
-        //     console.log("Connecting player", player)
-        //     player.current.connect();
-        // };
+            }));
+            console.log("Connecting player", player)
+            player.current.connect();
+        };
     }
 
     useEffect(() => {
