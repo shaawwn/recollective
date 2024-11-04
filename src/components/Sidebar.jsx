@@ -39,7 +39,8 @@ export default function Sidebar() {
 
     async function createBin() {
         if(confirm("Create a bin?")) {
-            const name = `${chance.word()} ${chance.word()}`
+            // const name = `${chance.word()} ${chance.word()}`
+            const name = 'Bin'
             fetch(`http://localhost:3001/bins`, {
                 method: "POST",
                 credentials: "include",

@@ -1,19 +1,21 @@
 import PropTypes from 'prop-types'
-import {msToMinutesAndSeconds} from '../utils/utils'
-import DefaultImage from '../assets/images/default.png'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {faPlay, faPause, faTrashCan} from '@fortawesome/free-solid-svg-icons'
+// import {msToMinutesAndSeconds} from '../utils/utils'
+// import DefaultImage from '../assets/images/default.png'
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+// import {faPlay, faPause, faTrashCan} from '@fortawesome/free-solid-svg-icons'
 
-import {useDashboardContext, usePlaylistContext} from '../Dashboard'
+// import {useDashboardContext, usePlaylistContext} from '../Dashboard'
 
 import {TrackTableRow} from './barrel'
 
 export default function TrackTable({type, tracks}) {
-    const {playlist} = usePlaylistContext() || {} // this is for checking if playlist exists, which needs extra functionality like adding/removing 
-    console.log("Track table tracks", tracks)
+    console.log("TABLE TRACK", tracks)
+    // removed this since type checking is now done with props
+    // const {playlist} = usePlaylistContext() || {} // this is for checking if playlist exists, which needs extra functionality like adding/removing 
+
     return(
         <section className="track-table">
-            <div className="track-table__header">
+            {/* <div className="track-table__header">
                 <div className="track-table__cell">
                     <p>Play</p>
                 </div>
@@ -29,12 +31,12 @@ export default function TrackTable({type, tracks}) {
                 <div className="track-table__cell" style={{"textAlign":"right"}}>
                     <p>Duration</p>
                 </div>
-                {playlist ? 
+                {type === 'playlist' || type === 'explore' ? 
                     <div className="track-table__cell">
                     <p>  </p>
                     </div>
                 :null}
-            </div>
+            </div> */}
             <hr></hr>
             <div className="track-table__rows">
                 {tracks.map((track, index) => 

@@ -6,7 +6,7 @@ import {useApiContext} from '../../context/barrel'
 import {usePlaylistBuilderContext} from './barrel'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {faPlay} from '@fortawesome/free-solid-svg-icons'
+import {faPlay, faCirclePlus} from '@fortawesome/free-solid-svg-icons'
 
 
 export default function TrackTableSearch({tracks}) {
@@ -24,7 +24,7 @@ export default function TrackTableSearch({tracks}) {
     )
 }
 
-function TrackTableSearchRow({track}) {
+export function TrackTableSearchRow({track}) {
     const {spotifyApi, spotifyPlayerApi} = useApiContext()
     const {playlist, addToPlaylist} = usePlaylistContext()
     const {activeDevices} = useWebplayerContext()
@@ -92,10 +92,18 @@ function TrackTableSearchRow({track}) {
                 <p onClick={() => handleClick("albumTracks", track.album.id)}className="track-table__cell-link">{track.album.name}</p>
             </div>
 
+            
             {playlist ? 
-                <div className="flex gap-[10px]">
-                    <p>{msToMinutesAndSeconds(track.duration_ms)}</p>
-                    <button onClick={() => addToPlaylist(track.uri)} className="green">Add</button>
+                <div className="track-table__cell-add">
+                    <div className="flex flex-col justify-center">
+                        <p>{msToMinutesAndSeconds(track.duration_ms)}</p>
+                    </div>
+                    <FontAwesomeIcon 
+                        icon={faCirclePlus}
+                        onClick={() => addToPlaylist(track.uri)}
+                        className="add-button"
+                        // size="2x"
+                    />
                 </div>
             :null}
 

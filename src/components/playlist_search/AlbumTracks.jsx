@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import {TrackTable} from '../barrel'
 import {ContentHeader} from './barrel'
+import {TrackTableSearchRow} from './TrackTableSearch'
 
 export default function AlbumTracks({album}) {
     return(
@@ -8,7 +9,7 @@ export default function AlbumTracks({album}) {
             {album ? 
                 <>  
                     <ContentHeader content={album}/>
-                    <TrackTable tracks={album.tracks} type="album"
+                    <TrackTable tracks={album.tracks} type="explore"
                     />
                 </>
             :<h2>Loading album....</h2>

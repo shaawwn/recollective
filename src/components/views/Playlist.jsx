@@ -2,6 +2,9 @@ import PropTypes from 'prop-types'
 import {useState, useEffect} from 'react'
 import {TrackTable, ModalOverlay} from '../barrel' // PlaylistSearch
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {faTrashCan} from '@fortawesome/free-solid-svg-icons'
+
 import {PlaylistBuilder} from '../playlist_search/barrel'
 import DefaultImage from '../../assets/images/default.png'
 import {useDashboardContext, usePlaylistContext} from '../../Dashboard'
@@ -36,12 +39,17 @@ export default function Playlist({playlist}) {
 function PlaylistHeader({id, image, title, name, description, isOwner}) {
     const [editMode, setEditMode] = useState(false)
 
+
     function toggleEditMode() {
         setEditMode(!editMode)
     }
 
+    function deletePlaylist(e) {
+        e.stopPropagation()
+        console.log("Deleting playlist")
+    }
     return(
-        <div className="content-panel__header">
+        <div className="view-header">
             {editMode === true ? 
             
             <ModalOverlay toggle={toggleEditMode}>
@@ -58,10 +66,14 @@ function PlaylistHeader({id, image, title, name, description, isOwner}) {
                 </div>
             </div>
             {isOwner === true ?
-                <div>
-                    <p>Can modify playlist</p>
-                    {editMode === true ? <p>Edit</p>: <p>No edit</p>} 
+                <div className="view-header__buttons">
                     <button onClick={toggleEditMode}className="button green">Edit</button>
+                    <div onClick={(e) => deletePlaylist(e)}>
+                        <FontAwesomeIcon 
+                            icon={faTrashCan} size="1x"
+                            className="red"
+                            />
+                    </div>
                 </div>
             :null
             }
@@ -72,6 +84,7 @@ function PlaylistHeader({id, image, title, name, description, isOwner}) {
 function PlaylistEditMenu({id, image, title, description, closeMenu}) {
     const {spotifyApi} = useApiContext()
     const {refreshPlaylist} = useDashboardContext()
+    const [titleInputVal, setTitleInputVal] = useState(title)
 
     function handleClick(e) {
         e.stopPropagation()
@@ -79,12 +92,15 @@ function PlaylistEditMenu({id, image, title, description, closeMenu}) {
 
     function handleButtonClick(e) {
         e.stopPropagation()
-        const name = document.getElementsByName('menu-title')[0].innerText
-        const description = document.getElementsByName('menu-description')[0].innerText
+        const name = document.getElementsByName('menu-title')[0].value
+        const description = document.getElementsByName('menu-description')[0].value
         const payload = {
             name,
             description
         }
+
+        // may need to check for empty strings or invalid characters
+
         saveUpdate(payload)
         closeMenu()
     }
@@ -92,18 +108,38 @@ function PlaylistEditMenu({id, image, title, description, closeMenu}) {
     function saveUpdate(updatePayload) {
         spotifyApi.modifyPlaylistDetails(id, updatePayload)
         refreshPlaylist() // so I think it actually takes a little bit of time to modifications to set in
+
+        // some notification that it may take a few minutes for updates to take effect
     }
 
+    function handleTitleChange(e) {
+        setTitleInputVal(e.target.value)
+    }
     return (
         <div onClick={(e) => handleClick(e)}className="playlist-edit-menu">
-            <img className="image--med" src={image ? image: DefaultImage}/>
-            <div className="flex flex-col">
-                <div className="playlist-edit-menu__input">
-                    <p name="menu-title" contentEditable={true} >{title}</p>
-                </div>
-                <div className="playlist-edit-menu__input">
-                    <p name="menu-description" contentEditable={true}>{description}</p>
-                </div>
+            <div className="flex flex-col w-full">
+                <img className="image--med" src={image ? image: DefaultImage}/>
+                <button>Upload image</button>
+            </div>
+
+
+            <div className="flex flex-col w-full max-w-full gap-[10px]">
+                <input 
+                    name="menu-title"
+                    className="playlist-edit-menu__title"
+                    onChange={(e) => handleTitleChange(e)} 
+                    value={titleInputVal}/>
+                <textarea 
+                    name="menu-description"
+                    maxLength="160"
+                    className="playlist-edit-menu__textarea">
+                    {description ? description : "Enter a description of your playlist"
+                    }
+                </textarea>
+
+                {/* Add tags later? */}
+
+                {/* Button should be its own thing maybe */}
                 <button onClick={(e) => handleButtonClick(e)}className="button green">Save</button>
             </div>
         </div>

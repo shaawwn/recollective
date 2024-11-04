@@ -142,6 +142,12 @@ export default function useWebplayer() {
     }
 
     useEffect(() => {
+        const cleanup = () => {
+            if (player.current) {
+                console.log("Disconnecting player");
+                disconnect(); // Ensure disconnect runs fully
+            }
+        };
         const webplayerScript = document.querySelector('#spotify-webplayer-sdk') // this has been hardcoded into the base html file, so it will always exist
         if(user?.spotify.product === 'premium') {
             setPremium(true)
@@ -150,11 +156,11 @@ export default function useWebplayer() {
         }
 
 
-        if(player.current) {
-            // player.current *can* = undefined, so need to make this check more robust
-            console.log("disconnecting player")
-            disconnect() 
-        }
+        // if(player.current) {
+        //     // player.current *can* = undefined, so need to make this check more robust
+        //     console.log("disconnecting player")
+        //     disconnect() 
+        // }
 
         if(accessToken && spotifyPlayerApi) {
 
@@ -175,7 +181,7 @@ export default function useWebplayer() {
             setWebplayback(p)
         }
 
-
+        return cleanup
     }, [accessToken, spotifyPlayerApi])
 
     return {webPlayback, player, is_paused, is_active, current_track, appDeviceId, activeDevices, setActiveDevices}

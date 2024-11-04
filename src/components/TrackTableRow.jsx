@@ -4,18 +4,22 @@ import DefaultImage from '../assets/images/default.png'
 import {msToMinutesAndSeconds} from '../utils/utils'
 import {useApiContext} from '../context/ApiContext'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {faPlay, faTrashCan} from '@fortawesome/free-solid-svg-icons'
+import {faPlay, faTrashCan, faCirclePlus} from '@fortawesome/free-solid-svg-icons'
 
-import {useDashboardContext, usePlaylistContext, useAlbumContext, useWebplayerContext} from '../Dashboard'
+import {useDashboardContext, usePlaylistContext, useWebplayerContext} from '../Dashboard'
 
 // I need to make this more robust in its check, because of the nested nature of the playlist tool, a PLAYLIST will exist, which triggers that.
 export default function TrackTableRow({track, type}) {
-    console.log("row track", track)
+
+    // type = album, playlist, explore (explore tracks are found in search results and can be added to playlists)
     const {spotifyPlayerApi} = useApiContext()
     const {activeDevices} = useWebplayerContext() || {}
     const {setAlbumView, setArtistView, addPage} = useDashboardContext()
-    const {playlist, removeFromPlaylist} = usePlaylistContext() || {}
-    const {album} = useAlbumContext() || {}
+    const {playlist, removeFromPlaylist, addToPlaylist} = usePlaylistContext() || {}
+
+
+    // this is unnecessary as type is checked in props and album/playlist track rendering is the same
+    // const {album} = useAlbumContext() || {}
 
     
     function handleNavClick(type, id) {
@@ -31,26 +35,15 @@ export default function TrackTableRow({track, type}) {
     }
 
     function play() {
-        // ok so there is a difference between playing a single track, and starting an album
-
         // use recollective as default
         const activeDeviceID= activeDevices.find(device => device.name === "RecollectiveApp");
         let offset;
         let context;
 
-        // so a -1 means it was NOT in the array
-        // if(playlist) {
-        //     console.log("Playlist TRCK")
-        //     offset = playlist.tracks.indexOf(track)
-        // } else if(album) {
-        //     console.log("TRCK", track)
-        //     offset = album.tracks.indexOf(track)
-        // } 
-        // console.log("OFFSET", track)
 
         switch (type) {
             case "playlist":
-                console.log("playlist offset")
+                console.log("playlist offset", playlist)
                 if(playlist) {
                     context = playlist.overview.uri
                 }
@@ -58,22 +51,56 @@ export default function TrackTableRow({track, type}) {
                 break
             case "album":
                 console.log("album offset", track.track_number)
-                offset = track.track_number - 1 // offset works from 0 index, so album track - 1
+                offset = track.track_number - 1 
                 context = track.album.uri 
                 break
+            case "explore":
+                // explore, for now, is limited to Albums, but I should consider it for playlist
+                console.log("Explore case", track)
+                if(track?.track_number) {
+                    offset = track.track_number - 1
+                    context = track.album.uri
+                } else {
+                    offset = playlist.tracks.indexOf(track)
+                    context = playlist.overview.uri
+                } break
             default:
                 console.error("Unknown type, unable to calculate offset");
                 break
-                // return; // or handle error as needed
         }
-
-        // another problem here
-
-        // const context = playlist?.overview.uri || album?.overview.uri || ''
-
         spotifyPlayerApi.play(context, [], offset, activeDeviceID.id)
     }
 
+    function renderAddRemoveButton() {
+        switch (type) {
+            case "album":
+                // do nothing
+                return
+            case "playlist":
+                // render trashcan
+                return(
+                    <div className="track-table__cell vertical-center">
+                    <FontAwesomeIcon 
+                    icon={faTrashCan}
+                    onClick={() => removeFromPlaylist({uri:track.uri})}
+                    className="red"
+                    size="1x"
+                />
+                </div>
+                )
+            case "explore":
+                // render add button
+                return (                
+                    <div className="track-table__cell vertical-center" style={{"text-align": "center"}}>
+                        <FontAwesomeIcon 
+                            icon={faCirclePlus}
+                            onClick={() => addToPlaylist(track.uri)}
+                            className="add-button"
+                        />
+                    </div>
+                )
+        }
+    }
 
     return(
         <div className="track-table-search__row">
@@ -87,7 +114,7 @@ export default function TrackTableRow({track, type}) {
                         <img className="image--xs" src={track.album.images ? track.album.images[0].url : DefaultImage} />
                     </div>
                 </div>
-            :<div className="track-table__cell">
+            :<div className="track-table__cell justify-right">
                 <FontAwesomeIcon 
                     onClick={() => play()}
                     icon={faPlay} 
@@ -111,17 +138,8 @@ export default function TrackTableRow({track, type}) {
             </div>
 
             {/* So if it is IN a playlist, include the Trashcan, if it is NOT in playlist (and not a bin) include add to playlist */}
-            {playlist ? 
-                <div className="track-table__cell vertical-center">
-                    <FontAwesomeIcon 
-                    icon={faTrashCan}
-                    onClick={() => removeFromPlaylist({uri:track.uri})}
-                    className="red"
-                    size="1x"
-                />
-                </div>
-            :null
-            }
+
+            {renderAddRemoveButton()}
         </div>
     )
 }
@@ -129,6 +147,5 @@ export default function TrackTableRow({track, type}) {
 
 TrackTableRow.propTypes = {
     track: PropTypes.object.isRequired,
-    // playlist: PropTypes.object.isRequired,
     type: PropTypes.string.activeDevices
 }

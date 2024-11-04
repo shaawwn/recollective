@@ -2,6 +2,7 @@ import {useRef, useState} from 'react'
 import PropTypes from 'prop-types'
 import {useDashboardContext} from '../Dashboard'
 import DefaultImage from '../assets/images/default.png'
+import RecordBin from '../assets/images/recordbin.png'
 import {InfoPopup} from './barrel'
 /**
  * 
@@ -10,7 +11,7 @@ import {InfoPopup} from './barrel'
  * Add an option for "see more" or "browse all" that then changes to a new view with an infinitel scrolling grid
  */
 
-export default function StaticGrid({items}) {
+export default function StaticGrid({items, GridComponent}) {
 
     // set grids size with 'size' (20, 30, 10, etc)
 
@@ -25,7 +26,7 @@ export default function StaticGrid({items}) {
     return(
         <section className="static-grid panel">
             {items.slice(0, itemsNum).map((item, index) => 
-                <GridItem 
+                <GridComponent
                     currentPop={currentPopup.current}
                     key={index + item.name}
                     item={item}/>
@@ -34,96 +35,96 @@ export default function StaticGrid({items}) {
     )
 }
 
-export function GridItem({item}) {
+// export function GridItem({item}) {
 
-    const {setPlaylistView, setAlbumView, setBinView, addPage} = useDashboardContext() || {}
+//     const {setPlaylistView, setAlbumView, setBinView, addPage} = useDashboardContext() || {}
 
-    // there can only be on popupat a time, so if a grid item is NOT hovered over, it should be logically impossible for a popup to appear
+//     // there can only be on popupat a time, so if a grid item is NOT hovered over, it should be logically impossible for a popup to appear
 
-    const [isHovered, setIsHovered] = useState(false)
-    const imageRef = useRef()
-    const delay = useRef()
-    const imageCoords = useRef()
+//     const [isHovered, setIsHovered] = useState(false)
+//     const imageRef = useRef()
+//     const delay = useRef()
+//     const imageCoords = useRef()
 
-    function togglePopup() {
+//     function togglePopup() {
 
-        const rect = getImageCoords()
+//         const rect = getImageCoords()
 
-        imageCoords.current = rect
+//         imageCoords.current = rect
 
-        if(delay.current) {
-            clearTimeout(delay.current)
-        }
+//         if(delay.current) {
+//             clearTimeout(delay.current)
+//         }
 
-        delay.current = setTimeout(() => {
-            //
-            setIsHovered(true)
-        }, 500)
-    }
+//         delay.current = setTimeout(() => {
+//             //
+//             setIsHovered(true)
+//         }, 500)
+//     }
 
-    function clearPopup() {
-        clearTimeout(delay.current)
-        setIsHovered(false)
-    }
+//     function clearPopup() {
+//         clearTimeout(delay.current)
+//         setIsHovered(false)
+//     }
 
-    function renderPopup() {
-        // get x/y coords of image
-        return <InfoPopup item={item} coords={imageCoords.current}/>
-    }
+//     function renderPopup() {
+//         // get x/y coords of image
+//         return <InfoPopup item={item} coords={imageCoords.current}/>
+//     }
 
-    function getImageCoords() {
-        if (imageRef.current) {
-            const rect = imageRef.current.getBoundingClientRect();
-            return rect
-        }
-    }
+//     function getImageCoords() {
+//         if (imageRef.current) {
+//             const rect = imageRef.current.getBoundingClientRect();
+//             return rect
+//         }
+//     }
 
    
 
-    function handleClick() {
-        switch(item.type) {
-            case 'playlist':
-                setPlaylistView(item.id)
-                addPage('playlist', item.id)
-                return
-            case 'album':
-                setAlbumView(item.id)
-                addPage('album', item.id)
-                return
-            case 'bin':
-                setBinView(item._id)
-                addPage('bin', item._id)
-                return
-            default:
-                alert("Error")
-                return
-        }
-    }
+//     function handleClick() {
+//         switch(item.type) {
+//             case 'playlist':
+//                 setPlaylistView(item.id)
+//                 addPage('playlist', item.id)
+//                 return
+//             case 'album':
+//                 setAlbumView(item.id)
+//                 addPage('album', item.id)
+//                 return
+//             case 'bin':
+//                 setBinView(item._id)
+//                 addPage('bin', item._id)
+//                 return
+//             default:
+//                 alert("Error")
+//                 return
+//         }
+//     }
 
-    return(
-        <div 
-            onClick={handleClick} 
-            onMouseEnter={togglePopup}
-            onMouseLeave={clearPopup}
-            className="static-grid--item">
-            <img 
-                ref={imageRef}
-                className="image--med rounded-[10px] hover" 
-                src={
-                item.images ?
-                item.images[0].url : DefaultImage
-            }/>
-            {isHovered &&
-                renderPopup()
-            }
-        </div>
-    )
-}
+//     return(
+//         <div 
+//             onClick={handleClick} 
+//             onMouseEnter={togglePopup}
+//             onMouseLeave={clearPopup}
+//             className="static-grid--item">
+//             <img 
+//                 ref={imageRef}
+//                 className="image--med rounded-[10px] hover" 
+//                 src={
+//                 item.images ?
+//                 item.images[0].url : DefaultImage
+//             }/>
+//             {isHovered &&
+//                 renderPopup()
+//             }
+//         </div>
+//     )
+// }
 
 StaticGrid.propTypes = {
     items: PropTypes.array.isRequired,
 }
 
-GridItem.propTypes = {
-    item: PropTypes.object.isRequired
-}
+// GridItem.propTypes = {
+//     item: PropTypes.object.isRequired
+// }

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import {StaticGrid} from '../barrel'
+import {StaticGrid, GridItem} from '../barrel'
 export default function ArtistPage({artist}) {
 
 
@@ -11,7 +11,7 @@ export default function ArtistPage({artist}) {
                     <ArtistPageHeader image={artist.artist.images[0].url} name={artist.artist.name}/>
 
                     <h2>{artist.artist.name}'s albums</h2>
-                    <StaticGrid items={artist.albums.items}/>
+                    <StaticGrid items={artist.albums.items} GridComponent={GridItem}/>
                 </>
             :<h1>Loading</h1>}
            

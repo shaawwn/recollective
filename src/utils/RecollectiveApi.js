@@ -73,9 +73,55 @@ export default class RecollectiveApi {
     }
 
     async removeFromBin(id) {
-
+  
     }
 
+    async deleteBin(id) {
+        console.log("Making bin delete request.", this.apiUrl)
+        return fetch(this.apiUrl + `/bins/${id}`, {
+            method: "DELETE",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                userID: this.userID
+            })
+        }).then((response) => {
+            if(!response.ok) {
+                throw new Error ("error deleting bin")
+            }
+            return response.json() 
+        }).then((data) => {
+            console.log("Successfully deleted bin.", data)
+        }).catch((err) => {
+            console.log("Err: ", err)
+        })
+    }
+
+    async modifyBinDetails(id, name) {
+        // BIN ID is id, userID is in payload, along with name
+        fetch(this.apiUrl + `/bins/${id}`, {
+            method: "PUT",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                userID: this.userID,
+                name
+            })
+        }).then((response) => {
+            if(!response.ok) {
+                throw new Error ("Error modifying bin details")
+            }
+            return response.json()
+        }).then((data) => {
+            console.log("bin modify response", data)
+        }).catch((err) => {
+            console.log("Err: ", err)
+        })
+    }
     async startBinPlayback(bin) {
 
         // handle logic for generating random track playlists, and then passing that on to spotify.

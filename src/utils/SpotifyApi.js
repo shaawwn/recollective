@@ -87,7 +87,7 @@ export default class SpotifyApi {
     }
 
     modifyPlaylistDetails(id, payload) {
-        
+        console.log("Payload", payload)
         fetch(this.apiUrl + `playlists/${id}`, {
             method: "PUT",
             headers: {

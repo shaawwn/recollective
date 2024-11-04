@@ -16,9 +16,11 @@
 
   --spotify-black: #191414;
   --spotify-black--light: #2e2929;
+  --spotify-black--verylight: #524e4e;
   --spotify-green: #1DB954;
   --spotify-green--hover: #34e472;
   --spotify-white: #FFFFFF;
+  --spotify-white--light:rgba(255, 255, 255, 0.8);
   --hover-white: rgba(255, 255, 255, 0.7);
   --hover-dark: rgba(255, 255, 255, 0.1);
   width: 100%;
@@ -54,7 +56,7 @@ h1 {
 .button {
   width: 100px;
   padding: .25rem;
-  margin: auto;
+  /* margin: auto; */
   border-radius: 5px;
   font-size: 1rem;
   text-align:center;
@@ -62,6 +64,13 @@ h1 {
 
 .button-small {
 
+}
+
+.add-button {
+  width: 25px;
+  height: 25px;
+  color: var(--spotify-green);
+  /* margin: auto; */
 }
 
 .green {
@@ -167,6 +176,19 @@ button:focus-visible {
   font-weight: bold
 }
 
+.view-header {
+  display: flex;
+  flex-direction: column;
+  /* background-color: red; */
+}
+
+.view-header__buttons {
+  display: flex;
+  gap: 25px;
+  /* justify-content: flex-start; */
+  /* width: 50%; */
+  /* background-color: red; */
+}
 .tab {
   border-top-left-radius: 10px;
   border-top-right-radius:10px;
@@ -271,20 +293,73 @@ button:focus-visible {
   left: 0px;
 }
 
+/* .popup {
+  z-index: 10
+}
+
+.info-popup {
+  cursor: normal;
+  position: fixed;
+  top: 0px;
+  left: 120px;
+  width: 250px;
+  padding: .5rem;
+  background-color: var(--spotify-black--light);
+  border-radius: 10px;
+} */
+
 .playlist-edit-menu {
-  width: 50%;
+  width: 25%;
   height: 30%;
-  /* background-color: red; */
+  background-color: var(--spotify-black--light);
   display: flex;
   flex-direction: row;
   padding: 1rem;
   margin: auto;
   margin-top: 10%;
+  border-radius: 10px;
 }
 
 .playlist-edit-menu__input {
   width: 100%;
-  /* background-color: blue; */
+  background-color: var(--spotify-black--verylight);
+  cursor: text;
+  border: 1px solid transparent;
+}
+
+.playlist-edit-menu__max {
+  /* width: 200px; */
+  /* max-width: 100%; */
+  width: 100%;
+  overflow-x: auto;
+}
+
+.playlist-edit-menu__textarea {
+  width: 100%;
+  min-height: 75px;
+  background-color: var(--spotify-black--verylight);
+  color: var(--spotify-white--light);
+  cursor: text;
+  border: 2px solid transparent;
+  resize: none;
+  border-radius: 5px;
+}
+
+.playlist-edit-menu__title {
+  background-color: var(--spotify-black--verylight);
+  border: 2px solid transparent;
+  border-radius: 5px;
+  width: 100%;
+  min-height: 25px;
+  white-space: nowrap; 
+  overflow-x: auto;
+  overflow-y: hidden; 
+}
+
+.playlist-edit-menu__title:focus,
+.playlist-edit-menu__textarea:focus { 
+    border-color: var(--spotify-green);
+    outline: none;
 }
 
 .playlist-edit-menu__input:focus {
@@ -419,6 +494,7 @@ button:focus-visible {
 
 .track-table__header {
   display: flex;
+  justify-content: space-between;
 }
 
 .track-table__rows {
@@ -466,6 +542,15 @@ button:focus-visible {
 .track-table-search__cell {
   
 }
+
+.track-table__cell-add {
+  display: flex;
+  flex-direction: row;
+  gap: 25px;
+  /* line-height: 50px; */
+}
+
+
 .circle {
   width: 60px;
   height: 60px;

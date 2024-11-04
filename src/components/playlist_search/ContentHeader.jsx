@@ -5,7 +5,7 @@ import {usePlaylistBuilderContext, useBinManagerContext} from './barrel'
 import {useBinComponentContext} from '../views/Bin'
 
 export default function ContentHeader({content}) {
-    console.log("CONTENT", content)
+
     const binContext = useBinManagerContext()
     const playlistBuilderContext = usePlaylistBuilderContext()
     const binComponentContext = useBinComponentContext()

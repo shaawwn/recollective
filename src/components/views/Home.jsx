@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import {SingleRowGrid, StaticGrid} from '../barrel'
-
+// import {GridItem} from '../StaticGrid'
+import {GridItemBin, GridItem} from '../barrel'
 
 // Home is the default view for a user that displays
 /**
@@ -23,15 +24,15 @@ export default function Home({playlists, albums, bins}) {
                     {bins.length > 0 ? 
                         <>
                             <h3 className="panel__title">Bins</h3>
-                            <StaticGrid items={bins} />
+                            <StaticGrid items={bins} GridComponent={GridItemBin}/>
                         </>
                     :null
                     }
 
                     <h3 className="panel__title">Playlists</h3>
-                    <StaticGrid items={playlists} />
+                    <StaticGrid items={playlists} GridComponent={GridItem}/>
                     <h3 className="panel__title">Albums</h3>
-                    <StaticGrid items={albums} />
+                    <StaticGrid items={albums} GridComponent={GridItem}/>
 
                     {/* Bins should be visually distinct I think */}
                 </>

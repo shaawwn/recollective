@@ -4,6 +4,8 @@ import {TrackTable} from '../barrel'
 import {ContentHeader} from './barrel'
 
 export default function PlaylistTracks({playlist}) {
+    
+    console.log("PLAYLIST", playlist)
     return(
         <div>
             {playlist ? 
