@@ -6,8 +6,8 @@ import DefaultImage from '../assets/images/default.png'
 import {useDashboardContext} from '../Dashboard'
 
 export default function GridItem({item}) {
-
-    const {setPlaylistView, setAlbumView, setBinView, addPage} = useDashboardContext() || {}
+    console.log("GRID ITEM", item)
+    const {setPlaylistView, setAlbumView, setBinView, setArtistView, addPage} = useDashboardContext() || {}
 
     // there can only be on popupat a time, so if a grid item is NOT hovered over, it should be logically impossible for a popup to appear
 
@@ -64,6 +64,10 @@ export default function GridItem({item}) {
             case 'bin':
                 setBinView(item._id)
                 addPage('bin', item._id)
+                return
+            case 'artist':
+                setArtistView(item.id)
+                addPage('artist', item.id)
                 return
             default:
                 alert("Error")

@@ -5,8 +5,11 @@ import DefaultImage from '../../../assets/images/default.png'
 
 // Named PlaylistBuilderGridItem to avoid confusion with GridItem
 
-export default function PlaylistBuilderGridItem({item}) {
+// 
 
+export default function PlaylistBuilderGridItem({item}) {
+    // item is the playlist
+    console.log("PLAYLIST GRID ITEM", item)
     const binContext = useBinManagerContext()
     const playlistBuilderContext = usePlaylistBuilderContext()
 

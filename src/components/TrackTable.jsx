@@ -6,41 +6,27 @@ import PropTypes from 'prop-types'
 
 // import {useDashboardContext, usePlaylistContext} from '../Dashboard'
 
+// here is the crux of the issue, I think I just need to pass the object directly to trackTable. 
+
 import {TrackTableRow} from './barrel'
 
-export default function TrackTable({type, tracks}) {
-    console.log("TABLE TRACK", tracks)
+export default function TrackTable({content, type, tracks}) {
+    // console.log("TABLE TRACK", content)
     // removed this since type checking is now done with props
     // const {playlist} = usePlaylistContext() || {} // this is for checking if playlist exists, which needs extra functionality like adding/removing 
 
     return(
         <section className="track-table">
-            {/* <div className="track-table__header">
-                <div className="track-table__cell">
-                    <p>Play</p>
-                </div>
-                <div className="track-table__cell">
-                    <p>Track</p>
-                </div>
-                <div className="track-table__cell">
-                    <p>Artist</p>
-                </div>
-                <div className="track-table__cell">
-                    <p>Album</p>
-                </div>
-                <div className="track-table__cell" style={{"textAlign":"right"}}>
-                    <p>Duration</p>
-                </div>
-                {type === 'playlist' || type === 'explore' ? 
-                    <div className="track-table__cell">
-                    <p>  </p>
-                    </div>
-                :null}
-            </div> */}
             <hr></hr>
             <div className="track-table__rows">
-                {tracks.map((track, index) => 
-                    <TrackTableRow key={track.name + index}track={track} type={type}/>
+                {content.tracks.map((track, index) => 
+                    <TrackTableRow 
+                        key={track.name + index}
+                        context={content.overview.uri}
+                        track={track} 
+                        type={type}
+                        offset={tracks.indexOf(track)}
+                    />
                 )}
             </div>
 
@@ -54,3 +40,28 @@ TrackTable.propTypes = {
     type: PropTypes.string.isRequired,
     tracks: PropTypes.array.isRequired
 }
+
+
+// HEADER FOR TABLE, REMOVED FOR STYLING AND LAYOUT ISSUES BUT MAY ADD AGAIN LATER
+{/* <div className="track-table__header">
+    <div className="track-table__cell">
+        <p>Play</p>
+    </div>
+    <div className="track-table__cell">
+        <p>Track</p>
+    </div>
+    <div className="track-table__cell">
+        <p>Artist</p>
+    </div>
+    <div className="track-table__cell">
+        <p>Album</p>
+    </div>
+    <div className="track-table__cell" style={{"textAlign":"right"}}>
+        <p>Duration</p>
+    </div>
+    {type === 'playlist' || type === 'explore' ? 
+        <div className="track-table__cell">
+        <p>  </p>
+        </div>
+    :null}
+</div> */}

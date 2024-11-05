@@ -1,8 +1,8 @@
 import React, {useState, useContext} from 'react'
 
-import {useSearch, useAlbum, useArtist} from '../../../hooks/barrel'
+import {useSearch, useAlbum, useArtist, usePlaylist} from '../../../hooks/barrel'
 // import {MainViewport, Search} from '../barrel'
-import {PlaylistBuilderSearch, TrackTableSearch, ArtistTable, ArtistPage, AlbumsTable, AlbumTracks, SearchHistoryNavigator, RecommendedTracks} from '../barrel'
+import {PlaylistBuilderSearch, TrackTableSearch, ArtistTable, ArtistPage, AlbumsTable, AlbumTracks, PlaylistTable, PlaylistTracks, SearchHistoryNavigator, RecommendedTracks} from '../barrel'
 
 import useSearchHistory from '../useSearchHistory'
 
@@ -33,6 +33,11 @@ export default function PlaylistBuilder() { // ContentDigger
     const {setAlbumID, album} = useAlbum()
     // const {playlistID, playlist} = usePlaylist()
     const {artist, setArtistID} = useArtist()
+    const {playlist, setPlaylistID} = usePlaylist() // this is builder playlist
+
+    // const {playlist: explorePlaylist, setPlaylistID: setExplorePlaylistID} = usePlaylist()
+
+
     const {history, addPage, getPrevious, getNext, setCurrentHistory} = useSearchHistory('tracks')
 
     function renderBuilderView() {
@@ -48,10 +53,10 @@ export default function PlaylistBuilder() { // ContentDigger
             case 'artist': // NOT artist's' and this are different hitories
                 return <ArtistPage artist={artist}/>
             case 'playlists':
-                return
+                return <PlaylistTable playlists={searchResults.playlists.items} />
             case 'playlist':
                 // can *view* track content of a playlist, but can only add the whole playlist to a bin
-                return
+                return <PlaylistTracks playlist={playlist} />
         }
     }
 
@@ -70,6 +75,8 @@ export default function PlaylistBuilder() { // ContentDigger
                 setBuilderView('artists')
                 return
             case 'playlists':
+                addPage('playlists', null)
+                setBuilderView('playlists')
                 return
         }
     }
@@ -81,7 +88,10 @@ export default function PlaylistBuilder() { // ContentDigger
                 setBuilderView,
                 setAlbumID,
                 setArtistID,
-                addPage
+                setPlaylistID,
+                addPage,
+                // explorePlaylist,
+                // setExplorePlaylistID
             }}>
                 <PlaylistBuilderSearch 
                     setBuilderView={setBuilderView} builderView={builderView} 
@@ -108,6 +118,9 @@ export default function PlaylistBuilder() { // ContentDigger
                             </div>
                             <div className="tab">
                                 <p onClick={() => handleClick('artists')}>Artists</p> 
+                            </div>
+                            <div className="tab">
+                                <p onClick={() => handleClick('playlists')}>Playlists</p> 
                             </div>
                         </div>
                         {renderBuilderView()}

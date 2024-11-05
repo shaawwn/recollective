@@ -9,7 +9,10 @@ export default function AlbumTracks({album}) {
             {album ? 
                 <>  
                     <ContentHeader content={album}/>
-                    <TrackTable tracks={album.tracks} type="explore"
+                    <TrackTable 
+                        content={album}
+                        tracks={album.tracks} 
+                        type="explore"
                     />
                 </>
             :<h2>Loading album....</h2>

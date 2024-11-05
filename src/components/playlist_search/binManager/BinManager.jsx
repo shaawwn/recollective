@@ -71,6 +71,7 @@ export default function BinManager() {
             case 'playlists':
                 addPage('playlists', null)
                 setBuilderView('playlists')
+                return // this was missing?
         }
     }
 

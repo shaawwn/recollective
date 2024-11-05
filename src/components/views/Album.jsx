@@ -15,7 +15,10 @@ export default function Album({album}) {
                     title={album.overview.name}
                     owner={album.overview.artists[0].name} 
                 />
-                <TrackTable tracks={album.tracks} type="album"/>
+                <TrackTable 
+                    content={album}
+                    tracks={album.tracks} 
+                    type="album"/>
                 </>
             :<h1>Loading Album</h1>
             }
