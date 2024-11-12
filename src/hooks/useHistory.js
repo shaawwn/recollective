@@ -49,6 +49,13 @@ export default function useHistory() {
         history.current['current'] = page
     }
 
+    function removePage() {
+        // remove a page, such as in the case of deleting or unfollowing a playlist.
+        // presumably, the CURRENT node is the one that is to be deleted.
+        history.current['current'] = history.current['current'].previous
+        history.current['current'].next = null
+    }
+
     function getPrevious() {
         return history.current['current'].previous
     }
@@ -66,5 +73,5 @@ export default function useHistory() {
     }, [])
 
 
-    return {history, addPage, getPrevious, getNext, setCurrentHistory}
+    return {history, addPage, removePage, getPrevious, getNext, setCurrentHistory}
 }

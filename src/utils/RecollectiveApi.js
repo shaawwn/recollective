@@ -122,6 +122,7 @@ export default class RecollectiveApi {
             console.log("Err: ", err)
         })
     }
+
     async startBinPlayback(bin) {
 
         // handle logic for generating random track playlists, and then passing that on to spotify.
@@ -191,6 +192,7 @@ function getBinPlaylist(pool) {
 function parseSpotifyId(uri) {
     return uri.split(':')[2]
 }
+
 function parseUriType(uri) {
     // return the uri type album or playlist
     return uri.split(":")[1]

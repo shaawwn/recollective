@@ -63,32 +63,8 @@ export default function useBinPlayback(bin) {
     
         const flatTracks = tracks.flat();
     
-        console.log("tracks", flatTracks);
         return flatTracks;
     }
-    
-    // function _genPlaylist(pool) {
-    //     // put all the pieces together
-    //     let tracks = pool.map(async (item) => {
-    //         if(item.tracks.items.length > 50) {
-    //             // use offset to make sure tracks after 50 can be included in the playlist
-    //             const offset = item.total - 50
-    //             fetchPlaylistItemsWithOffset(offset, item.id).then((response) => {
-    //                 const items = response.items
-    //                 console.log("reutrn value for fetch", items)
-         
-    //                 return items.map(track => track.track.uri)
-    //             })
-    //         } 
-    //         // return item.tracks.items.map(track => track.uri)
-    //     }).flat()
-
-    //     console.log("tracks", tracks)
-    //     return tracks
-    //     // spotify limit for uris for playback is 100?
-    //     // split the final tracks up to limit the amount of data being passed to spotify, 20 track chunks?
-
-    // }
 
     async function getPoolObjects(pool) {
         let returnedPoolObjects = []
@@ -175,7 +151,7 @@ export default function useBinPlayback(bin) {
         // in the case of playlist with > 50 items, fetch with an offset
 
         // lets say a playlist has 85 tracks. Spotify will return the first 50 by default, and I want to get 50 tracks. So the offset needs to be min 0 and max length - 50? So an offset of 35 would return tracks 35-85
-        console.log("Fetching with offset", offset)
+        // console.log("Fetching with offset", offset)
 
         try {
             const response = await spotifyApi.getPlaylistItems(offset, id)
@@ -195,25 +171,28 @@ export default function useBinPlayback(bin) {
         }
 
     }
-    async function fetchAlbums(albums) {
+    
+    // async function fetchAlbums(albums) {
 
-        if(albums.length > 0) {
-            try {
-                const response = await spotifyApi.getSeveralAlbums(albums)
+    //     if(albums.length > 0) {
+    //         try {
+    //             const response = await spotifyApi.getSeveralAlbums(albums)
 
-                if(!response) {
-                    throw new Error ("error fetching several alums")
-                }
+    //             if(!response) {
+    //                 throw new Error ("error fetching several alums")
+    //             }
 
-                return response.albums
-            } catch (err){
-                console.log("err ", err)
-                return []
-            }
-        } else {
-            return []
-        }
+    //             return response.albums
+    //         } catch (err){
+    //             console.log("err ", err)
+    //             return []
+    //         }
+    //     } else {
+    //         return []
+    //     }
 
-    }
+    // }
+
+
     return {startPlayback}
 }

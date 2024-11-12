@@ -73,6 +73,7 @@ h1 {
   /* margin: auto; */
 }
 
+
 .green {
   background-color: var(--spotify-green);
   color: var(--spotify-white);
@@ -122,9 +123,19 @@ button:focus-visible {
 	cursor: pointer;
 }
 
+.playback-btn--small {
+  color: var(--spotify-white);
+}
+
+.playback-btn--small:hover {
+  color: var(--spotify-white--light);
+
+}
+
 .play-btn {
   padding-left: .9rem;
 }
+
 
 .pause-btn {
   text-align: center;
@@ -185,9 +196,6 @@ button:focus-visible {
 .view-header__buttons {
   display: flex;
   gap: 25px;
-  /* justify-content: flex-start; */
-  /* width: 50%; */
-  /* background-color: red; */
 }
 .tab {
   border-top-left-radius: 10px;
@@ -380,9 +388,9 @@ button:focus-visible {
 }
 /* MAIN VIEWPORT */
 .main-viewport {
-  /* width 785 in mock */
-  /* max-width: 910px; */
-  width: 80%;
+
+  /* Toggle between 100 and 80 depending on if feed is actuive */
+  width: 100%;
 }
 /* FEED */
 .feed {
@@ -413,7 +421,8 @@ button:focus-visible {
 }
 
 .static-grid--item {
-  border-radius: 35px;
+  /* border-radius: 35px; */
+  /* border-radius: 2px; */
   transition: 0.2s;
 }
 

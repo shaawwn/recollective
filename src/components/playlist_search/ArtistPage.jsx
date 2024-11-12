@@ -1,7 +1,11 @@
 import PropTypes from 'prop-types'
 import {GridItem} from './barrel'
 
-import {usePlaylistContext} from '../../Dashboard'
+import {usePlaylistContext, useWebplayerContext} from '../../Dashboard'
+import {useApiContext} from '../../context/ApiContext'
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {faPlay} from '@fortawesome/free-solid-svg-icons'
 
 export default function ArtistPage({artist}) {
 
@@ -21,13 +25,34 @@ export default function ArtistPage({artist}) {
 function ArtistPageTopTracks({tracks}) {
 
     const {addToPlaylist} = usePlaylistContext()
-    console.log("")
+    const {spotifyPlayerApi} = useApiContext() || {}
+    const {activeDevices} = useWebplayerContext() || {}
+
+    // no need context, it is just the track to play
+
+    function play(uri) {
+        const activeDeviceID= activeDevices.find(device => device.name === "RecollectiveApp");
+
+        spotifyPlayerApi.play(null, [uri], null, activeDeviceID)
+    }
+
     return(
         <div>
             <div className="flex flex-col">
                 {tracks.map((track, index) =>
-                    <div key={track.id + index}className="flex justify-between">
-                        <p >{track.name}</p>
+                    <div key={track.id + index}className="flex">
+                        {/* container for play btn plus track name */}
+                        <div className="flex w-1/2">
+                            <div className="track-table__cell justify-right">
+                            <FontAwesomeIcon 
+                                onClick={() => play()}
+                                icon={faPlay} 
+                                className="p-5 playback-btn--small"/>
+                            </div>
+                            <div className="track-table__cell vertical-center bg-red-400">
+                                <p>{track.name}</p>
+                            </div>
+                        </div>
                         <button onClick={() => addToPlaylist(track.uri)} className="green">_Add</button>
                     </div>
                 )}

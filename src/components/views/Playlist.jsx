@@ -41,7 +41,9 @@ export default function Playlist({playlist}) {
 
 function PlaylistHeader({id, image, title, name, description, isOwner}) {
     const [editMode, setEditMode] = useState(false)
-
+    const {spotifyApi} = useApiContext() || {}
+    const {getPlaylists} = usePlaylistContext() || {}
+    const {setHomeView, removePage} = useDashboardContext() || {}
 
     function toggleEditMode() {
         setEditMode(!editMode)
@@ -49,8 +51,16 @@ function PlaylistHeader({id, image, title, name, description, isOwner}) {
 
     function deletePlaylist(e) {
         e.stopPropagation()
-        console.log("Deleting playlist")
+        spotifyApi.unfollowPlaylist(id)
+        removePage() 
+
+        // delay to account for spotify completing the request
+        setTimeout(() => {
+            getPlaylists()
+            setHomeView()
+        }, 1000)
     }
+    
     return(
         <div className="view-header">
             {editMode === true ? 

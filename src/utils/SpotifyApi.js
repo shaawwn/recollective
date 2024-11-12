@@ -104,6 +104,24 @@ export default class SpotifyApi {
         })
     }
 
+    async unfollowPlaylist(playlistID) {
+        // *NOTE* there is no formal "delete" option with spotify, to effectively "delete" a playlist, the playlist creator must "unfollow" the playlist.
+        return fetch(this.apiUrl + `playlists/${playlistID}/followers`, {
+            method: "DELETE",
+            headers: {
+                'Authorization': `Bearer ${this.accessToken}`
+            }
+        }).then((response) => {
+            if(!response.ok){
+                throw new Error ("Error unfollowing or deleting playlist")
+            }
+            // returns a 200 response
+        }).then(() => {
+            console.log("Playlist unfollowed or deleted")
+        }).catch((err) => {
+            console.log("Err: ", err)
+        })
+    }
     // album related methods
     async getAlbum(id) {
         return fetch(this.apiUrl + `albums/${id}`, {

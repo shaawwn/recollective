@@ -1,12 +1,12 @@
 import {useState, useRef} from 'react'
 import PropTypes from 'prop-types'
+import {parseUriType} from '../utils/utils'
 import {InfoPopup} from './barrel'
 import DefaultImage from '../assets/images/default.png'
 
 import {useDashboardContext} from '../Dashboard'
 
 export default function GridItem({item}) {
-    console.log("GRID ITEM", item)
     const {setPlaylistView, setAlbumView, setBinView, setArtistView, addPage} = useDashboardContext() || {}
 
     // there can only be on popupat a time, so if a grid item is NOT hovered over, it should be logically impossible for a popup to appear
@@ -52,7 +52,17 @@ export default function GridItem({item}) {
    
 
     function handleClick() {
-        switch(item.type) {
+
+        // check if item.type, if not, use parseUriType, otherwise go to the switch
+        let type;
+        if(!item.type) {
+            // item.spotifyID is the id for bin content
+            type = parseUriType(item.uri)
+
+        } else {
+            type = item.type
+        }
+        switch(type) {
             case 'playlist':
                 setPlaylistView(item.id)
                 addPage('playlist', item.id)
@@ -83,10 +93,10 @@ export default function GridItem({item}) {
             className="static-grid--item">
             <img 
                 ref={imageRef}
-                className="image--med rounded-[10px] hover" 
+                className="image--med rounded-[2px] hover" 
                 src={
                 item.images ?
-                item.images[0].url : DefaultImage
+                item.images[0]?.url : DefaultImage
             }/>
             {isHovered &&
                 renderPopup()

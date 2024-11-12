@@ -1,8 +1,8 @@
-import React, {useState, useContext, useRef} from 'react'
+import React, {useState, useContext} from 'react'
 
 import Vinyl from './assets/images/vinyl.png'
 import { useUserContext} from './context/barrel.js'
-import { Sidebar, Navbar, MainViewport, Feed, Search, ModalOverlay, WebPlayer} from './components/barrel'
+import { Sidebar, Navbar, MainViewport, Feed, Search, WebPlayer} from './components/barrel'
 import {Home, Playlist, Bin, Album, SearchResults, ArtistPage} from './components/views/barrel'
 import {useAlbum, usePlaylist, useHistory, useSearch, useArtist, useBin, useBinsPlaylistsAlbums, useWebplayer} from './hooks/barrel'
 
@@ -42,10 +42,10 @@ export default function Dashboard() {
     const {setPlaylistID, playlist, refreshPlaylist, addToPlaylist, removeFromPlaylist, clearPlaylistState} = usePlaylist()
     const {setAlbumID, album, clearAlbumState} = useAlbum()
     const {setBinID, bin, addToBin, removeFromBin} = useBin()
-    const {history, addPage, getPrevious, getNext, setCurrentHistory} = useHistory()
+    const {history, addPage, removePage, getPrevious, getNext, setCurrentHistory} = useHistory()
     const {search, searchResults} = useSearch(setSearchResultsView)
 
-    const {bins, playlists, albums, getBins, getAlbums, getPlaylists} = useBinsPlaylistsAlbums()
+    const {bins, playlists, albums, getBins, getPlaylists} = useBinsPlaylistsAlbums() // removed getAlbums
 
 
     const {webPlayback, player, is_paused, is_active, current_track, appDeviceId, activeDevices, setActiveDevices} = useWebplayer()
@@ -69,6 +69,7 @@ export default function Dashboard() {
         search,
         history,
         addPage,
+        removePage,
         getPrevious,
         getNext,
         setCurrentHistory,
@@ -237,6 +238,9 @@ export default function Dashboard() {
                         </MainViewport>
                     </div> */}
                 </div>
+
+                {/* Toggle for testing */}
+                <Feed />
                 <WebPlayer player={webPlayback} />
             </div>
             // </div>

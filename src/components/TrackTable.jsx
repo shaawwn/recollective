@@ -10,9 +10,9 @@ import PropTypes from 'prop-types'
 
 import {TrackTableRow} from './barrel'
 
-export default function TrackTable({content, type, tracks}) {
-    // console.log("TABLE TRACK", content)
-    // removed this since type checking is now done with props
+export default function TrackTable({content, type}) {
+
+    // removed tracks prop
     // const {playlist} = usePlaylistContext() || {} // this is for checking if playlist exists, which needs extra functionality like adding/removing 
 
     return(
@@ -25,7 +25,7 @@ export default function TrackTable({content, type, tracks}) {
                         context={content.overview.uri}
                         track={track} 
                         type={type}
-                        offset={tracks.indexOf(track)}
+                        offset={content.tracks.indexOf(track)}
                     />
                 )}
             </div>

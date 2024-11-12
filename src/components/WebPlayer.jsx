@@ -128,7 +128,7 @@ function WebplayerControls({player, isActive}) {
 
 function ProgressBar() {
     const {current_track} = useWebplayerContext()
-
+    // console.log("CURRENT_TRACK", current_track)
     return(
         <div className="flex gap-[5px]">
         <p>6:50</p>

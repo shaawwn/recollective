@@ -29,7 +29,7 @@ export default function useBin() {
     async function addToBin(payload) {
         //id is playlist/album id
         // bin.overview._id is binID
-        console.log("adding to bin")
+        // console.log("adding to bin", payload)
         try {
             const response = await recollectiveApi.addToBin(bin.overview._id, payload)
             if(!response) {

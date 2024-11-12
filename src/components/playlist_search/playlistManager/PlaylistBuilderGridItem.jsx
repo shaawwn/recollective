@@ -8,8 +8,8 @@ import DefaultImage from '../../../assets/images/default.png'
 // 
 
 export default function PlaylistBuilderGridItem({item}) {
-    // item is the playlist
-    console.log("PLAYLIST GRID ITEM", item)
+    // item is the playlist or album 
+    // console.log("PLAYLIST GRID ITEM", item)
     const binContext = useBinManagerContext()
     const playlistBuilderContext = usePlaylistBuilderContext()
 
@@ -29,7 +29,7 @@ export default function PlaylistBuilderGridItem({item}) {
         switch(type) {
             case 'playlist':
                 setBuilderView('playlist')
-                setPlaylistID(item.id)
+                setPlaylistID(item.id) // this sets playlist from usePlaylist--NOT the dashboard level
                 return
             case 'album':
                 setBuilderView('albumTracks')

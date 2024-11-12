@@ -1,8 +1,11 @@
 import React, {useState, useContext} from 'react'
 
 import {useSearch, useAlbum, useArtist, usePlaylist} from '../../../hooks/barrel'
-// import {MainViewport, Search} from '../barrel'
-import {PlaylistBuilderSearch, TrackTableSearch, ArtistTable, ArtistPage, AlbumsTable, AlbumTracks, PlaylistTable, PlaylistTracks, SearchHistoryNavigator, RecommendedTracks} from '../barrel'
+
+// removed ArtistPage from playlist_search and used the main ArtistPage instead
+import {PlaylistBuilderSearch, TrackTableSearch, ArtistTable, AlbumsTable, AlbumTracks, PlaylistTable, PlaylistTracks, SearchHistoryNavigator, RecommendedTracks} from '../barrel'
+
+import {ArtistPage} from '../../views/barrel' 
 
 import useSearchHistory from '../useSearchHistory'
 

@@ -10,7 +10,7 @@ import {faPlay, faPause} from '@fortawesome/free-solid-svg-icons'
  * Display the search results (top tracks, artists, albums, etc)
  */
 export default function SearchResults({searchResults}) {
-    console.log("SEARCH RESULTS", searchResults)
+    // console.log("SEARCH RESULTS", searchResults)
     const filterType = useRef('artists')
     const results = useRef(searchResults.artists.items)
     const topResults = useRef()
@@ -31,32 +31,9 @@ export default function SearchResults({searchResults}) {
     function renderResults() {
         switch(filterType.current) {
             case "artists":
-                // default was to return artists that match results? Should a grid anyways?
-                // return (
-                //     <div className="static-grid">
-                //     {searchResults.artists ? 
-                //         <>
-                //             {searchResults.artists.items.map((artist, index) =>
-                //                 <div key={artist.id + index} onClick={() => handleClick(artist.id)}className="flex flex-col">
-                //                     <div className="static-grid--item">
-                //                         <img className="image--med" src={artist.images[0] ?
-                //                             artist.images[0].url : DefaultImage} />
-                //                     </div>
-                //                     <p>{artist.name}</p>
-                //                 </div>
-                //             )}
-                //         </>
-                //     :<h2>Loading artists...</h2>
-                //     }
-                    
-                // </div>
-                // )
+                // need some differnet behavir than "GRIDITEM" here, since Artists do not have the same playback features as albums or playlists, should just nav to artist page.
                 return <StaticGrid items={searchResults.artists.items} GridComponent={GridItem}/>
-                // <TrackTable 
-                //     content={searchResults}
-                //     tracks={searchResults.tracks.items}
-                //     type="expllore"
-                //     />
+
                 
             case "tracks":
                 return

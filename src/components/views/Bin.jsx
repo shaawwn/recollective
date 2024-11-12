@@ -75,7 +75,7 @@ export default function Bin({bin}) {
 }
 
 function BinHeader({bin}) {
-    console.log("BIN", bin)
+
     const [editMode, setEditMode] = useState(false)
     const [isOwner, setIsOwner] = useState(true)
     const {recollectiveApi} = useApiContext()

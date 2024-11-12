@@ -70,9 +70,13 @@ export default class SpotifyPlayerApi {
         const payload = {
             ...(context ? { context_uri: context } : {}),
             ...(uris && uris.length ? { uris: uris } : {}),
-            offset: {
-                position: contextOffset
-            },
+
+            // conditional check for context
+            ...(contextOffset ? { offset: {position: contextOffset }} : {}),
+                // -- the original line without condition
+            // offset: {
+            //     position: contextOffset
+            // },
             position_ms: 0
         }
 

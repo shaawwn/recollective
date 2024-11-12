@@ -16,7 +16,7 @@ import {usePlaylistBuilderContext} from '../components/playlist_search/playlistM
 // I think it is an error here to load playlist from context, if I just passed the relevant information as props, this wouldn' tbe a problem.
 
 export default function TrackTableRow({context, track, type, offset}) {
-    // console.log("CONTEXT", context)
+
     // type = album, playlist, explore (explore tracks are found in search results and can be added to playlists)
     const {spotifyPlayerApi} = useApiContext()
     const {activeDevices} = useWebplayerContext() || {}
@@ -146,7 +146,7 @@ export default function TrackTableRow({context, track, type, offset}) {
                         <FontAwesomeIcon 
                             onClick={() => play()}
                             icon={faPlay} 
-                            className="p-5 text-white"/>
+                            className="p-5 playback-btn--small"/>
                         <img className="image--xs" src={track.album.images ? track.album.images[0].url : DefaultImage} />
                     </div>
                 </div>
@@ -154,7 +154,7 @@ export default function TrackTableRow({context, track, type, offset}) {
                 <FontAwesomeIcon 
                     onClick={() => play()}
                     icon={faPlay} 
-                    className="p-5 text-white"/>
+                    className="p-5 playback-btn--small"/>
             </div>
             }
 
@@ -176,14 +176,16 @@ export default function TrackTableRow({context, track, type, offset}) {
             {/* So if it is IN a playlist, include the Trashcan, if it is NOT in playlist (and not a bin) include add to playlist */}
 
             {renderAddRemoveButton()}
+            <p className="vertical-center">SpotifyLink</p>
         </div>
     )
 }
 
 
 TrackTableRow.propTypes = {
-    context: PropTypes.string, // may not need to beRequired
+    context: PropTypes.string, //uri of album or playlist may not need to beRequired, 
     track: PropTypes.object.isRequired,
     type: PropTypes.string.activeDevices,
-    offset: PropTypes.number
+    offset: PropTypes.number // albums include a track_number value, but offset is still needed for playlists
 }
+

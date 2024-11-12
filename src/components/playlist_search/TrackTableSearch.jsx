@@ -78,7 +78,7 @@ export function TrackTableSearchRow({track}) {
                 <FontAwesomeIcon 
                     onClick={() => handlePlayback(track)}
                     icon={faPlay}
-                    className="p-5 text-white"/>
+                    className="p-5 playback-btn--small"/>
                 <div className="flex flex-col justify-center relative">
                     <img className="image--xs" src={track.album.images ?
                 track.album.images[0].url : DefaultImage}/>

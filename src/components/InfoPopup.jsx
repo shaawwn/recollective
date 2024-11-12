@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types'
-import DefaultImage from '../assets/images/default.png'
+// import DefaultImage from '../assets/images/default.png'
 import {useApiContext} from '../context/barrel'
 import {useWebplayerContext} from '../Dashboard'
 import {BinPlaybackButton} from './barrel'
 
 
-export default function InfoPopup({item, coords}) {
-    const {spotifyPlayerApi, recollectiveApi} = useApiContext()
+export default function InfoPopup({item}) { // removed coords
+    const {spotifyPlayerApi} = useApiContext() || {}
     const {activeDevices = []} = useWebplayerContext() || {}
 
     function handleClick(e) {
@@ -17,25 +17,24 @@ export default function InfoPopup({item, coords}) {
             alert("Error on playback: No active device.")
             return
         }
-        if(item.type === 'bin') {
-            const playlistPool = recollectiveApi.startBinPlayback(item)
-            // console.log("Get all the uris for the bin and use that", item)
+        // if(item.type === 'bin') {
+        //     // const playlistPool = recollectiveApi.startBinPlayback(item)
+        //     // console.log("Get all the uris for the bin and use that", item)
 
-            // create
-            // need to have some kind of method to get tracks for this.
+        //     // create
+        //     // need to have some kind of method to get tracks for this.
 
-            // method 1: Play sequentially with no shuffle, just play starting with the first item.
+        //     // method 1: Play sequentially with no shuffle, just play starting with the first item.
 
-            // method 2: Create a list of 20 or so tracks at random, and just play that.
+        //     // method 2: Create a list of 20 or so tracks at random, and just play that.
 
-            // console.log("Play either straight through, or random shuffle by creating arrays of 20 or so songs at random.", item.content)
+        //     // console.log("Play either straight through, or random shuffle by creating arrays of 20 or so songs at random.", item.content)
 
-            // pick a small seletion of songs at random, then create that playback array. While those songs are playing, add a larger array.
+        //     // pick a small seletion of songs at random, then create that playback array. While those songs are playing, add a larger array.
 
-            // the problem is spotify's rate limit.
-            return
-        }
-
+        //     // the problem is spotify's rate limit.
+        //     return
+        // }
         spotifyPlayerApi.play(item.uri, null, 0, activeDeviceID.id)
 
     }
@@ -97,5 +96,5 @@ export default function InfoPopup({item, coords}) {
 
 InfoPopup.propTypes = {
     item: PropTypes.object,
-    coords: PropTypes.array
+    coords: PropTypes.object // removed coords
 }
