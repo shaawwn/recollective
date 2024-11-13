@@ -36,7 +36,7 @@ export default class SpotifyPlayerApi {
             }
             return response.json()
         }).then((data) => {
-            console.log("Active devices: ", data)
+            // console.log("Active devices: ", data)
             return data
         }).catch((err) => {
             console.log("error:", err)

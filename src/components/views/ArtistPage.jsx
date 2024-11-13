@@ -133,6 +133,7 @@ ArtistPage.propTypes = {
 }
 
 ArtistPageHeader.propTypes = {
-    image: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired
+    artist: PropTypes.object.isRequired
+    // image: PropTypes.string.isRequired,
+    // name: PropTypes.string.isRequired
 }

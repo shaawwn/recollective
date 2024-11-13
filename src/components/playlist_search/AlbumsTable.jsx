@@ -15,6 +15,6 @@ export default function AlbumsTable({albums}) {
 }
 
 AlbumsTable.propTypes = {
-    albums: PropTypes.object.isRequired
+    albums: PropTypes.array.isRequired
 }
 

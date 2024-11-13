@@ -2,7 +2,7 @@ import React, {useState, useContext} from 'react'
 
 import Vinyl from './assets/images/vinyl.png'
 import { useUserContext} from './context/barrel.js'
-import { Sidebar, Navbar, MainViewport, Feed, Search, WebPlayer} from './components/barrel'
+import { Sidebar, Navbar, MainViewport, Feed, Search, WebPlayer, LoadingSpinner} from './components/barrel'
 import {Home, Playlist, Bin, Album, SearchResults, ArtistPage} from './components/views/barrel'
 import {useAlbum, usePlaylist, useHistory, useSearch, useArtist, useBin, useBinsPlaylistsAlbums, useWebplayer} from './hooks/barrel'
 
@@ -182,15 +182,16 @@ export default function Dashboard() {
                 )
             case 'playlist':
                 // return palylist
-                return <Playlist playlist={playlist} />
+                return playlist ? <Playlist playlist={playlist} /> : <LoadingSpinner />
             case 'album':
                 // return album
-                return <Album album={album} />
+                return album ? <Album album={album} /> : <LoadingSpinner />
             case 'artist':
-                return <ArtistPage artist={artist} />
+                return artist ? <ArtistPage artist={artist} /> : <LoadingSpinner />
+                // return <ArtistPage artist={artist} />
             case 'bin':
                 // return bin
-                return <Bin bin={bin} /> // temporary 
+                return bin ? <Bin bin={bin} /> : <LoadingSpinner />
             case 'playlists':
                 // return infinite scroll grid for playlist
                 return
@@ -263,13 +264,13 @@ export default function Dashboard() {
     )
 }
 
-function LoadingSpinner() {
+// function LoadingSpinner() {
 
-    return(
-        <div className="spinner-container">
-            <img src={Vinyl} className="spinner image--med"/>
-            <h1>Loading...</h1>
-        </div>
+//     return(
+//         <div className="spinner-container">
+//             <img src={Vinyl} className="spinner image--med"/>
+//             <h1>Loading...</h1>
+//         </div>
 
-    )
-}
+//     )
+// }

@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types'
-import {useRef} from 'react'
+import {useState, useRef} from 'react'
 import DefaultImage from '../../assets/images/default.png'
 import {TrackTable, GridItem, StaticGrid} from '../barrel'
+import {TrackTableSearch} from '../playlist_search/barrel'
 import {ArtistTable} from '../playlist_search/barrel'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {faPlay, faPause} from '@fortawesome/free-solid-svg-icons'
@@ -14,6 +15,7 @@ export default function SearchResults({searchResults}) {
     const filterType = useRef('artists')
     const results = useRef(searchResults.artists.items)
     const topResults = useRef()
+    const [filter, setFilter] = useState('artists')
 
     function filterResults(type) {
         // filter results by artist, track, album, playlist
@@ -24,42 +26,68 @@ export default function SearchResults({searchResults}) {
         topResults.current = results
     }
 
-    function handleClick() {
-        console.log("Nav artist page")
+    function handleClick(type) {
+        // console.log("Naving to type: ", type)
+        // filterType.current = type
+        setFilter(type)
+        
     }
 
     function renderResults() {
-        switch(filterType.current) {
+        switch(filter) {
             case "artists":
                 // need some differnet behavir than "GRIDITEM" here, since Artists do not have the same playback features as albums or playlists, should just nav to artist page.
                 return <StaticGrid items={searchResults.artists.items} GridComponent={GridItem}/>
 
                 
-            case "tracks":
-                return
+            case "tracks": {
+                // need to pass tracks in such a way that 
+                // searchResults.tracks.items = content.tracks
+                const content = {
+                    tracks: searchResults['tracks'].items
+                  };
+                return <TrackTable
+                    content={content}
+                    type="search"
+                />
+                }
             case "albums":
-                return
-            case "playlist":
-                return
+                return <StaticGrid items={searchResults.albums.items} GridComponent={GridItem} />
+            case "playlists":
+                return <StaticGrid items={searchResults.playlists.items} GridComponent={GridItem} />
         }
     }
 
     getTopResult()
-    return(
-        <section className="search-results panel">
-            <div className="search-results__top">
-                <TopTrackResult result={searchResults.tracks.items[0]}/>
-                {topResults.current ? <TopResults results={topResults.current}/>: <h1>Top Results</h1>}
+        return(
+            <section className="search-results panel">
+                <div className="search-results__top">
+                    <TopTrackResult result={searchResults.tracks.items[0]}/>
+                    {topResults.current ? <TopResults results={topResults.current}/>: <h1>Top Results</h1>}
 
-            </div>
+                </div>
 
 
-            <div>
-                {/* Depeneding on the filter, return that type */}
-                {renderResults()}
-            </div>
-        </section>
-    )
+                <div>
+                    {/* Depeneding on the filter, return that type */}
+                    <div className="flex gap-[10px">
+                        <div className="tab" onClick={() => handleClick('tracks')}>
+                            <p>Tracks</p>
+                        </div>
+                        <div className="tab" onClick={() => handleClick('albums')}>
+                            <p>Albums</p>
+                        </div>
+                        <div className="tab" onClick={() => handleClick('artists')}>
+                            <p>Artists</p>
+                        </div>
+                        <div className="tab" onClick={() => handleClick('playlists')}>
+                            <p>Playlists</p>
+                        </div>
+                    </div>
+                    {renderResults()}
+                </div>
+            </section>
+        )
 }
 
 function TopTrackResult({result}) {
@@ -92,7 +120,6 @@ function TopTrackResult({result}) {
 function TopResults({results}) {
     // return the top 5 results (with type)
     // eg Rush - Artist, Tom Sawyer - Track
-    // console.log("TOP RESULTS", results)
     return(
         <div className="search-results__top-items panel">
             <h2 className="xl:text-[28px]">Songs</h2>
@@ -116,5 +143,5 @@ TopTrackResult.propTypes = {
     result: PropTypes.object.isRequired
 }
 TopResults.propTypes = {
-    results: PropTypes.object.isRequired
+    results: PropTypes.array.isRequired
 }

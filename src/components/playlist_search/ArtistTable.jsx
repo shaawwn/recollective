@@ -38,5 +38,5 @@ export default function ArtistTable({artists}) {
 }
 
 ArtistTable.propTypes = {
-    artists: PropTypes.object.isRequired
+    artists: PropTypes.array.isRequired
 }

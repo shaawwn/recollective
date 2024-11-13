@@ -24,5 +24,5 @@ export default function PlaylistTable({playlists}) {
 }
 
 PlaylistTable.propTypes = {
-    playlists: PropTypes.object.isRequired
+    playlists: PropTypes.array.isRequired
 }

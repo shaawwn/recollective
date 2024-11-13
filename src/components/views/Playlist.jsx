@@ -10,9 +10,11 @@ import DefaultImage from '../../assets/images/default.png'
 import {useDashboardContext, usePlaylistContext} from '../../Dashboard'
 import {useApiContext} from '../../context/ApiContext'
 
-export default function Playlist({playlist}) {
+export default function Playlist() {
     //I have the play list ID here
-    // const {playlist, addToPlaylist, removeFromPlaylist} = usePlaylistContext()
+
+    // removed playlist prop and instead get hte playlist from context
+    const {playlist} = usePlaylistContext() || {}
     
     return(
         <section className="content-panel panel">
@@ -161,7 +163,7 @@ function PlaylistEditMenu({id, image, title, description, closeMenu}) {
 
 Playlist.propTypes = {
     playlist: PropTypes.object.isRequired,
-    type: PropTypes.string.isRequired
+    // type: PropTypes.string.isRequired
 }   
 
 PlaylistHeader.propTypes = {

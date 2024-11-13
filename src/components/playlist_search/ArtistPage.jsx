@@ -13,7 +13,7 @@ export default function ArtistPage({artist}) {
         <div>
             {artist ? 
                 <>
-                    <ArtistPageTopTracks tracks={artist.topTracks.tracks}/>
+                    {/* <ArtistPageTopTracks tracks={artist.topTracks.tracks}/> */}
                     <ArtistPageGrid artist={artist}/>
                 </>            
             :<h2>Loading artist details....</h2>

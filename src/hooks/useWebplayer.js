@@ -41,7 +41,7 @@ export default function useWebplayer() {
     
 
     function disconnect() {
-        console.log("disconnecting webplayer")
+        // console.log("disconnecting webplayer")
         player.current.removeListener('ready')
         player.current.removeListener('not_ready')
         player.current.removeListener('player_state_changed') 
@@ -54,7 +54,7 @@ export default function useWebplayer() {
         if(!response) {
             console.log("No active devices")
         } else {
-            console.log("active device resposne", response)
+            // console.log("active device resposne", response)
             setActiveDevices(response.devices)
         }
 
@@ -70,7 +70,7 @@ export default function useWebplayer() {
                 getOAuthToken: cb => { cb(accessToken); },
                 volume: 0.5
             });
-            console.log("init webplayer", player)
+            // console.log("init webplayer", player)
             player.current.addListener('ready', ({ device_id }) => {
                 // console.log('Ready with Device ID', device_id);
                 setAppDeviceId(device_id)
@@ -98,7 +98,7 @@ export default function useWebplayer() {
                 });
             
             }));
-            console.log("Connecting player", player)
+            // console.log("Connecting player", player)
             player.current.connect();
         } 
         window.onSpotifyWebPlaybackSDKReady = () => {
@@ -108,7 +108,7 @@ export default function useWebplayer() {
                 getOAuthToken: cb => { cb(accessToken); },
                 volume: 0.5
             });
-            console.log("init webplayer", player)
+            // console.log("init webplayer", player)
             player.current.addListener('ready', ({ device_id }) => {
                 // console.log('Ready with Device ID', device_id);
                 setAppDeviceId(device_id)
@@ -136,7 +136,7 @@ export default function useWebplayer() {
                 });
             
             }));
-            console.log("Connecting player", player)
+            // console.log("Connecting player", player)
             player.current.connect();
         };
     }
@@ -144,7 +144,7 @@ export default function useWebplayer() {
     useEffect(() => {
         const cleanup = () => {
             if (player.current) {
-                console.log("Disconnecting player");
+                // console.log("Disconnecting player");
                 disconnect(); // Ensure disconnect runs fully
             }
         };

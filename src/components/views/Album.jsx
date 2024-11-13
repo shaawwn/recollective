@@ -56,7 +56,7 @@ function AlbumHeader({artistID, image, title, owner}) {
 
 Album.propTypes = {
     album: PropTypes.object.isRequired,
-    type: PropTypes.string.isRequired
+    // type: PropTypes.string.isRequired
 }   
 
 AlbumHeader.propTypes = {

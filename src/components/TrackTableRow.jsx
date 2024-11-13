@@ -18,7 +18,7 @@ import {usePlaylistBuilderContext} from '../components/playlist_search/playlistM
 export default function TrackTableRow({context, track, type, offset}) {
 
     // type = album, playlist, explore (explore tracks are found in search results and can be added to playlists)
-    const {spotifyPlayerApi} = useApiContext()
+    const {spotifyPlayerApi, spotifyApi} = useApiContext()
     const {activeDevices} = useWebplayerContext() || {}
     const {setAlbumView, setArtistView, addPage} = useDashboardContext()
 
@@ -40,6 +40,31 @@ export default function TrackTableRow({context, track, type, offset}) {
             // nav to artist page
             setArtistView(id)
             addPage('artist', id)
+        }
+    }
+
+    async function handlePlayback(track) {
+        const seeds={
+            seed_artists: [track.artists[0].id],
+            seed_tracks: [[track.id]],
+            seed_genres: []
+        }
+
+        try {
+
+            const response = await spotifyApi.getRecommendations(seeds)
+            const activeDeviceID= activeDevices.find(device => device.name === "RecollectiveApp");
+
+            if(response) {
+                // create a queie of recommended tracks and play starting from the selectefd track. Maybe I can create a seperate window later showing what tracks are in the queue
+
+                const toPlay = response.tracks
+                toPlay.unshift(track)
+                const uris = toPlay.map(track => track.uri);
+                spotifyPlayerApi.play('', uris, 0, activeDeviceID.id)
+            }
+        } catch(err) {  
+            console.log(err)
         }
     }
 
@@ -104,7 +129,14 @@ export default function TrackTableRow({context, track, type, offset}) {
         // }
 
 
-        spotifyPlayerApi.play(context, [], offset, activeDeviceID.id)
+        // 
+        if(type === 'explore') {
+            // spotifyPlayerApi.play(null, [track.uri], null, activeDeviceID.id)
+            handlePlayback(track)
+        } else {
+            spotifyPlayerApi.play(context, [], offset, activeDeviceID.id)
+        }
+        // spotifyPlayerApi.play(context, [], offset, activeDeviceID.id)
     }
 
     function renderAddRemoveButton() {
@@ -117,17 +149,18 @@ export default function TrackTableRow({context, track, type, offset}) {
                 return(
                     <div className="track-table__cell vertical-center">
                     <FontAwesomeIcon 
-                    icon={faTrashCan}
-                    onClick={() => removeFromPlaylist({uri:track.uri})}
-                    className="red"
-                    size="1x"
+                        icon={faTrashCan}
+                        onClick={() => removeFromPlaylist({uri:track.uri})}
+                        className="red delete-button"
+                        size="1x"
                 />
                 </div>
                 )
             case "explore":
                 // render add button
+                // return
                 return (                
-                    <div className="track-table__cell vertical-center" style={{"text-align": "center"}}>
+                    <div className="track-table__cell vertical-center" style={{"textAlign": "center"}}>
                         <FontAwesomeIcon 
                             icon={faCirclePlus}
                             onClick={() => addToPlaylist(track.uri)}
@@ -135,6 +168,8 @@ export default function TrackTableRow({context, track, type, offset}) {
                         />
                     </div>
                 )
+            case "search":
+                return
         }
     }
 
@@ -185,7 +220,7 @@ export default function TrackTableRow({context, track, type, offset}) {
 TrackTableRow.propTypes = {
     context: PropTypes.string, //uri of album or playlist may not need to beRequired, 
     track: PropTypes.object.isRequired,
-    type: PropTypes.string.activeDevices,
+    type: PropTypes.string.isRequired,
     offset: PropTypes.number // albums include a track_number value, but offset is still needed for playlists
 }
 

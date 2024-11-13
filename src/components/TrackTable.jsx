@@ -22,7 +22,7 @@ export default function TrackTable({content, type}) {
                 {content.tracks.map((track, index) => 
                     <TrackTableRow 
                         key={track.name + index}
-                        context={content.overview.uri}
+                        context={content.overview?.uri}
                         track={track} 
                         type={type}
                         offset={content.tracks.indexOf(track)}

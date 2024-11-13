@@ -1,8 +1,9 @@
-import React, {useState, useContext} from 'react'
+import React, {useState, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
 
 import {useSearch, useAlbum, useArtist, usePlaylist} from '../../../hooks/barrel'
 import {useSearchHistory, SearchHistoryNavigator, PlaylistBuilderSearch, ArtistTable, ArtistPage, AlbumsTable, AlbumTracks, PlaylistTable, PlaylistTracks} from '../barrel'
+
 
 import {useBinComponentContext} from '../../views/Bin'
 
@@ -51,7 +52,8 @@ export default function BinManager() {
             case 'playlists':
                 return <PlaylistTable playlists={searchResults.playlists.items} />
             case 'playlist':
-                return <PlaylistTracks playlist={playlist}/>
+                return <PlaylistTracks 
+                    playlist={playlist}/>
 
             
         }
@@ -74,6 +76,12 @@ export default function BinManager() {
                 return // this was missing?
         }
     }
+
+    useEffect(() => {
+        if(searchResults) {
+            setBuilderView('playlists')
+        }
+    }, [searchResults])
 
     return(
         <div className="p-10">
@@ -112,6 +120,7 @@ export default function BinManager() {
                                 <p onClick={() => handleClick('artists')}>Artists</p> 
                             </div>
                         </div>
+                        {/* This is only running once? */}
                         {renderBinManagerView()}
                         </>
                     :<h2>Search results in viewpoirt</h2>
