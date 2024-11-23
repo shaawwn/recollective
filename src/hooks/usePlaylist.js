@@ -30,15 +30,10 @@ export default function usePlaylist() {
     const {accessToken} = useAuthContext() || {}
     const {spotifyApi} = useApiContext()
     const [refresh, setRefresh] = useState(false)
+
     // const [isOwner, setIsOwner] = useState(false) // set true if owner
 
     function clearPlaylistState() {
-        // if(playlist && playlistID) {
-        //     // console.log('clearing')
-        //     setPlaylist()
-        //     setPlaylistID()
-        // }
-
         setPlaylist()
         setPlaylistID()
     }

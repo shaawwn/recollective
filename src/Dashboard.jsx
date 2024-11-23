@@ -1,9 +1,9 @@
-import React, {useState, useContext} from 'react'
+import React, {useState, useContext, useRef} from 'react'
 
 import Vinyl from './assets/images/vinyl.png'
 import { useUserContext} from './context/barrel.js'
 import { Sidebar, Navbar, MainViewport, Feed, Search, WebPlayer, LoadingSpinner} from './components/barrel'
-import {Home, Playlist, Bin, Album, SearchResults, ArtistPage} from './components/views/barrel'
+import {Home, Playlist, Bin, Album, SearchResults, ArtistPage, PlaylistLibrary, AlbumLibrary} from './components/views/barrel'
 import {useAlbum, usePlaylist, useHistory, useSearch, useArtist, useBin, useBinsPlaylistsAlbums, useWebplayer} from './hooks/barrel'
 
 
@@ -47,6 +47,13 @@ export default function Dashboard() {
 
     const {bins, playlists, albums, getBins, getPlaylists} = useBinsPlaylistsAlbums() // removed getAlbums
 
+    // Active playing content (tbd state or ref)
+    // const {activeContent, setActiveContent} = useState()
+    const activeContent = useRef()
+    // active playlist
+    const {playlist: activePlaylist, setPlaylistID: setActivePlaylistID} = usePlaylist()
+    // active album
+    const {album: activeAlbum, setAlbuMID: setActiveAlbumID} = useAlbum()
 
     const {webPlayback, player, is_paused, is_active, current_track, appDeviceId, activeDevices, setActiveDevices} = useWebplayer()
 
@@ -74,7 +81,10 @@ export default function Dashboard() {
         getNext,
         setCurrentHistory,
         refreshPlaylist,
-        addToBin
+        addToBin,
+        activeContent,
+        setPlaylistLibraryView,
+        setAlbumLibraryView
     }
 
     const playlistContextValue = {
@@ -139,6 +149,14 @@ export default function Dashboard() {
         setView('home')
     }
 
+    function setPlaylistLibraryView() {
+        setView('playlists')
+    }
+
+    function setAlbumLibraryView() {
+        setView('albums')
+    }
+
     function setAlbumView(id) {
         clearState()
         setAlbumID(id)
@@ -194,10 +212,10 @@ export default function Dashboard() {
                 return bin ? <Bin bin={bin} /> : <LoadingSpinner />
             case 'playlists':
                 // return infinite scroll grid for playlist
-                return
+                return <PlaylistLibrary />
             case 'albums': 
                 // return infinite scroll grid for albums
-                return
+                return <AlbumLibrary />
             case 'bins': 
                 // return infinite scroll grid for bins
                 return

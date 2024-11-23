@@ -115,9 +115,11 @@ button:focus-visible {
 .playback-btn {
   background-color: var(--spotify-green);
   width: 50px;
+  height: 50px;
   border-radius: 50px;
   padding: .5rem;
 }
+
 
 .playback-btn:hover {
   background-color: var(--spotify-green--hover);
@@ -135,6 +137,10 @@ button:focus-visible {
 
 .playback-btn--small {
   color: var(--spotify-white);
+}
+
+.playback-btn--small--current {
+  color: var(--spotify-green);
 }
 
 .playback-btn--small:hover {
@@ -420,6 +426,15 @@ button:focus-visible {
   display: flex;
   gap: 8px;
   padding: 0.5rem;
+}
+
+.scroll-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: .5rem;
+  overflow-y: scroll;
+  max-height: 500px;
 }
 
 .static-grid {

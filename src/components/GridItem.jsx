@@ -1,4 +1,4 @@
-import {useState, useRef} from 'react'
+import {useState, useRef, forwardRef} from 'react'
 import PropTypes from 'prop-types'
 import {parseUriType} from '../utils/utils'
 import {InfoPopup} from './barrel'
@@ -6,7 +6,8 @@ import DefaultImage from '../assets/images/default.png'
 
 import {useDashboardContext} from '../Dashboard'
 
-export default function GridItem({item}) {
+
+function GridItemComponent({item}, ref) {
     const {setPlaylistView, setAlbumView, setBinView, setArtistView, addPage} = useDashboardContext() || {}
 
     // there can only be on popupat a time, so if a grid item is NOT hovered over, it should be logically impossible for a popup to appear
@@ -90,7 +91,8 @@ export default function GridItem({item}) {
             onClick={handleClick} 
             onMouseEnter={togglePopup}
             onMouseLeave={clearPopup}
-            className="static-grid--item">
+            className="static-grid--item"
+            ref={ref}>
             <img 
                 ref={imageRef}
                 className="image--med rounded-[2px] hover" 
@@ -105,6 +107,10 @@ export default function GridItem({item}) {
     )
 }
 
-GridItem.propTypes = {
+const GridItem = forwardRef(GridItemComponent)
+export default GridItem
+
+GridItemComponent.propTypes = {
     item: PropTypes.object.isRequired
 }
+

@@ -11,6 +11,7 @@ export default class SpotifyApi {
     getUserID() {
         return this.userID
     }
+
     async getUserTopItems(types) {
         // types = 'tracks' or 'artists'
         return fetch(this.apiUrl + `me/top/${types}`, {
@@ -28,8 +29,9 @@ export default class SpotifyApi {
         })
     }
 
-    async getCurrentUserPlaylists() {
-        return fetch(`https://api.spotify.com/v1/me/playlists`, {
+    async getCurrentUserPlaylists(limit, offset) {
+        // limit and offset can be empty strings 
+        return fetch(`https://api.spotify.com/v1/me/playlists?limit=${limit}&offset=${offset}`, {
             headers: {
                 "Authorization": `Bearer ${this.accessToken}`
             }
@@ -189,6 +191,7 @@ export default class SpotifyApi {
             return data
         })
     }
+
     async getAlbumTracksWithOffset(offset, id) {
         // use the offset to get selected tracks within a range.
 
@@ -285,8 +288,27 @@ export default class SpotifyApi {
     }
 
 
+    async getArtistContentFromFilter(id, filters) {
+        // can filter artist content by groups, eg album, compilation, singles, appears_on
+        // console.log("api request to get from filter")
+        return fetch(this.apiUrl + `artists/${id}/albums?limit=50&include_groups=${filters}`, {
+            headers: {
+                'Authorization': `Bearer ${this.accessToken}`
+            }
+        }).then((response) => {
+            if(!response.ok) {
+                throw new Error
+            }
+            return response.json()
+        }).then((data) => {
+            return data
+        }).catch((err) => {
+            return {error: err}
+        })
+    }
+
     async getArtistAlbums(id) {
-        return fetch(this.apiUrl + `artists/${id}/albums`, {
+        return fetch(this.apiUrl + `artists/${id}/albums?limit=50`, {
             headers: {
                 'Authorization': `Bearer ${this.accessToken}`
             }
@@ -319,6 +341,42 @@ export default class SpotifyApi {
         })
     }
 
+    async getUserSavedArtistAlbums(albums, savedAlbums) {
+        // not stricly an API call, but given artist albums (playlist, singles, comps, etc) and an object of content that is saved by the user, return an object of user saved items.
+        const savedContent = albums.filter((album) => {
+            // console.log(album.id, savedAlbums)
+            return savedAlbums[album.id] === true
+        })
+        // console.log("saved content", savedContent)
+        return savedContent
+
+    }
+
+
+    async checkUserSavedAlbums(ids) {
+        // check if one or more albums are already in a users library
+        // can use to "filter" if a user has saved albums from an artist, use the album IDs and check
+
+        return fetch(this.apiUrl + `me/albums/contains?ids=${ids}`, {
+            headers: {
+                'Authorization': `Bearer ${this.accessToken}`
+            }
+        }).then(handleResponse)
+        .then((data) => {
+            // console.log("data", data)
+
+            // map the data values to the given ids
+            const savedContent = ids.reduce((obj, ids, index) => {
+                obj[ids] = data[index];
+                return obj;
+            }, {});
+            // console.log(combined)
+            return savedContent
+            // return data
+        }).catch((err) => {
+            console.log("err", err)
+        })
+    }
     async getRecommendations(seeds) {
         // seeds an array of spotify uris {seed_artists, seed_tracks, genre_seeds}
 

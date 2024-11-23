@@ -9,17 +9,89 @@ import {faPlay, faPause} from '@fortawesome/free-solid-svg-icons'
 
 
 export default function ArtistPage({artist}) {
+    const {spotifyApi} = useApiContext() || {}
+    const [savedContent, setSavedContent] = useState([])
+    
+    async function getArtistContent(filters) {
+        // get any user saved albums for an artist using filters
+        try {
+            const response = await spotifyApi.getArtistContentFromFilter(artist.artist.id, filters)
+
+            if(!response) {
+                throw new Error ("Error fetching albums with filters")
+            }
+
+            // then need to actually parse the response
+            // getSavedAlbums
+            getSavedContent(response)
+        } catch (err) {
+            console.log("err: ", err)
+        }
+    }
+
+    async function getSavedContent(response) {
+        // content is the response object returned from fetch
+        if(response.items.length < 20) {
+            const userSaved = response.items.reduce((acc, item) => {
+                acc[item.id] = false; // set false as placeholder default
+                return acc;
+            }, {});
+
+            // ah, I need to run the check
+            const saveCheckRes = await spotifyApi.checkUserSavedAlbums(Object.keys(userSaved).slice(0, Object.keys(userSaved).length))
+
+            const saved = await spotifyApi.getUserSavedArtistAlbums(response.items, saveCheckRes)
+            if(saved.length > 0) {
+                setSavedContent(saved)
+            }
+        } else {
+            let savedItems = []
+            for(let i = 0; i < response.items.length; i += 20) {
+                const batch = response.items.slice(i, i + 20)
+
+                const userSaved = batch.reduce((acc, item) => {
+                    acc[item.id] = false; // set false as placeholder default
+                    return acc;
+                }, {});
+
+                try {
+                    const saveCheckRes = await spotifyApi.checkUserSavedAlbums(Object.keys(userSaved))
+                    const saved = await spotifyApi.getUserSavedArtistAlbums(batch, saveCheckRes)
+             
+                    savedItems = savedItems.concat(saved)
+                } catch (err) {
+                    console.log("Err", err)
+                }
+            }
+            if(savedItems.length > 0) {
+                setSavedContent(savedItems)
+            }
+
+            // setSavedContent(savedItems)
+        }
+    }
+    useEffect(() => {
+
+        // options to playback only user saved content, artist content (if no saved albums), and a mix of saved/unsaved content (eg play only saved Nick Cave songs, play saved/unsaved, or play Nick Cave top tracks if not saved)
+        if(savedContent.length === 0) {
+            // console.log("fetching")
+            getArtistContent(['album', 'compilation'])
+        }
+    }, [])
+
 
     return(
         <section>
             {artist ? 
                 <>
-                    {/* <ArtistPanel artist={artist.artist} /> */}
-                    {/* <ArtistPageHeader
-                        id={artist.artist.id} 
-                        image={artist.artist.images[0].url} name={artist.artist.name}
-                        /> */}
                     <ArtistPageHeader artist={artist.artist} />
+                    {savedContent.length > 0 ? 
+                    <div className="flex flex-col">
+                        <h2>Your saved content</h2>
+                        <StaticGrid items={savedContent} GridComponent={GridItem}/>
+                    </div>
+                    :null
+                    } 
                     <h2>{artist.artist.name}'s albums</h2>
                     <StaticGrid items={artist.albums.items} GridComponent={GridItem}/>
                 </>
@@ -128,6 +200,11 @@ function ArtistPanel({artist}) {
     )
 }
 
+function SavedAlbums() {
+    // saved albums from artist displayed in static grid?
+
+
+}
 ArtistPage.propTypes = {
     artist: PropTypes.object.isRequired
 }

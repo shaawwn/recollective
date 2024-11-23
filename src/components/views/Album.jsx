@@ -1,7 +1,10 @@
 import PropTypes from 'prop-types'
 import {TrackTable} from '../barrel'
-import {useDashboardContext} from '../../Dashboard'
+import {useDashboardContext, useWebplayerContext} from '../../Dashboard'
+import {useApiContext} from '../../context/ApiContext'
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {faPlay} from '@fortawesome/free-solid-svg-icons'
 
 export default function Album({album}) {
     
@@ -13,7 +16,8 @@ export default function Album({album}) {
                     artistID={album.overview.artists[0].id}
                     image={album.overview.images[0].url}
                     title={album.overview.name}
-                    owner={album.overview.artists[0].name} 
+                    owner={album.overview.artists[0].name}
+                    album={album} 
                 />
                 <TrackTable 
                     content={album}
@@ -26,13 +30,22 @@ export default function Album({album}) {
     )
 }
 
-function AlbumHeader({artistID, image, title, owner}) {
+function AlbumHeader({artistID, image, title, owner, album}) {
     // for playlists, "owner" is the creator, for albums, "owner" is the artist
     const {setArtistView, addPage} = useDashboardContext()
+    const {activeDevices = []} = useWebplayerContext() || {}
+    const {spotifyPlayerApi} = useApiContext() || {}
 
     function handleClick() {
         setArtistView(artistID)
         addPage('artist', artistID)
+    }
+
+    function startPlayback(e) {
+        e.stopPropagation()
+        const activeDeviceID = activeDevices.find(device => device.name = "RecollectiveApp")
+
+        spotifyPlayerApi.play(album.overview.uri, null, 0, activeDeviceID.id)
     }
 
     return(
@@ -47,6 +60,15 @@ function AlbumHeader({artistID, image, title, owner}) {
                         className="link"
                         onClick={handleClick}
                     >{owner}</p>
+                                    <div 
+                    onClick={(e) => startPlayback(e)}
+                    className="playback-btn play-btn"
+                >
+                    <FontAwesomeIcon 
+                        icon={faPlay}
+                        size="2x"
+                    />
+                </div>
                 </div>
             </div>
         </div>

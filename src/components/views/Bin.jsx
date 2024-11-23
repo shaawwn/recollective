@@ -9,7 +9,8 @@ import RecordBin from '../../assets/images/recordbin.png'
 import {BinManager} from '../playlist_search/barrel'
 import {ModalOverlay} from '../barrel'
 import {useApiContext} from '../../context/ApiContext'
-import {useBinContext} from '../../Dashboard'
+import {useDashboardContext, useBinContext} from '../../Dashboard'
+import {useUserContext} from '../../context/UserContext'
 
 const BinComponentContext = React.createContext()
 
@@ -21,7 +22,7 @@ export function useBinComponentContext() {
 export default function Bin({bin}) {
 
     const {addToBin} = useBinContext()
-
+    const {user} = useUserContext() || {}
 
     function handleDragOver(e) {
 
@@ -33,16 +34,16 @@ export default function Bin({bin}) {
         console.log("Drop", e.dataTransfer.getData('item'))
     }
 
-    function dragItem(e, item) {
-        console.log("item", item)
-        const toAdd = {
-            image: item.images[0].url,
-            id: item.id,
-            uri: item.uri,
-            name: item.name
-        }
-        e.dataTransfer.setData('item', JSON.stringify(toAdd))
-    }
+    // function dragItem(e, item) {
+    //     console.log("item", item)
+    //     const toAdd = {
+    //         image: item.images[0].url,
+    //         id: item.id,
+    //         uri: item.uri,
+    //         name: item.name
+    //     }
+    //     e.dataTransfer.setData('item', JSON.stringify(toAdd))
+    // }
 
 
     return(
@@ -57,7 +58,10 @@ export default function Bin({bin}) {
                     // dragItem,
                     addToBin
                 }}>
-                    <BinHeader bin={bin}/>
+                    <BinHeader 
+                        bin={bin}
+                        isOwner={bin.overview.user === user.recollective._id}
+                        />
                         {bin.overview.content ? 
                             <div className="static-grid">
                                <StaticGrid items={bin.overview.content} GridComponent={GridItem}/>
@@ -74,15 +78,18 @@ export default function Bin({bin}) {
     )
 }
 
-function BinHeader({bin}) {
+function BinHeader({bin, isOwner}) {
+
 
     const [editMode, setEditMode] = useState(false)
-    const [isOwner, setIsOwner] = useState(true)
     const {recollectiveApi} = useApiContext()
+    const {setHomeView, removePage} = useDashboardContext() || {}
+    const {getBins} = useBinContext() || {}
 
     function toggleEditMode() {
         setEditMode(!editMode)
     }
+
 
     function deleteBin(e) {
         e.stopPropagation()
@@ -90,9 +97,14 @@ function BinHeader({bin}) {
         if(confirm("Are you sure you want to delete this bin?")) {
             console.log("Deleting bin")
             recollectiveApi.deleteBin(bin.overview._id)
+            removePage()
 
-            // need to refresh/reload the dashboard here
-            // spotify refreshes dashboard on playlist delete as well.
+            setTimeout(() => {
+                // reload recollective api bins
+                getBins()
+                setHomeView()
+            }, 1000)
+
         } 
     }
 
@@ -102,7 +114,7 @@ function BinHeader({bin}) {
                 <ModalOverlay toggle={toggleEditMode}>
                     <BinEditMenu 
                         id={bin.overview._id} 
-                        image={''} 
+                        // image={''} TODO?
                         title={bin.overview.name} 
                         closeMenu={toggleEditMode}/>
                 </ModalOverlay>
@@ -134,7 +146,7 @@ function BinHeader({bin}) {
 
 }
 
-function BinEditMenu({id, image, title, closeMenu}) {
+function BinEditMenu({id, title, closeMenu}) {
 
     const {recollectiveApi} = useApiContext()
     // refresh Bin function like playlist
@@ -148,9 +160,9 @@ function BinEditMenu({id, image, title, closeMenu}) {
     function handleButtonClick(e) {
         e.stopPropagation() // one more for good measure
         const name = document.getElementsByName('menu-title')[0].value
-        const payload = {
-            name
-        }
+        // const payload = {
+        //     name
+        // }
         saveUpdate(id, name)
         closeMenu()
 
@@ -196,8 +208,33 @@ function BinEditMenu({id, image, title, closeMenu}) {
     )
 }
 
+
 Bin.propTypes = {
-    bin: PropTypes.object.isRequired
+    bin: PropTypes.shape({
+        overview: PropTypes.shape({
+            _id: PropTypes.string.isRequired, 
+            name: PropTypes.string, 
+            user: PropTypes.string.isRequired,
+            content: PropTypes.arrayOf(PropTypes.object)
+        }).isRequired, 
+        // content: PropTypes.arrayOf(PropTypes.object), 
+    }).isRequired 
+};
+
+BinHeader.propTypes = {
+    bin: PropTypes.shape({
+        overview: PropTypes.shape({
+            _id: PropTypes.string.isRequired, 
+            name: PropTypes.string, 
+        }).isRequired, 
+    }).isRequired,
+    isOwner: PropTypes.bool.isRequired
+}
+BinEditMenu.propTypes = {
+    id: PropTypes.string.isRequired,
+    image: PropTypes.string,
+    title: PropTypes.string.isRequired,
+    closeMenu: PropTypes.func.isRequired
 }
 
 /**So what goes into a bin? A list of playlists and albums? in a static-grid?

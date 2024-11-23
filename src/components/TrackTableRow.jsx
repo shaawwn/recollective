@@ -1,14 +1,14 @@
-
+import {useRef} from 'react'
 import PropTypes from 'prop-types'
 import DefaultImage from '../assets/images/default.png'
 import {msToMinutesAndSeconds} from '../utils/utils'
 import {useApiContext} from '../context/ApiContext'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {faPlay, faTrashCan, faCirclePlus} from '@fortawesome/free-solid-svg-icons'
+import {faPlay, faTrashCan, faCirclePlus, faPause} from '@fortawesome/free-solid-svg-icons'
 
 import {useDashboardContext, usePlaylistContext, useWebplayerContext} from '../Dashboard'
 
-import {usePlaylistBuilderContext} from '../components/playlist_search/playlistManager/PlaylistBuilder'
+// import {usePlaylistBuilderContext} from '../components/playlist_search/playlistManager/PlaylistBuilder'
 
 
 // I need to make this more robust in its check, because of the nested nature of the playlist tool, a PLAYLIST will exist, which triggers that.
@@ -19,9 +19,10 @@ export default function TrackTableRow({context, track, type, offset}) {
 
     // type = album, playlist, explore (explore tracks are found in search results and can be added to playlists)
     const {spotifyPlayerApi, spotifyApi} = useApiContext()
-    const {activeDevices} = useWebplayerContext() || {}
-    const {setAlbumView, setArtistView, addPage} = useDashboardContext()
+    const {activeDevices, current_track, is_paused} = useWebplayerContext() || {} // is_paused can be null if no playback
+    const {setAlbumView, setArtistView, addPage, activeContent} = useDashboardContext()
 
+    const active = useRef('playback-btn--small')
     // this is getting the APP level playlist. Where TrackTable is being passed a playlist
     const {playlist, removeFromPlaylist, addToPlaylist} = usePlaylistContext() || {}
 
@@ -44,6 +45,7 @@ export default function TrackTableRow({context, track, type, offset}) {
     }
 
     async function handlePlayback(track) {
+        // this creates a random playlist based on the selected track that will continue playback when the selected track ends
         const seeds={
             seed_artists: [track.artists[0].id],
             seed_tracks: [[track.id]],
@@ -71,72 +73,18 @@ export default function TrackTableRow({context, track, type, offset}) {
     function play() {
         // use recollective as default
         const activeDeviceID= activeDevices.find(device => device.name === "RecollectiveApp");
-        // let offset;
-        // let context;
 
-
-        // switch (type) {
-        //     case "playlist":
-        //         // use _offset
-        //         offset = _offset
-        //         // context = 
-        //         break
-        //     case "album":
-        //         // use album track number
-        //         offset = track.track_number - 1
-        //         context = track.album.uri
-        //         break
-        //     case "explore":
-        //         console.log("Explore case", track)
-        //         if(track?.track_number) {
-        //             offset = track.track_number - 1
-        //             context = track.album.uri
-        //         } else {
-        //             offset = playlist.tracks.indexOf(track)
-        //             context = playlist.overview.uri
-        //         } break
-
-        // }
-
-        // switch (type) {
-        //     case "playlist":
-        //         console.log("playlist offset", playlist.tracks, track)
-        //         // this doesn't work because in a vacuum there is no playlist meta data for an individual track
-        //         if(playlist) {
-        //             context = playlist.overview.uri
-        //         }
-        //         offset = playlist.tracks.indexOf(track)
-        //         break
-        //     case "album":
-        //         // console.log("album offset", track.track_number)
-        //         // this works because track object has data for the album
-        //         offset = track.track_number - 1 
-        //         context = track.album.uri 
-        //         break
-        //     case "explore":
-        //         // explore, for now, is limited to Albums, but I should consider it for playlist
-        //         console.log("Explore case", track)
-        //         if(track?.track_number) {
-        //             offset = track.track_number - 1
-        //             context = track.album.uri
-        //         } else {
-        //             offset = playlist.tracks.indexOf(track)
-        //             context = playlist.overview.uri
-        //         } break
-        //     default:
-        //         console.error("Unknown type, unable to calculate offset");
-        //         break
-        // }
-
-
-        // 
+        // here is where I need to set the active
         if(type === 'explore') {
-            // spotifyPlayerApi.play(null, [track.uri], null, activeDeviceID.id)
+            // in this case, just check of the current track is playing "in the wild"
             handlePlayback(track)
         } else {
+            // set the playlist, album or bin content the "active", that is, setActiveID() to create the active content
+
+            activeContent.current = context
+            console.log("ACTIVE CONTENT", activeContent.current)
             spotifyPlayerApi.play(context, [], offset, activeDeviceID.id)
         }
-        // spotifyPlayerApi.play(context, [], offset, activeDeviceID.id)
     }
 
     function renderAddRemoveButton() {
@@ -173,23 +121,51 @@ export default function TrackTableRow({context, track, type, offset}) {
         }
     }
 
+    function checkCurrent() {
+        if(context === activeContent.current) {
+            if(current_track.id === track.id) {
+                active.current = 'playback-btn--small--current'
+            } else {
+                active.current = ''
+            }
+        }
+    }
+
+    function renderPlaybackButton() {
+        const isCurrentTrack = current_track?.id === track.id;
+        const playbackIcon = is_paused === null || is_paused === true ? faPlay : faPause;
+        return (
+            <div className="track-table__cell flex gap-[10px]">
+                <FontAwesomeIcon 
+                    onClick={() => play()} 
+                    icon={isCurrentTrack && activeContent.current === context? playbackIcon : faPlay} 
+                    className={`p-5 ${active.current}`}
+                />
+                {/* for playlists only, show a small album cover image (make it a link?) */}
+                {playlist ? 
+                    <img 
+                    className="image--xs hover" 
+                    src={track.album?.images?.[0]?.url || DefaultImage}
+                    alt="Album Art"
+                    onClick={() => handleNavClick("album", track.album.id)}
+                />
+                :null
+                }
+            </div>
+        );
+
+    }
+    
+    checkCurrent()
+
     return(
         <div className="track-table-search__row">
             {playlist ? 
                 <div className="track-table__cell flex flex-col justify-center">
-                    <div className="track-table__cell flex gap-[10px]">
-                        <FontAwesomeIcon 
-                            onClick={() => play()}
-                            icon={faPlay} 
-                            className="p-5 playback-btn--small"/>
-                        <img className="image--xs" src={track.album.images ? track.album.images[0].url : DefaultImage} />
-                    </div>
+                    {renderPlaybackButton()}
                 </div>
             :<div className="track-table__cell justify-right">
-                <FontAwesomeIcon 
-                    onClick={() => play()}
-                    icon={faPlay} 
-                    className="p-5 playback-btn--small"/>
+                {renderPlaybackButton()}
             </div>
             }
 
@@ -218,7 +194,7 @@ export default function TrackTableRow({context, track, type, offset}) {
 
 
 TrackTableRow.propTypes = {
-    context: PropTypes.string, //uri of album or playlist may not need to beRequired, 
+    context: PropTypes.string.isRequired, //uri of album or playlist may not need to beRequired, 
     track: PropTypes.object.isRequired,
     type: PropTypes.string.isRequired,
     offset: PropTypes.number // albums include a track_number value, but offset is still needed for playlists

@@ -29,7 +29,8 @@ export default function useHistory() {
     }
 
     function addPage(view, id) {
-        
+
+        // when id === null (home, albums, playlist libraries), need to add a check that history is created
         // failsafe against no history, even though it should have 'home' as a default head for history
         if (!history.current['current']) {
             history.current['current'] = { view, id, previous: null, next: null }
@@ -42,7 +43,7 @@ export default function useHistory() {
             next: null
         }
 
-        if(history.current['current'].id === page.id) {
+        if(history.current['current'].id === page.id && history.current['current'].id !== null) {
             return false
         }
         history.current['current'].next = page

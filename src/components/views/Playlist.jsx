@@ -1,19 +1,20 @@
 import PropTypes from 'prop-types'
 import {useState, useEffect} from 'react'
 import {TrackTable, ModalOverlay} from '../barrel' // PlaylistSearch
-
+import {PlaybackButton} from '../barrel'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {faTrashCan} from '@fortawesome/free-solid-svg-icons'
+import {faTrashCan, faPlay} from '@fortawesome/free-solid-svg-icons'
 
 import {PlaylistBuilder} from '../playlist_search/barrel'
 import DefaultImage from '../../assets/images/default.png'
-import {useDashboardContext, usePlaylistContext} from '../../Dashboard'
+import {useDashboardContext, usePlaylistContext, useWebplayerContext} from '../../Dashboard'
 import {useApiContext} from '../../context/ApiContext'
 
 export default function Playlist() {
     //I have the play list ID here
 
     // removed playlist prop and instead get hte playlist from context
+    const {activeContent} = useDashboardContext() || {}
     const {playlist} = usePlaylistContext() || {}
     
     return(
@@ -27,6 +28,7 @@ export default function Playlist() {
                     name={playlist.overview.owner.display_name} 
                     description={playlist.overview.description}
                     isOwner={playlist.isOwner}
+                    playlist={playlist}
                 />
 
                 <TrackTable
@@ -41,26 +43,37 @@ export default function Playlist() {
     )   
 }
 
-function PlaylistHeader({id, image, title, name, description, isOwner}) {
+function PlaylistHeader({id, image, title, name, description, isOwner, playlist}) {
     const [editMode, setEditMode] = useState(false)
-    const {spotifyApi} = useApiContext() || {}
+    const {spotifyApi, spotifyPlayerApi} = useApiContext() || {}
     const {getPlaylists} = usePlaylistContext() || {}
     const {setHomeView, removePage} = useDashboardContext() || {}
+    const {activeDevices = []} = useWebplayerContext() || {}
 
     function toggleEditMode() {
         setEditMode(!editMode)
     }
 
+
+    function startPlayback(e) {
+        e.stopPropagation()
+        const activeDeviceID = activeDevices.find(device => device.name = "RecollectiveApp")
+        spotifyPlayerApi.play(playlist.overview.uri, null, 0, activeDeviceID.id)
+    }
+
     function deletePlaylist(e) {
         e.stopPropagation()
-        spotifyApi.unfollowPlaylist(id)
-        removePage() 
 
-        // delay to account for spotify completing the request
-        setTimeout(() => {
-            getPlaylists()
-            setHomeView()
-        }, 1000)
+        if(confirm("Are you sure you want to delete this playlist?")) {
+            spotifyApi.unfollowPlaylist(id)
+            removePage() 
+    
+            // delay to account for spotify completing the request
+            setTimeout(() => {
+                getPlaylists()
+                setHomeView()
+            }, 1000)
+        }
     }
     
     return(
@@ -79,6 +92,17 @@ function PlaylistHeader({id, image, title, name, description, isOwner}) {
                     <p>{name}</p>
                     <p>{description}</p>
                 </div>
+                <div 
+                    onClick={(e) => startPlayback(e)}
+                    className="playback-btn play-btn"
+                >
+                    <FontAwesomeIcon 
+                        icon={faPlay}
+                        size="2x"
+                    />
+                </div>
+
+                {/* <PlaybackButton context={playlist}/> */}
             </div>
             {isOwner === true ?
                 <div className="view-header__buttons">

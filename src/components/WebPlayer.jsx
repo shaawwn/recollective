@@ -109,7 +109,7 @@ function WebplayerControls({player, isActive}) {
                     onClick={back}
                     icon={faBackwardStep} 
                     size="2x"/>
-                <PlaybackButton playback={isActive}/>
+                <PlaybackButton />
                 <FontAwesomeIcon 
                     onClick={forward}
                     icon={faForwardStep} 

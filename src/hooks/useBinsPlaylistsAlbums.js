@@ -28,7 +28,7 @@ export default function useBinsPlaylistsAlbums() {
 
     async function getPlaylists() {
         try {
-            const response = await spotifyApi.getCurrentUserPlaylists()
+            const response = await spotifyApi.getCurrentUserPlaylists('', '') 
             if(!response) {
                 throw new Error ("error getting playlists from spotify")
             }

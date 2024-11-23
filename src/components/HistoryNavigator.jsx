@@ -5,7 +5,7 @@ import {useDashboardContext} from '../Dashboard'
 
 
 export default function HistoryNavigator() {
-    const {history, getPrevious, getNext, setHomeView, setPlaylistView, setAlbumView, setBinView, setArtistView, setSearchResultsView, setCurrentHistory} = useDashboardContext()
+    const {history, getPrevious, getNext, setHomeView, setPlaylistView, setAlbumView, setBinView, setArtistView, setPlaylistLibraryView, setAlbumLibraryView, setSearchResultsView, setCurrentHistory} = useDashboardContext()
 
     function back() {
         let prevPage = getPrevious()
@@ -34,6 +34,13 @@ export default function HistoryNavigator() {
                 case "bin":
                     setCurrentHistory(prevPage)
                     setBinView(prevPage.id)
+                    return
+                case "playlists":
+                    setPlaylistLibraryView()
+                    return
+                case "albums":
+                    setAlbumLibraryView()
+                    return
             }
         } catch (err) {
             // some error, default home
@@ -64,6 +71,12 @@ export default function HistoryNavigator() {
                 case "artist":
                     setCurrentHistory(nextPage)
                     setArtistView(nextPage.id)
+                    return
+                case "playlists":
+                    setPlaylistLibraryView()
+                    return
+                case "albums":
+                    setAlbumLibraryView()
                     return
             }
         } catch(err) {

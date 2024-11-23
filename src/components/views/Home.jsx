@@ -6,13 +6,9 @@ import {GridItemBin, GridItem} from '../barrel'
 // Home is the default view for a user that displays
 /**
  * 
- * Recent playlists
+ * Recent albums, playlists, with bins.
  * 
- * Bins
  * 
- * Playlists
- * 
- * Should not even get to here if playlists is not > 0
  */
 export default function Home({playlists, albums, bins}) {
 
@@ -29,9 +25,9 @@ export default function Home({playlists, albums, bins}) {
                     :null
                     }
 
-                    <h3 className="panel__title">Playlists</h3>
+                    <h3 className="panel__title">Recent Playlists</h3>
                     <StaticGrid items={playlists} GridComponent={GridItem}/>
-                    <h3 className="panel__title">Albums</h3>
+                    <h3 className="panel__title">Recent Albums</h3>
                     <StaticGrid items={albums} GridComponent={GridItem}/>
 
                     {/* Bins should be visually distinct I think */}

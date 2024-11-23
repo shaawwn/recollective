@@ -63,44 +63,42 @@ export default function useWebplayer() {
 
     function initWebplayer() {
 
-        if(window.Spotify) {
-            // console.log("Calling in spoitify check")
-            player.current = new window.Spotify.Player({
-                name: 'RecollectiveApp',
-                getOAuthToken: cb => { cb(accessToken); },
-                volume: 0.5
-            });
-            // console.log("init webplayer", player)
-            player.current.addListener('ready', ({ device_id }) => {
-                // console.log('Ready with Device ID', device_id);
-                setAppDeviceId(device_id)
+        // if(window.Spotify) {
+        //     console.log("WINDOW SPOTIFY")
+        //     player.current = new window.Spotify.Player({
+        //         name: 'RecollectiveApp',
+        //         getOAuthToken: cb => { cb(accessToken); },
+        //         volume: 0.5
+        //     });
+        //     player.current.addListener('ready', ({ device_id }) => {
+        //         setAppDeviceId(device_id)
+        //         getActiveDevices()
 
-                // fetch devices
-                // spotifyPlayerApi.getDevices()
-                getActiveDevices()
+        //     });
 
-            });
+        //     player.current.addListener('not_ready', ({ device_id }) => {
+        //         console.log('Device ID has gone offline', device_id);
+        //     });
 
-            player.current.addListener('not_ready', ({ device_id }) => {
-                console.log('Device ID has gone offline', device_id);
-            });
-
-            player.current.addListener('player_state_changed', ( state => {
-                if (!state) {
-                    return;
-                }
-                setTrack(state.track_window.current_track);
-                setPaused(state.paused); // pause on switch
+        //     player.current.addListener('player_state_changed', ( state => {
+        //         if (!state) {
+        //             return;
+        //         }
+        //         setTrack(state.track_window.current_track);
+        //         setPaused(state.paused); // pause on switch
 
             
-                player.current.getCurrentState().then( state => { 
-                    (!state)? setActive(false) : setActive(true) 
-                });
+        //         player.current.getCurrentState().then( state => { 
+        //             (!state)? setActive(false) : setActive(true) 
+        //         });
             
-            }));
-            // console.log("Connecting player", player)
-            player.current.connect();
-        } 
+        //     }));
+        //     // console.log("Connecting player", player)
+        //     player.current.connect();
+        // } else {
+        //     console.log("No window spotify")
+        // }
+
         window.onSpotifyWebPlaybackSDKReady = () => {
             console.log("Calling on webplayback ready")
             player.current = new window.Spotify.Player({
@@ -144,28 +142,28 @@ export default function useWebplayer() {
     useEffect(() => {
         const cleanup = () => {
             if (player.current) {
-                // console.log("Disconnecting player");
                 disconnect(); // Ensure disconnect runs fully
             }
         };
-        const webplayerScript = document.querySelector('#spotify-webplayer-sdk') // this has been hardcoded into the base html file, so it will always exist
+        if(player.current) {
+            disconnect()
+        }
+
+        // const webplayerScript = document.querySelector('#spotify-webplayer-sdk')
         if(user?.spotify.product === 'premium') {
             setPremium(true)
         } else {
             return
         }
-
-
-        // if(player.current) {
-        //     // player.current *can* = undefined, so need to make this check more robust
-        //     console.log("disconnecting player")
-        //     disconnect() 
-        // }
-
         if(accessToken && spotifyPlayerApi) {
 
-            webplayerScript.src = "https://sdk.scdn.co/spotify-player.js"; 
-            webplayerScript.async = true
+            const webplayerScript = document.querySelector('#spotify-webplayer-sdk')
+
+            if(!webplayerScript.src) {
+                webplayerScript.src = "https://sdk.scdn.co/spotify-player.js"; 
+                webplayerScript.async = true
+            }
+
             initWebplayer()
 
             // init webplayer sets the player to a ref, which means I may be able to create the object here?

@@ -1,8 +1,12 @@
 import PropTypes from 'prop-types'
 // import DefaultImage from '../assets/images/default.png'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {faPlay} from '@fortawesome/free-solid-svg-icons'
 import {useApiContext} from '../context/barrel'
 import {useWebplayerContext} from '../Dashboard'
 import {BinPlaybackButton} from './barrel'
+
+
 
 
 export default function InfoPopup({item}) { // removed coords
@@ -35,8 +39,17 @@ export default function InfoPopup({item}) { // removed coords
         //     // the problem is spotify's rate limit.
         //     return
         // }
-        spotifyPlayerApi.play(item.uri, null, 0, activeDeviceID.id)
+        // spotifyPlayerApi.play(item.uri, null, 0, activeDeviceID.id)
 
+        // the reson there is no context here and offset = 0 is that THIS BUTTON essentially plays a playlist or album with the default setting (shuffle or straight through)
+
+        // should probably have a shuffle option as well
+        play(item.uri, null, 0, activeDeviceID.id)
+
+    }
+
+    function play(uri, context, offset, deviceID) {
+        spotifyPlayerApi.play(uri, context, offset, deviceID)
     }
 
     function formatDate(date) {
@@ -83,8 +96,14 @@ export default function InfoPopup({item}) { // removed coords
                     <p className="track-table__cell-link">{item.name}</p>
                     {renderContent()}
                     {item.type === 'bin' ? 
+                        // Bin playback requires some extra steps than album/playlist
                         <BinPlaybackButton bin={item}/>
-                    :<button onClick={(e) => handleClick(e)}className="green">Play</button>
+                    :<div 
+                    onClick={(e) => handleClick(e)}
+                    className="playback-btn play-btn"
+                    >
+                    <FontAwesomeIcon icon={faPlay} size="2x"/>
+                </div>
                     }
                     <p>Track list here or other miscelania</p>
                 </div>

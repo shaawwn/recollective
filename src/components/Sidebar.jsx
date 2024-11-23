@@ -6,17 +6,28 @@ export default function Sidebar() {
     const {user} = useUserContext()
     const {getBins} = useBinContext()
     const {getPlaylists} = usePlaylistContext()
-    const {setHomeView, addPage, setCurrentHistory, setPlaylistView, setBinView} = useDashboardContext()
+
+    const {setHomeView, addPage, setCurrentHistory, setPlaylistLibraryView, setAlbumLibraryView, setBinView} = useDashboardContext()
     const {spotifyApi} = useApiContext()
+
     function handleClick(view) {
         // clicking on a nav element here should change the mainviewport content to the respective content
 
         // meaning I need a system to change the content in mainviewport
         try {
+            // Account for "null" in the history for the IDs
             switch(view) {
                 case "home":
                     addPage('home', null)
                     setHomeView()
+                    return
+                case "playlists":
+                    addPage('playlists', null)
+                    setPlaylistLibraryView()
+                    return
+                case "albums":
+                    addPage('albums', null)
+                    setAlbumLibraryView()
                     return
             }
         } catch (err) {
@@ -71,7 +82,8 @@ export default function Sidebar() {
         <nav className="sidebar-nav panel">
             <p className="sidebar-nav__link" onClick={() => handleClick("home")}>Home</p>
             <p className="sidebar-nav__link">Library</p>
-            <p className="sidebar-nav__link">Playlists</p>
+            <p className="sidebar-nav__link" onClick={() => handleClick('playlists')}>Playlists</p>
+            <p className="sidebar-nav__link" onClick={() => handleClick('albums')}>Albums</p>
             <p className="sidebar-nav__link">Bins</p>
             <p className="sidebar-nav__link">Following</p>
             <p className="sidebar-nav__link">Followers</p>
