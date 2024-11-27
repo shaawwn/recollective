@@ -46,8 +46,8 @@ export default class SpotifyApi {
         })
     }
 
-    async getUsersSavedAlbums() {
-        return fetch(this.apiUrl + 'me/albums?limit=50', {
+    async getUsersSavedAlbums(limit, offset) {
+        return fetch(this.apiUrl + `me/albums?limit=${limit}&offset=${offset}`, {
             headers: {
                 "Authorization": `Bearer ${this.accessToken}`
             }
@@ -180,14 +180,12 @@ export default class SpotifyApi {
     async getPlaylistItems(offset, id) {
         // use the offset to get selected tracks within a range.
 
-        console.log("fetch requires", offset, id)
         return fetch(this.apiUrl + `playlists/${id}/tracks?limit=50&offset=${offset}`, {
             headers: {
                 'Authorization': `Bearer ${this.accessToken}`
             }
         }).then(handleResponse)
         .then((data) => {
-            console.log("Playlist offset", offset, data)
             return data
         })
     }
@@ -404,6 +402,18 @@ export default class SpotifyApi {
         }).then(handleResponse)
         .then((data) => {
             // console.log("users queue: ", data)
+            return data
+        })
+    }
+
+    async fetchNextUrl(url) {
+        // some spotify returned objects that are paginated have a "next" attribute that returns the next results, use that url to make the request instead of the specific ones endpoints (getAlbums, getPlaylists, etc) 
+        return fetch(url, {
+            headers: {
+                'Authorization': `Bearer ${this.accessToken}`
+            }
+        }).then(handleResponse)
+        .then((data) => {
             return data
         })
     }

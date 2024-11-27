@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 
 import {useSearch, useAlbum, useArtist, usePlaylist} from '../../../hooks/barrel'
 import {useSearchHistory, SearchHistoryNavigator, PlaylistBuilderSearch, ArtistTable, ArtistPage, AlbumsTable, AlbumTracks, PlaylistTable, PlaylistTracks} from '../barrel'
+import {LoadingSpinner} from '../../barrel'
 
 
 import {useBinComponentContext} from '../../views/Bin'
@@ -44,7 +45,8 @@ export default function BinManager() {
             case 'albums':
                 return <AlbumsTable albums={searchResults.albums.items} />
             case 'albumTracks':
-                return <AlbumTracks album={album}/>
+                return album ? <AlbumTracks album={album}/> : <LoadingSpinner />
+                // return <AlbumTracks album={album}/>
             case 'artists':
                 return <ArtistTable artists={searchResults.artists.items} />
             case 'artist':
@@ -52,8 +54,8 @@ export default function BinManager() {
             case 'playlists':
                 return <PlaylistTable playlists={searchResults.playlists.items} />
             case 'playlist':
-                return <PlaylistTracks 
-                    playlist={playlist}/>
+                return playlist ? <PlaylistTracks playlist={playlist}/> : <LoadingSpinner />
+                // return <PlaylistTracks playlist={playlist}/>
 
             
         }

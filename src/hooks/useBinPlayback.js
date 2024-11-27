@@ -164,7 +164,7 @@ export default function useBinPlayback(bin) {
             // const items = {items: response.items.map(item => item.track)}
             const items = { items: response.items.map(item => ({ track: item.track })) };
 
-            console.log("Fetching palylist Items", items)
+            // console.log("Fetching palylist Items", items)
             return items
         } catch (err) { 
             console.log("err", err)

@@ -96,6 +96,11 @@ h1 {
 .text-white {
   color: var(--spotify-white);
 }
+
+.text-grey {
+  color: var(--grey);
+}
+
 .red {
   color: var(--red);
 }
@@ -435,6 +440,7 @@ button:focus-visible {
   padding: .5rem;
   overflow-y: scroll;
   max-height: 500px;
+  clip-path: inset(0px 0px 0px 0px);
 }
 
 .static-grid {

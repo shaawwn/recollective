@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react'
+import {useState, useEffect, useRef} from 'react'
 // import {useAuthContext, useApiContext} from '../context/barrel'
 import {useApiContext} from '../context/ApiContext'
 // import {useAuthContext} from '../context/AuthContext'
@@ -8,11 +8,16 @@ import {useAuthContext} from '../App'
 
 export default function useBinsPlaylistsAlbums() {
     const {accessToken} = useAuthContext() || {}
-    const {user} = useUserContext()
-    const {spotifyApi, recollectiveApi} = useApiContext()
+    const {user} = useUserContext() || {}
+    const {spotifyApi, recollectiveApi} = useApiContext() || {}
     const [bins, setBins] = useState([])
     const [playlists, setPlaylists] = useState([])
     const [albums, setAlbums] = useState([])
+
+    // next urls for paginated results
+    const nextPlaylists = useRef()
+    const nextAlbums = useRef()
+    const nextBins = useRef() // currently no "next" url for bins
 
     async function getBins() {
         try {
@@ -42,7 +47,7 @@ export default function useBinsPlaylistsAlbums() {
 
     async function getAlbums() {
         try {
-            const response = await spotifyApi.getUsersSavedAlbums()
+            const response = await spotifyApi.getUsersSavedAlbums('','')
             if(!response) {
                 throw new Error ("error getting albums from spotify")
             }
@@ -52,6 +57,8 @@ export default function useBinsPlaylistsAlbums() {
             console.log("Err: ", err)
         }
     }
+
+
 
     // so now, I just need to refresh this when I add new bins, albums, or playlists
     useEffect(() => {

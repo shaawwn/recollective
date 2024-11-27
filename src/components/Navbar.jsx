@@ -10,10 +10,10 @@ const chance = new Chance()
 
 
 export default function Navbar() {
-    const {user} = useUserContext()
+    const {user} = useUserContext() || {}
 
     const redirectUri = import.meta.env.VITE_REDIRECT_URI
-    const {spotifyApi} = useApiContext()
+    const {spotifyApi} = useApiContext() || {}
     const {setPlaylistView, addPage} = useDashboardContext()
 
 

@@ -3,12 +3,12 @@ import {useApiContext} from '../context/ApiContext'
 import {useUserContext} from '../context/barrel'
 
 export default function Sidebar() {
-    const {user} = useUserContext()
+    const {user} = useUserContext() || {}
     const {getBins} = useBinContext()
     const {getPlaylists} = usePlaylistContext()
 
-    const {setHomeView, addPage, setCurrentHistory, setPlaylistLibraryView, setAlbumLibraryView, setBinView} = useDashboardContext()
-    const {spotifyApi} = useApiContext()
+    const {setHomeView, addPage, setCurrentHistory,setPlaylistView, setPlaylistLibraryView, setAlbumLibraryView, setBinView} = useDashboardContext()
+    const {spotifyApi} = useApiContext() || {}
 
     function handleClick(view) {
         // clicking on a nav element here should change the mainviewport content to the respective content

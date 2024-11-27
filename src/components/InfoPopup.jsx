@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types'
+import {createPortal} from 'react-dom'
 // import DefaultImage from '../assets/images/default.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {faPlay} from '@fortawesome/free-solid-svg-icons'
@@ -9,7 +10,7 @@ import {BinPlaybackButton} from './barrel'
 
 
 
-export default function InfoPopup({item}) { // removed coords
+export default function InfoPopup({item, coords}) { // removed coords
     const {spotifyPlayerApi} = useApiContext() || {}
     const {activeDevices = []} = useWebplayerContext() || {}
 
@@ -85,9 +86,10 @@ export default function InfoPopup({item}) { // removed coords
         }
     }
 
-    return(
+    return (
         <div 
             className="popup info-popup"
+            // style={{top: `${coords.y}px`, left: `${coords.right + 5}px`}} for use with portal
             >
             <div className="flex">
 

@@ -100,7 +100,7 @@ export default function useWebplayer() {
         // }
 
         window.onSpotifyWebPlaybackSDKReady = () => {
-            console.log("Calling on webplayback ready")
+            // console.log("Calling on webplayback ready")
             player.current = new window.Spotify.Player({
                 name: 'RecollectiveApp',
                 getOAuthToken: cb => { cb(accessToken); },

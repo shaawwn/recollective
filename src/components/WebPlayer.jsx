@@ -173,8 +173,8 @@ function TrackDetails({track}) {
 
 function PlaybackMenu() {
 
-    const {activeDevices, setActiveDevices} = useWebplayerContext()
-    const {spotifyPlayerApi} = useApiContext()
+    const {activeDevices, setActiveDevices} = useWebplayerContext() || {}
+    const {spotifyPlayerApi} = useApiContext() || {}
     const [toggleMenu, setToggleMenu] = useState(true)
 
     function toggle() {

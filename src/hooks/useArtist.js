@@ -7,7 +7,7 @@ import {useAuthContext} from '../App'
 export default function useArtist() {
     const [artistID, setArtistID] = useState()
     const {accessToken} = useAuthContext() || {}
-    const {spotifyApi} = useApiContext()
+    const {spotifyApi} = useApiContext() || {}
 
     const [artist, setArtist] = useState()
 

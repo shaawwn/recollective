@@ -8,7 +8,7 @@ export default function useAlbum() {
     const [albumID, setAlbumID] = useState()
     const [album, setAlbum] = useState()
     const {accessToken} = useAuthContext() || {}
-    const {spotifyApi} = useApiContext()
+    const {spotifyApi} = useApiContext() || {}
 
     function clearAlbumState() {
         setAlbumID()

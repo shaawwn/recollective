@@ -28,7 +28,7 @@ export default function usePlaylist() {
     const [playlistID, setPlaylistID] = useState()
     const [playlist, setPlaylist] = useState()
     const {accessToken} = useAuthContext() || {}
-    const {spotifyApi} = useApiContext()
+    const {spotifyApi} = useApiContext() || {}
     const [refresh, setRefresh] = useState(false)
 
     // const [isOwner, setIsOwner] = useState(false) // set true if owner

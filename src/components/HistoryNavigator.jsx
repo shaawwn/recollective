@@ -5,10 +5,13 @@ import {useDashboardContext} from '../Dashboard'
 
 
 export default function HistoryNavigator() {
-    const {history, getPrevious, getNext, setHomeView, setPlaylistView, setAlbumView, setBinView, setArtistView, setPlaylistLibraryView, setAlbumLibraryView, setSearchResultsView, setCurrentHistory} = useDashboardContext()
+    const {history, getPrevious, getNext, setHomeView, setPlaylistView, setAlbumView, setBinView, setArtistView, setPlaylistLibraryView, setAlbumLibraryView, setSearchResultsView, setCurrentHistory} = useDashboardContext() || {}
+
+
 
     function back() {
         let prevPage = getPrevious()
+        console.log("prev", prevPage)
         try {
             switch(prevPage.view) {
                 case "home":
@@ -18,6 +21,10 @@ export default function HistoryNavigator() {
                 case "playlist":
                     setCurrentHistory(prevPage)
                     setPlaylistView(prevPage.id)
+                    return
+                case "playlists":
+                    setCurrentHistory(prevPage)
+                    setPlaylistLibraryView()
                     return
                 case "search":
                     setCurrentHistory(prevPage)
@@ -35,10 +42,8 @@ export default function HistoryNavigator() {
                     setCurrentHistory(prevPage)
                     setBinView(prevPage.id)
                     return
-                case "playlists":
-                    setPlaylistLibraryView()
-                    return
                 case "albums":
+                    setCurrentHistory(prevPage)
                     setAlbumLibraryView()
                     return
             }
@@ -73,9 +78,11 @@ export default function HistoryNavigator() {
                     setArtistView(nextPage.id)
                     return
                 case "playlists":
+                    setCurrentHistory(nextPage)
                     setPlaylistLibraryView()
                     return
                 case "albums":
+                    setCurrentHistory(nextPage)
                     setAlbumLibraryView()
                     return
             }
@@ -85,13 +92,17 @@ export default function HistoryNavigator() {
         }
 
     }
+
     return(
         <div className="flex">
-            <FontAwesomeIcon onClick={back} icon={faCaretLeft} size="2x"/>
+            {history.current['current']?.previous ?
+                <FontAwesomeIcon onClick={back} icon={faCaretLeft} size="2x" aria-label="Go Back"/>
+            :<FontAwesomeIcon icon={faCaretLeft} className="text-grey" size="2x" aria-label="Go Back"/>
+            }
 
             {history.current['current']?.next ?
-                <FontAwesomeIcon onClick={forward} icon={faCaretRight} size="2x" />
-            :<FontAwesomeIcon className="invis" icon={faCaretRight} size="2x"/>
+                <FontAwesomeIcon onClick={forward} icon={faCaretRight} size="2x" aria-label="Go Forward"/>
+            :<FontAwesomeIcon className="text-grey" icon={faCaretRight} size="2x" aria-label="Go Forward"/>
             }
 
         </div>

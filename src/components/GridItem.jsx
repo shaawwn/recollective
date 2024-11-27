@@ -40,6 +40,7 @@ function GridItemComponent({item}, ref) {
 
     function renderPopup() {
         // get x/y coords of image
+        // console.log("IMAGE COORDS", imageCoords.current)
         return <InfoPopup item={item} coords={imageCoords.current}/>
     }
 

@@ -6,37 +6,30 @@ import {useEffect, useRef} from 'react'
 export default function InfiniteScrollGrid({getNext, items, GridComponent}) {
     // console.log("items", items)
     const currentPopup = useRef(false)
-    const observerRef = useRef() // set this to the final element in the array of elements, so when it is rendered (visible) on the page, it hten triggers the fetch to get the next batch of elements
+    const observerRef = useRef() // the ref that is attached to am element
 
 
-    function handleScroll(e) {
-        e.preventDefault()
-        e.stopPropagation()
-        console.log("Scrolling")
+    // function handleScroll(e) {
+    //     e.preventDefault()
+    //     e.stopPropagation()
+    //     console.log("Scrolling")
+    //     // handled by the intersection observer, although may need later for adding css animations
+    // }
 
-        // the other thing is it should only trigger at the BOTTOM of the current playlists, this triggers when any scroll happens.
-    }
-
-    function fetchNextItems() {
-        // get the next items in the array from spotifyApi
-
-    }
     useEffect(() => {
+        // create the observer, this is detached from anything as of right now and is literally just a floating observer object
         const observer = new IntersectionObserver(
             ([entry]) => {
                 if (entry.isIntersecting) {
-                    console.log("Trigger scroll in observer");
                     getNext()
-                    // Add your scroll handling logic here, e.g., load more items
-
                 }
             },
             { threshold: 0.7 } 
         );
     
+        // observerRef.current is the DOM element to be observerd. At this point, on initial, is null
         const currentObserverRef = observerRef.current; 
-        console.log(observerRef.current)
-    
+
         if (currentObserverRef) {
             observer.observe(currentObserverRef); // Observe the DOM element
         }
@@ -47,25 +40,25 @@ export default function InfiniteScrollGrid({getNext, items, GridComponent}) {
             }
         };
         
-    }, [observerRef]); // Dependency array ensures the effect runs when the ref changes
-    
-    return (
-        <section 
-        className="scroll-grid panel"
-        >
-        {items.map((item, index) => {
-            const isLastItem = index === items.length - 1
-            return <GridComponent
-            currentPop={currentPopup.current}
-            key={index + item.name}
-            item={item}
-            ref={isLastItem ? observerRef : null}
-            />
+    }, [items]); // Dependency array ensures the effect runs when the ref changes
 
-        }
-        )}
-        
-    </section>
+    return (
+        <div>
+            <section 
+            className="scroll-grid panel"
+            >
+            {items.map((item, index) => {
+                const isLastItem = index === items.length - 1
+                return <GridComponent
+                currentPop={currentPopup.current}
+                key={index + item.name}
+                item={item}
+                ref={isLastItem ? observerRef : null}
+                />
+            }
+            )}
+            </section> 
+        </div>
     )
 }
 

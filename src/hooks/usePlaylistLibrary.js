@@ -18,7 +18,7 @@ export default function usePlaylistLibrary() {
         // get the first round only for now
 
         try {
-            const response = await spotifyApi.getCurrentUserPlaylists('', '')
+            const response = await spotifyApi.getCurrentUserPlaylists(50, 0)
             if(!response) {
                 throw new Error ("Error getting user playlists")
             }
@@ -38,8 +38,8 @@ export default function usePlaylistLibrary() {
 
         if(nextUrl.current) {
             try {
-                const response = await spotifyApi.getCurrentUserPlaylists(50, 50)
-
+                // const response = await spotifyApi.getCurrentUserPlaylists(50, 50) // next url
+                const response = await spotifyApi.fetchNextUrl(nextUrl.current)
                 if(!response) {
                     throw new Error ('error fetching next elements')
                 }

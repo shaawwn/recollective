@@ -38,7 +38,7 @@ export default function Dashboard() {
     
     const {user} = useUserContext()
     const [view, setView] = useState('home') // home is default view
-    const {artist, setArtistID, clearArtistState} = useArtist()
+    const {artist, setArtistID, clearArtistState} = useArtist() || {}
     const {setPlaylistID, playlist, refreshPlaylist, addToPlaylist, removeFromPlaylist, clearPlaylistState} = usePlaylist()
     const {setAlbumID, album, clearAlbumState} = useAlbum()
     const {setBinID, bin, addToBin, removeFromBin} = useBin()
@@ -46,7 +46,7 @@ export default function Dashboard() {
     const {search, searchResults} = useSearch(setSearchResultsView)
 
     const {bins, playlists, albums, getBins, getPlaylists} = useBinsPlaylistsAlbums() // removed getAlbums
-
+    
     // Active playing content (tbd state or ref)
     // const {activeContent, setActiveContent} = useState()
     const activeContent = useRef()
