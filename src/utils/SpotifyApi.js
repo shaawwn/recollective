@@ -42,6 +42,9 @@ export default class SpotifyApi {
 
             return response.json()
         }).then((data) => {
+            
+            // filter out null playlists here
+            data.items = data.items.filter(Boolean)
             return data
         })
     }

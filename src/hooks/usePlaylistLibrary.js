@@ -23,9 +23,11 @@ export default function usePlaylistLibrary() {
                 throw new Error ("Error getting user playlists")
             }
             // console.log("playlist response", response)
-            setPlaylists(response.items)
+
+            // filter out the null items
+            const filterBlockedPlaylists = response.items.filter(playlist => playlist !== null)
+            setPlaylists(filterBlockedPlaylists)
             nextUrl.current = response.next
-            // offset.current = response.offset
         } catch(err) {
             console.log("err", err)
         }
@@ -43,7 +45,8 @@ export default function usePlaylistLibrary() {
                 if(!response) {
                     throw new Error ('error fetching next elements')
                 }
-                setPlaylists([...playlists, ...response.items]);
+                const filterBlockedPlaylists = response.items.filter(playlist => playlist !== null)
+                setPlaylists([...playlists, ...filterBlockedPlaylists]);
                 nextUrl.current = response.next
                 // console.log("response", response)
             } catch (err) {

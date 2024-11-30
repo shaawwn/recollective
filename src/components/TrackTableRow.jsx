@@ -16,7 +16,6 @@ import {useDashboardContext, usePlaylistContext, useWebplayerContext} from '../D
 // I think it is an error here to load playlist from context, if I just passed the relevant information as props, this wouldn' tbe a problem.
 
 export default function TrackTableRow({context, track, type, offset}) {
-
     // type = album, playlist, explore (explore tracks are found in search results and can be added to playlists)
     const {spotifyPlayerApi, spotifyApi} = useApiContext()
     const {activeDevices, current_track, is_paused} = useWebplayerContext() || {} // is_paused can be null if no playback
@@ -44,47 +43,49 @@ export default function TrackTableRow({context, track, type, offset}) {
         }
     }
 
-    async function handlePlayback(track) {
-        // this creates a random playlist based on the selected track that will continue playback when the selected track ends
-        const seeds={
-            seed_artists: [track.artists[0].id],
-            seed_tracks: [[track.id]],
-            seed_genres: []
-        }
-
+    async function handlePlayback(track, activeDeviceID) {
+        // just play the track
+        console.log("track", track, activeDeviceID)
         try {
+            // const activeDeviceID = activeDevices.find(device => device.name === "RecollectiveApp")
 
-            const response = await spotifyApi.getRecommendations(seeds)
-            const activeDeviceID= activeDevices.find(device => device.name === "RecollectiveApp");
-
-            if(response) {
-                // create a queie of recommended tracks and play starting from the selectefd track. Maybe I can create a seperate window later showing what tracks are in the queue
-
-                const toPlay = response.tracks
-                toPlay.unshift(track)
-                const uris = toPlay.map(track => track.uri);
-                spotifyPlayerApi.play('', uris, 0, activeDeviceID.id)
-            }
-        } catch(err) {  
-            console.log(err)
+            // no context jsut the track
+            spotifyPlayerApi.play(null, [track.uri], null, activeDeviceID.id)
+        } catch (err) {
+            alert("No active devices")
         }
     }
 
     function play() {
         // use recollective as default
-        const activeDeviceID= activeDevices.find(device => device.name === "RecollectiveApp");
+        // const activeDeviceID= activeDevices.find(device => device.name === "RecollectiveApp");
 
-        // here is where I need to set the active
-        if(type === 'explore') {
-            // in this case, just check of the current track is playing "in the wild"
-            handlePlayback(track)
-        } else {
-            // set the playlist, album or bin content the "active", that is, setActiveID() to create the active content
-
-            activeContent.current = context
-            console.log("ACTIVE CONTENT", activeContent.current)
-            spotifyPlayerApi.play(context, [], offset, activeDeviceID.id)
+        try {
+            const activeDeviceID= activeDevices.find(device => device.name === "RecollectiveApp");
+            if(type === 'search') {
+                // in this case, just check of the current track is playing "in the wild"
+                handlePlayback(track, activeDeviceID)
+            } else {
+                // set the playlist, album or bin content the "active", that is, setActiveID() to create the active content
+    
+                activeContent.current = context
+                // console.log("ACTIVE CONTENT", activeContent.current)
+                spotifyPlayerApi.play(context, [], offset, activeDeviceID.id)
+            }
+        } catch (err) {
+            alert("No active devices")
         }
+        // // here is where I need to set the active
+        // if(type === 'search') {
+        //     // in this case, just check of the current track is playing "in the wild"
+        //     handlePlayback(track)
+        // } else {
+        //     // set the playlist, album or bin content the "active", that is, setActiveID() to create the active content
+
+        //     activeContent.current = context
+        //     // console.log("ACTIVE CONTENT", activeContent.current)
+        //     spotifyPlayerApi.play(context, [], offset, activeDeviceID.id)
+        // }
     }
 
     function renderAddRemoveButton() {
@@ -156,7 +157,10 @@ export default function TrackTableRow({context, track, type, offset}) {
 
     }
     
-    checkCurrent()
+    if(context && activeContent?.current) {
+        checkCurrent()
+    }
+    // checkCurrent()
 
     return(
         <div className="track-table-search__row">
@@ -194,7 +198,7 @@ export default function TrackTableRow({context, track, type, offset}) {
 
 
 TrackTableRow.propTypes = {
-    context: PropTypes.string.isRequired, //uri of album or playlist may not need to beRequired, 
+    context: PropTypes.string, // not required because some tracks do not have context (search results)
     track: PropTypes.object.isRequired,
     type: PropTypes.string.isRequired,
     offset: PropTypes.number // albums include a track_number value, but offset is still needed for playlists

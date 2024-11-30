@@ -12,9 +12,6 @@ import {TrackTableRow} from './barrel'
 
 export default function TrackTable({content, type}) {
 
-    // removed tracks prop
-    // const {playlist} = usePlaylistContext() || {} // this is for checking if playlist exists, which needs extra functionality like adding/removing 
-
     return(
         <section className="track-table">
             <hr></hr>
@@ -37,8 +34,9 @@ export default function TrackTable({content, type}) {
 
 
 TrackTable.propTypes = {
+    content: PropTypes.object.isRequired,
     type: PropTypes.string.isRequired,
-    tracks: PropTypes.array.isRequired
+    // tracks: PropTypes.array.isRequired
 }
 
 

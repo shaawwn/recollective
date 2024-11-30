@@ -48,29 +48,45 @@ export function TrackTableSearchRow({track}) {
 
 
     async function handlePlayback(track) {
-        const seeds={
-            seed_artists: [track.artists[0].id],
-            seed_tracks: [[track.id]],
-            seed_genres: []
-        }
+        // just play the track
+        console.log(activeDevices)
+        const activeDeviceID = activeDevices.find(device => device.name === "RecollectiveApp")
 
-        try {
+        // no context jsut the track
+        spotifyPlayerApi.play(null, [track.uri], null, activeDeviceID.id)
+        // try {
+        //     const activeDeviceID = activeDevices.find(device => device.name === "RecollectiveApp")
 
-            const response = await spotifyApi.getRecommendations(seeds)
-            const activeDeviceID= activeDevices.find(device => device.name === "RecollectiveApp");
-
-            if(response) {
-                // create a queie of recommended tracks and play starting from the selectefd track. Maybe I can create a seperate window later showing what tracks are in the queue
-
-                const toPlay = response.tracks
-                toPlay.unshift(track)
-                const uris = toPlay.map(track => track.uri);
-                spotifyPlayerApi.play('', uris, 0, activeDeviceID.id)
-            }
-        } catch(err) {  
-            console.log(err)
-        }
+        //     // no context jsut the track
+        //     spotifyPlayerApi(null, [track.uri], null, activeDeviceID.id)
+        // } catch (err) {
+        //     alert("No active devices")
+        // }
     }
+    // async function handlePlayback(track) {
+    //     const seeds={
+    //         seed_artists: [track.artists[0].id],
+    //         seed_tracks: [[track.id]],
+    //         seed_genres: []
+    //     }
+
+    //     try {
+
+    //         const response = await spotifyApi.getRecommendations(seeds)
+    //         const activeDeviceID= activeDevices.find(device => device.name === "RecollectiveApp");
+
+    //         if(response) {
+    //             // create a queie of recommended tracks and play starting from the selectefd track. Maybe I can create a seperate window later showing what tracks are in the queue
+
+    //             const toPlay = response.tracks
+    //             toPlay.unshift(track)
+    //             const uris = toPlay.map(track => track.uri);
+    //             spotifyPlayerApi.play('', uris, 0, activeDeviceID.id)
+    //         }
+    //     } catch(err) {  
+    //         console.log(err)
+    //     }
+    // }
     return(
         <div className="track-table-search__row">
 
