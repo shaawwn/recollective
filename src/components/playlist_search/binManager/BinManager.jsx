@@ -43,10 +43,12 @@ export default function BinManager() {
         // there is no tracks view for bins
         switch(builderView) {
             case 'albums':
-                return <AlbumsTable albums={searchResults.albums.items} />
+                return <AlbumsTable 
+                    albums={searchResults.albums.items} 
+                    draggable={true}
+                    />
             case 'albumTracks':
                 return album ? <AlbumTracks album={album}/> : <LoadingSpinner />
-                // return <AlbumTracks album={album}/>
             case 'artists':
                 return <ArtistTable artists={searchResults.artists.items} />
             case 'artist':
@@ -55,9 +57,6 @@ export default function BinManager() {
                 return <PlaylistTable playlists={searchResults.playlists.items} />
             case 'playlist':
                 return playlist ? <PlaylistTracks playlist={playlist}/> : <LoadingSpinner />
-                // return <PlaylistTracks playlist={playlist}/>
-
-            
         }
 
     }
@@ -75,7 +74,7 @@ export default function BinManager() {
             case 'playlists':
                 addPage('playlists', null)
                 setBuilderView('playlists')
-                return // this was missing?
+                return 
         }
     }
 

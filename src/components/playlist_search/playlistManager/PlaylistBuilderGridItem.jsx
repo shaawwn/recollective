@@ -7,7 +7,7 @@ import DefaultImage from '../../../assets/images/default.png'
 
 // 
 
-export default function PlaylistBuilderGridItem({item}) {
+export default function PlaylistBuilderGridItem({item, draggable}) {
     // item is the playlist or album 
     // console.log("PLAYLIST GRID ITEM", item)
     const binContext = useBinManagerContext()
@@ -17,6 +17,11 @@ export default function PlaylistBuilderGridItem({item}) {
 
 
     // const {dragItem} = useBinContext()
+
+    function handleDragStart(e) {
+        const data = JSON.stringify(item)
+        e.dataTransfer.setData('application/json', data)
+    }
 
     function handleClick() {
         // can be either playlist or album/compilation
@@ -38,6 +43,7 @@ export default function PlaylistBuilderGridItem({item}) {
     }
 
 
+
     return(
         <div onClick={handleClick} className="static-grid--item">
             <img className="image--med rounded-[10px]" 
@@ -45,6 +51,7 @@ export default function PlaylistBuilderGridItem({item}) {
                 item.images[0].url : DefaultImage
                 }
                 alt={item.name}
+                onDragStart={(e) => handleDragStart(e)}
                 // draggable="true"
                 // onDragStart={(e) => dragItem(e, item)}
 
@@ -54,5 +61,6 @@ export default function PlaylistBuilderGridItem({item}) {
 }
 
 PlaylistBuilderGridItem.propTypes = {
-    item: PropTypes.object.isRequired
+    item: PropTypes.object.isRequired,
+    draggable: PropTypes.bool
 }

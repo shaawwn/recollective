@@ -11,7 +11,7 @@ import {InfoPopup} from './barrel'
  * Add an option for "see more" or "browse all" that then changes to a new view with an infinitel scrolling grid
  */
 
-export default function StaticGrid({items, GridComponent}) {
+export default function StaticGrid({items, GridComponent, draggable}) {
 
     // set grids size with 'size' (20, 30, 10, etc)
 
@@ -123,6 +123,8 @@ export default function StaticGrid({items, GridComponent}) {
 
 StaticGrid.propTypes = {
     items: PropTypes.array.isRequired,
+    GridComponent: PropTypes.node.isRequired,
+    draggable: PropTypes.bool
 }
 
 // GridItem.propTypes = {
