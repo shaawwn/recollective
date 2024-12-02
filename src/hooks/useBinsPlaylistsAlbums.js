@@ -38,7 +38,7 @@ export default function useBinsPlaylistsAlbums() {
                 throw new Error ("error getting playlists from spotify")
             }
             // format playlists
-            const userPlaylists = response.items.filter(playlist => playlist.owner.id === user.recollective.spotifyID) 
+            const userPlaylists = response.items.filter(playlist => playlist?.owner.id === user.recollective.spotifyID) 
             setPlaylists(userPlaylists)
         } catch (err) {
             console.log("err: ", err)

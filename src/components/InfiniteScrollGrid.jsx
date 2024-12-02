@@ -4,17 +4,9 @@ import {useEffect, useRef} from 'react'
 
 
 export default function InfiniteScrollGrid({getNext, items, GridComponent}) {
-    // console.log("items", items)
+
     const currentPopup = useRef(false)
     const observerRef = useRef() // the ref that is attached to am element
-
-
-    // function handleScroll(e) {
-    //     e.preventDefault()
-    //     e.stopPropagation()
-    //     console.log("Scrolling")
-    //     // handled by the intersection observer, although may need later for adding css animations
-    // }
 
     useEffect(() => {
         // create the observer, this is detached from anything as of right now and is literally just a floating observer object

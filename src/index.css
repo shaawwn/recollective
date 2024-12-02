@@ -462,6 +462,14 @@ button:focus-visible {
   /* cursor: pointer; */
 }
 
+.drop-zone {
+
+}
+
+.drop-zone:hover{
+  /* border: 1px solid var(--spotify-green); */
+}
+
 .popup {
   z-index: 10
 }

@@ -16,9 +16,8 @@ export default function useSearch(setSearchResultsView) {
             }
         }).then((response) => response.json())
         .then((data) => {
+            data.playlists.items = data.playlists.items.filter(Boolean)
             setSearchResults(data) 
-            // setSearchResultsView() // this needs to be moved out
-            // console.log("Search results", data)
             return data
             // add Bin/User search after getting those set up
         }).catch((err) => {

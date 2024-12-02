@@ -1,6 +1,7 @@
 import React, {useState, useContext} from 'react'
 
 import {useSearch, useAlbum, useArtist, usePlaylist} from '../../../hooks/barrel'
+import {LoadingSpinner} from '../../barrel'
 
 // removed ArtistPage from playlist_search and used the main ArtistPage instead
 import {PlaylistBuilderSearch, TrackTableSearch, ArtistTable, AlbumsTable, AlbumTracks, PlaylistTable, PlaylistTracks, SearchHistoryNavigator, RecommendedTracks} from '../barrel'
@@ -48,9 +49,10 @@ export default function PlaylistBuilder() { // ContentDigger
             case 'tracks':
                 return <TrackTableSearch tracks={searchResults.tracks.items} />
             case 'albums':
+
                 return <AlbumsTable albums={searchResults.albums.items}/>
-            case 'albumTracks': // this
-                return <AlbumTracks album={album}/> // need to add albumTracks
+            case 'albumTracks':
+                return album ? <AlbumTracks album={album}/> : <LoadingSpinner />
             case 'artists':
                 return <ArtistTable artists={searchResults.artists.items}/>
             case 'artist': // NOT artist's' and this are different hitories
@@ -59,7 +61,8 @@ export default function PlaylistBuilder() { // ContentDigger
                 return <PlaylistTable playlists={searchResults.playlists.items} />
             case 'playlist':
                 // can *view* track content of a playlist, but can only add the whole playlist to a bin
-                return <PlaylistTracks playlist={playlist} />
+                return playlist ? <PlaylistTracks playlist={playlist} />: <LoadingSpinner />
+                // return <PlaylistTracks playlist={playlist} />
         }
     }
 

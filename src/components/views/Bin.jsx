@@ -25,13 +25,26 @@ export default function Bin({bin}) {
     const {user} = useUserContext() || {}
 
     function handleDragOver(e) {
-
         e.preventDefault()
         e.stopPropagation()
     }
 
     function handleDrop(e) {
-        console.log("Drop", e.dataTransfer.getData('item'))
+        // only handle drops in drop zone
+        const dropZone = document.querySelector('.drop-zone') // there is only one drop zone
+
+        const item = JSON.parse(e.dataTransfer.getData('application/json'))
+        // console.log("Dropped item", item.id, item.name, item.images, item.uri)
+        addToBin({
+            id: item.id,
+            name: item.name,
+            images: item.images ? [{url: item.images[0].url}] : {url: ''},
+            uri: item.uri
+        })
+
+        // adding to bin takes id, name, images, and uri
+
+
     }
 
     // function dragItem(e, item) {
@@ -49,8 +62,8 @@ export default function Bin({bin}) {
     return(
         // Create a 'dropable zone' to add bins
         <section
-            onDragOver={(e) => handleDragOver(e)}
-            onDrop={(e) => handleDrop(e)}
+            // onDragOver={(e) => handleDragOver(e)}
+            // onDrop={(e) => handleDrop(e)}
         >
 
             {bin ? 
@@ -63,8 +76,14 @@ export default function Bin({bin}) {
                         isOwner={bin.overview.user === user.recollective._id}
                         />
                         {bin.overview.content ? 
-                            <div className="static-grid">
-                               <StaticGrid items={bin.overview.content} GridComponent={GridItem}/>
+                            <div className="static-grid drop-zone"
+                                onDragOver={(e) => handleDragOver(e)}
+                                onDrop={(e) => handleDrop(e)}
+                            >
+                               <StaticGrid 
+                                    items={bin.overview.content} 
+                                    GridComponent={GridItem}
+                                    />
                             </div>
 
                         :<h2>Loading or no bins...</h2>
