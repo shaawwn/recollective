@@ -1,5 +1,6 @@
 {
   "name": "spotify",
+  "homepage": "https://shaawwn.github.io/recollective/",
   "private": true,
   "version": "0.0.0",
   "type": "module",
