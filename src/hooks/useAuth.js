@@ -12,8 +12,6 @@ function useAuth(code) {
     useEffect(() => {
         // Spotify uses a one-time use code, which causes problems with React Strict Mode, this ensures the code is only used once
 
-        // ERR message
-        // @react-refresh:267 Warning: useEffect must not return anything besides a function, which is used for clean-up. You returned: BQAeJM-c6XKm1kn2ZanqSmJ3JVNe80UjhkMGu6bekQ8dJ0tGwzXpstHSQA_OdxDIv6WLkQICUjL44Ni0Wd8ZUhqUNueJa_9Q2sskLqynXN-1msMPvcBRmWsEUmaPGoKlfRz7DS8bg_jl6tpTlCiq1E7I1m3fvtjWxrYwED3q3JbuVnnk3K_3n9Q9_3dfg_MMRe22BO1ex1gwxUsUXBTv4ugikUkk6f0aEDzyfoae70MyYGVhQo7R9dpmEX-t68exoB1ujQ9WwJwAGUX0YSXXdFfsGBHl09U4NF2NIgdXZmgPryu_uaKgtAiO Error Component Stack
         if(!code) {
             return
         }
