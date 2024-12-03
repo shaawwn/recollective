@@ -21,7 +21,7 @@ function useAuth(code) {
             codeRef.current = code
         }
      
-        fetch(`https://auth-server-bold-sun-934.fly.dev:3001/login`, {
+        fetch(`https://auth-server-bold-sun-934.fly.dev/login`, {
         // fetch('http://localhost:3001/login', {
             method: "POST",
             headers: {
@@ -50,7 +50,7 @@ function useAuth(code) {
 
         const interval = setInterval(() => {
             // fetch('http://localhost:3001/refresh', {
-            fetch('https://auth-server-bold-sun-934.fly.dev:3001/refresh', {
+            fetch('https://auth-server-bold-sun-934.fly.dev/refresh', {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
