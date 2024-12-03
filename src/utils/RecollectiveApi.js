@@ -19,6 +19,8 @@ export default class RecollectiveApi {
             return response.json()
         }).then((data) => {
             return data
+        }).catch((err) => {
+            console.log("Error fetching users from recollective api", err)
         })
     }
 

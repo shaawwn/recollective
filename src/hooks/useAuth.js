@@ -11,8 +11,6 @@ function useAuth(code) {
     
     useEffect(() => {
         // Spotify uses a one-time use code, which causes problems with React Strict Mode, this ensures the code is only used once
-        const apiUrl = import.meta.env.VITE_RECOLLECTIVE_URL
-        console.log("API URL", apiUrl)
         if(!code) {
             return
         }
