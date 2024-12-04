@@ -77,30 +77,37 @@ export default function UserProvider({children}) {
     }
 
 
+    async function getSpotifyUser() {
+        fetch('https://api.spotify.com/v1/me', {
+            headers: {
+                'Authorization': `Bearer ${this.accessToken}`
+            }
+        }).then(handleResponse)
+        .then((data) => {
+            return data
+        }).catch((err) => {
+            console.log("Err", err)
+        })
+    }
 
-
-    // function initUser() {
-    //     // gets and sets spotify user data
-    //     fetch(`https://api.spotify.com/v1/me`, {
-    //         headers: {
-    //             'Authorization': `Bearer ${accessToken}`
-    //         }
-    //     }).then((response) => {
-    //         if(!response.ok) {
-    //             throw new Error('Failed to fetch user data')
-    //         }
-    //         return response.json()
-    //     })
-    //     .then((data) => {
-    //         _getAppUserAndInitApi(data)
-    //     }).catch((err) => {
-    //         console.log("Error fetching user data", err)
-    //     })
-    // }
-
+    async function getRecollectiveUser() {
+        return fetch(`https://auth-server-bold-sun-934.fly.dev/users/me`, {
+            credentials: "include"
+        }).then((response) => {
+            if(!response.ok) {
+                throw new Error
+            }
+            return response.json()
+        }).then((data) => {
+            return data
+        }).catch((err) => {
+            console.log("Error fetching users from recollective api", err)
+        })
+    }
 
     // create a user object, then set the user data with the repsonses from both APIs
 
+    // ah, the problem was that the API depends on this
     async function initUser() {
         // create a user object
         let userObj = {
@@ -111,10 +118,9 @@ export default function UserProvider({children}) {
         try {
 
             const [spotifyResponse, recollectiveResponse] = await Promise.all([
-                spotifyApi.getCurrentUser(),
-                recollectiveApi.getUser()
+                getSpotifyUser(),
+                getRecollectiveUser()
             ]);
-            // const spotifyResponse = await spotifyApi.getCurrentUser()
             if(!spotifyResponse) {
                 throw new Error ("error getting spotify user in context")
             }
@@ -125,10 +131,11 @@ export default function UserProvider({children}) {
 
 
             // using the spotify response, set the user to spitify attr
+ 
             userObj['spotify'] = spotifyResponse
             userObj['recollective'] = recollectiveResponse
         } catch (err){
-            console.log("err", err)
+            console.log("err in init user", err)
         }
         // // fetch recollecctive user data
         // try {
@@ -144,13 +151,6 @@ export default function UserProvider({children}) {
         setUser(userObj)
     }
 
-    function getSpotifyUser() {
-
-    }
-
-    function getRecollectiveUser() {
-
-    }
     useEffect(() => {
         // handle startup
         if(accessToken && !user) {
