@@ -138,7 +138,10 @@ export default function UserProvider({children}) {
             // using the spotify response, set the user to spitify attr
  
             userObj['spotify'] = spotifyResponse
-            userObj['recollective'] = recollectiveResponse
+            setTimeout(() => {
+                userObj['recollective'] = recollectiveResponse
+            }, 5000)
+            // userObj['recollective'] = recollectiveResponse
         } catch (err){
             console.log("err in init user", err)
         }
