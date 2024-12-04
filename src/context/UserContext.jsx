@@ -82,7 +82,12 @@ export default function UserProvider({children}) {
             headers: {
                 'Authorization': `Bearer ${this.accessToken}`
             }
-        }).then(handleResponse)
+        }).then((response) => {
+            if(!response.ok) {
+                throw new Error("error getting spotify user in context")
+            }
+            return response.json()
+        })
         .then((data) => {
             return data
         }).catch((err) => {
