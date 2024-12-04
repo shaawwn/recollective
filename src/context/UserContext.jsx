@@ -134,7 +134,7 @@ export default function UserProvider({children}) {
             }
 
 
-
+            console.log("RECOLLECTIVE RESPONSE", recollectiveResponse)
             // using the spotify response, set the user to spitify attr
  
             userObj['spotify'] = spotifyResponse
@@ -142,16 +142,7 @@ export default function UserProvider({children}) {
         } catch (err){
             console.log("err in init user", err)
         }
-        // // fetch recollecctive user data
-        // try {
-        //     const recollectiveResponse = await recollectiveApi.getUser()
-        //     if(!recollectiveResponse) {
-        //         throw new Error ("error getting recollective user in context")
-        //     }
-        //     userObj['recollective'] = recollectiveResponse
-        // } catch (err) {
-        //     console.log("err", err)
-        // }
+
         // set both to the created user object
         setUser(userObj)
     }
