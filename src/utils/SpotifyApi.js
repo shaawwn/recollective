@@ -12,6 +12,18 @@ export default class SpotifyApi {
         return this.userID
     }
 
+    async getCurrentUser() {
+        fetch(this.apiUrl + '/me', {
+            headers: {
+                'Authorization': `Bearer ${this.accessToken}`
+            }
+        }).then(handleResponse)
+        .then((data) => {
+            return data
+        }).catch((err) => {
+            console.log("Err", err)
+        })
+    }
     async getUserTopItems(types) {
         // types = 'tracks' or 'artists'
         return fetch(this.apiUrl + `me/top/${types}`, {
@@ -127,6 +139,7 @@ export default class SpotifyApi {
             console.log("Err: ", err)
         })
     }
+
     // album related methods
     async getAlbum(id) {
         return fetch(this.apiUrl + `albums/${id}`, {
@@ -378,6 +391,7 @@ export default class SpotifyApi {
             console.log("err", err)
         })
     }
+
     async getRecommendations(seeds) {
         // seeds an array of spotify uris {seed_artists, seed_tracks, genre_seeds}
 

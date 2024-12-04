@@ -71,19 +71,6 @@ export default function UserProvider({children}) {
             setFollowing(appData.following)
 
             return spotifyApi
-        // }).then((spotifyApi) => {
-        //     filter out items.owner.id which doesn't match spotifyID (id and display_name are not the same)
-            // spotifyApi.getCurrentUserPlaylists().then((playlists) => {
-            //     const userPlaylists = playlists.items.filter(playlist => playlist.owner.id === data.id)
-            //     setPlaylists(userPlaylists)
-            //     // setPlaylists(playlists.items) // get ALL playlists user has saved
-
-            //     return spotifyApi.getUsersSavedAlbums()
-            // }).then((albums) => {
-            //     // remove added_at value from spotify return
-            //     const formattedAlbums = albums.items.map(album => album.album)
-            //     setAlbums(formattedAlbums)
-            // })
         }).catch((err) => {
             console.log(err)
         })
@@ -92,25 +79,78 @@ export default function UserProvider({children}) {
 
 
 
-    function initUser() {
-        // gets and sets spotify user data
-        fetch(`https://api.spotify.com/v1/me`, {
-            headers: {
-                'Authorization': `Bearer ${accessToken}`
+    // function initUser() {
+    //     // gets and sets spotify user data
+    //     fetch(`https://api.spotify.com/v1/me`, {
+    //         headers: {
+    //             'Authorization': `Bearer ${accessToken}`
+    //         }
+    //     }).then((response) => {
+    //         if(!response.ok) {
+    //             throw new Error('Failed to fetch user data')
+    //         }
+    //         return response.json()
+    //     })
+    //     .then((data) => {
+    //         _getAppUserAndInitApi(data)
+    //     }).catch((err) => {
+    //         console.log("Error fetching user data", err)
+    //     })
+    // }
+
+
+    // create a user object, then set the user data with the repsonses from both APIs
+
+    async function initUser() {
+        // create a user object
+        let userObj = {
+            spotify: {}, // set spotify return data here
+            recollective: {} // set recollective return data here
+        }
+        // fetch spotify user data
+        try {
+
+            const [spotifyResponse, recollectiveResponse] = await Promise.all([
+                spotifyApi.getCurrentUser(),
+                recollectiveApi.getUser()
+            ]);
+            // const spotifyResponse = await spotifyApi.getCurrentUser()
+            if(!spotifyResponse) {
+                throw new Error ("error getting spotify user in context")
             }
-        }).then((response) => {
-            if(!response.ok) {
-                throw new Error('Failed to fetch user data')
+            if(!recollectiveResponse) {
+                throw new Error ("error getting recollective user in context")
             }
-            return response.json()
-        })
-        .then((data) => {
-            _getAppUserAndInitApi(data)
-        }).catch((err) => {
-            console.log("Error fetching user data", err)
-        })
+
+
+
+            // using the spotify response, set the user to spitify attr
+            userObj['spotify'] = spotifyResponse
+            userObj['recollective'] = recollectiveResponse
+        } catch (err){
+            console.log("err", err)
+        }
+        // // fetch recollecctive user data
+        // try {
+        //     const recollectiveResponse = await recollectiveApi.getUser()
+        //     if(!recollectiveResponse) {
+        //         throw new Error ("error getting recollective user in context")
+        //     }
+        //     userObj['recollective'] = recollectiveResponse
+        // } catch (err) {
+        //     console.log("err", err)
+        // }
+        // set both to the created user object
+        setUser(userObj)
     }
 
+    function getSpotifyUser() {
+
+    }
+
+    function getRecollectiveUser() {
+
+    }
     useEffect(() => {
         // handle startup
         if(accessToken && !user) {
