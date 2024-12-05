@@ -12,18 +12,21 @@ import {TrackTableRow} from './barrel'
 
 export default function TrackTable({content, type}) {
 
+    console.log("TRACK TABLE CONTENT", content)
     return(
         <section className="track-table">
             <hr></hr>
             <div className="track-table__rows">
                 {content.tracks.map((track, index) => 
+                    track !== null ?
                     <TrackTableRow 
-                        key={track.name + index}
+                        key={track?.name + index}
                         context={content.overview?.uri}
                         track={track} 
                         type={type}
                         offset={content.tracks.indexOf(track)}
                     />
+                    :null
                 )}
             </div>
 
