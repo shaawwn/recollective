@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import {SingleRowGrid, StaticGrid} from '../barrel'
 // import {GridItem} from '../StaticGrid'
 import {GridItemBin, GridItem} from '../barrel'
-
+import { useUserContext } from '../../context/UserContext';
 // Home is the default view for a user that displays
 /**
  * 
@@ -12,10 +12,10 @@ import {GridItemBin, GridItem} from '../barrel'
  */
 export default function Home({playlists, albums, bins}) {
 
-    // can derive recent playlists
+    const {user} = useUserContext() || {}
     return(
         <>
-            {playlists ? 
+            {user ? 
                 <>
                     {bins.length > 0 ? 
                         <>
