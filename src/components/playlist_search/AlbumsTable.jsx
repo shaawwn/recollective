@@ -5,6 +5,8 @@ import {GridItem} from './barrel'
 // make these draggable?  
 export default function AlbumsTable({albums, draggable}) {
 
+
+
     return(
         <div className="static-grid">
             {albums.map((album, index) =>

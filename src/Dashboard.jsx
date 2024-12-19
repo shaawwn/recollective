@@ -245,7 +245,9 @@ export default function Dashboard() {
                         <div className="flex gap-[20px]">
                             <MainViewport>
                                 <Search />
-                                {renderView()}
+
+                                {playlists && albums ? renderView() : <LoadingSpinner />}
+                                {/* {renderView()} */}
                             </MainViewport>
                         </div>
                     :<LoadingSpinner />

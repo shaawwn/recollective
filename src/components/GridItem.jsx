@@ -93,7 +93,7 @@ function GridItemComponent({item}, ref) {
             onMouseEnter={togglePopup}
             onMouseLeave={clearPopup}
             className="static-grid--item"
-            id={item.id}
+            data-spotify-id={item.id}
             ref={ref}>
             <img 
                 ref={imageRef}
