@@ -25,6 +25,10 @@ export default function StaticGrid({items, GridComponent, draggable}) {
 
     return(
         <section className="static-grid panel">
+
+            {/* if no content (item.length === 0) then give some visual reference that indicates that.  */}
+
+            {/* Because someone might not actually have any saved content, and that is different from the content hasn't loaded yet. */}
             {items.slice(0, itemsNum).map((item, index) => 
                 <GridComponent
                     currentPop={currentPopup.current}
