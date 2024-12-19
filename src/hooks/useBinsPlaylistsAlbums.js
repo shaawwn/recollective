@@ -39,6 +39,8 @@ export default function useBinsPlaylistsAlbums() {
             }
             // format playlists
             const userPlaylists = response.items.filter(playlist => playlist?.owner.id === user.recollective.spotifyID) 
+
+            console.log("SETTING PLAYLISTS TO USER PLAYLISTS", userPlaylists)
             setPlaylists(userPlaylists)
         } catch (err) {
             console.log("err: ", err)
