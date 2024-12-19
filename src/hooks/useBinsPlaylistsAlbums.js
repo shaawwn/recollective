@@ -10,9 +10,9 @@ export default function useBinsPlaylistsAlbums() {
     const {accessToken} = useAuthContext() || {}
     const {user} = useUserContext() || {}
     const {spotifyApi, recollectiveApi} = useApiContext() || {}
-    const [bins, setBins] = useState([])
-    const [playlists, setPlaylists] = useState([])
-    const [albums, setAlbums] = useState([])
+    const [bins, setBins] = useState()
+    const [playlists, setPlaylists] = useState()
+    const [albums, setAlbums] = useState()
 
     // next urls for paginated results
     const nextPlaylists = useRef()
