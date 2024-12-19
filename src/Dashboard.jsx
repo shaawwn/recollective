@@ -189,6 +189,7 @@ export default function Dashboard() {
     }
 
     function renderView() {
+        console.log("PLAYLISTS", playlists)
         switch(view) {
             case 'home':
                 return(
