@@ -242,7 +242,7 @@ export default function Dashboard() {
                 <div className="flex flex-col gap-[20px] w-full">
                     {user && <Navbar />}
 
-                    {user?.spotify?.id ? 
+                    {user ? 
                         <div className="flex gap-[20px]">
                             <MainViewport>
                                 <Search />

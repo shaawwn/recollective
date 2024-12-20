@@ -83,6 +83,7 @@ export default function UserProvider({children}) {
             }
         }).then((response) => {
             if(!response.ok) {
+                console.log("ACCESS TOKEN IN GETSPORITYUSER?", accessToken)
                 throw new Error("error getting spotify user in context", accessToken)
             }
             return response.json()
