@@ -17,8 +17,7 @@ export function useUserContext() {
 
 export default function UserProvider({children}) {
 
-    // const accessToken = useAuthContext().accessToken 
-    const {accessToken} = useAuthContext() || {}
+    const {accessToken} = useAuthContext() || {} // ## ON LOAD there is no accessToken here, meaning that the spotify data is not being fetched at the time 
     const [spotifyApi, setSpotifyApi] = useState()
     const [recollectiveApi, setRecollectiveApi] = useState()
     const [user, setUser] = useState()
@@ -80,7 +79,7 @@ export default function UserProvider({children}) {
     async function getSpotifyUser() {
         fetch('https://api.spotify.com/v1/me', {
             headers: {
-                'Authorization': `Bearer ${this.accessToken}`
+                'Authorization': `Bearer ${accessToken}`
             }
         }).then((response) => {
             if(!response.ok) {
