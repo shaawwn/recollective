@@ -120,7 +120,7 @@ export default function UserProvider({children}) {
         }
         // fetch spotify user data
         try {
-
+            console.log("ACCESS TOKEN", accessToken)
             const [spotifyResponse, recollectiveResponse] = await Promise.all([
                 getSpotifyUser(),
                 getRecollectiveUser()
