@@ -140,6 +140,7 @@ export default function UserProvider({children}) {
             userObj['spotify'] = spotifyResponse
             userObj['recollective'] = recollectiveResponse
         } catch (err){
+            console.log("ACCESS TOKEN IN ERR", accessToken)
             console.log("err in init user", err)
         }
 
