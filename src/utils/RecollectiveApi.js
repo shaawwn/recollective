@@ -7,10 +7,10 @@ export default class RecollectiveApi {
         this.apiUrl = import.meta.env.VITE_RECOLLECTIVE_URL
     }
 
-
+    // the problem was I needed to set the user data with spotify as well
     async getUser() {
         console.log("API URL", this.apiUrl)
-        return fetch(this.apiUrl + `/users/me`, {
+        return fetch(this.apiUrl + `/me`, {
             credentials: "include"
         }).then((response) => {
             if(!response.ok) {

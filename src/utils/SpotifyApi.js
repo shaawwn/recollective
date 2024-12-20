@@ -24,6 +24,7 @@ export default class SpotifyApi {
             console.log("Err", err)
         })
     }
+    
     async getUserTopItems(types) {
         // types = 'tracks' or 'artists'
         return fetch(this.apiUrl + `me/top/${types}`, {
