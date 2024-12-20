@@ -77,18 +77,19 @@ export default function UserProvider({children}) {
 
 
     async function getSpotifyUser() {
+        console.log("Fetching spotify user data with acess token", accessToken)
         fetch('https://api.spotify.com/v1/me', {
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             }
         }).then((response) => {
             if(!response.ok) {
-                console.log("ACCESS TOKEN IN GETSPORITYUSER?", accessToken)
                 throw new Error("error getting spotify user in context", accessToken)
             }
             return response.json()
         })
         .then((data) => {
+            console.log("DATA", data)
             return data
         }).catch((err) => {
             console.log("Err", err)
