@@ -8,7 +8,7 @@ import {useAuthContext} from '../App'
 
 export default function useBinsPlaylistsAlbums() {
     const {accessToken} = useAuthContext() || {}
-    const {user} = useUserContext() || {}
+    const {user} = useUserContext()
     const {spotifyApi, recollectiveApi} = useApiContext() || {}
     const [bins, setBins] = useState()
     const [playlists, setPlaylists] = useState()
