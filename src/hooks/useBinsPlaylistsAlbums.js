@@ -40,7 +40,7 @@ export default function useBinsPlaylistsAlbums() {
             // format playlists
             const userPlaylists = response.items.filter(playlist => playlist?.owner.id === user.recollective.spotifyID) 
 
-            console.log("SETTING PLAYLISTS TO USER PLAYLISTS", userPlaylists, response, user)
+            console.log("SETTING PLAYLISTS TO USER PLAYLISTS", userPlaylists, response, user, accessToken)
             setPlaylists(userPlaylists)
         } catch (err) {
             console.log("err: ", err)
@@ -54,6 +54,7 @@ export default function useBinsPlaylistsAlbums() {
                 throw new Error ("error getting albums from spotify")
             }
             const formattedAlbums = response.items.map(album => album.album)
+            console.log("SETTING ALBUMS", formattedAlbums, accessToken)
             setAlbums(formattedAlbums)
         } catch (err) {
             console.log("Err: ", err)
