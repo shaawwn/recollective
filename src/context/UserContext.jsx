@@ -121,11 +121,13 @@ export default function UserProvider({children}) {
         }
         // fetch spotify user data
         try {
-            console.log("ACCESS TOKEN", accessToken)
+            // console.log("ACCESS TOKEN", accessToken)
             const [spotifyResponse, recollectiveResponse] = await Promise.all([
                 getSpotifyUser(),
                 getRecollectiveUser()
             ]);
+
+            console.log("API RESPONSES", spotifyResponse, recollectiveResponse)
             if(!spotifyResponse) {
                 throw new Error ("error getting spotify user in context")
             }
