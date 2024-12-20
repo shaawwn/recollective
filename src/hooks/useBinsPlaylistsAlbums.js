@@ -65,7 +65,7 @@ export default function useBinsPlaylistsAlbums() {
 
     // so now, I just need to refresh this when I add new bins, albums, or playlists
     useEffect(() => {
-        if(user.spotify?.id && accessToken && spotifyApi && recollectiveApi) {
+        if(user && accessToken && spotifyApi && recollectiveApi) {
             console.log("USER", user)
             if(user.spotify?.id) {
                 getBins()
