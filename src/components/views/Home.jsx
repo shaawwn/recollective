@@ -14,7 +14,6 @@ export default function Home({playlists, albums, bins}) {
 
     const {user} = useUserContext() || {}
 
-    console.log(playlists, albums, bins)
     return(
         <>
             {user ? 

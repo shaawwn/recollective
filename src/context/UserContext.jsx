@@ -90,25 +90,66 @@ export default function UserProvider({children}) {
     }
 
 
-
-
-    function initUser() {
-        // gets and sets spotify user data
-        fetch(`https://api.spotify.com/v1/me`, {
+    async function getSpotifyUser() {
+        return fetch('https://api.spotify.com/v1/me', {
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             }
         }).then((response) => {
             if(!response.ok) {
-                throw new Error('Failed to fetch user data')
+                throw new Error("error getting spotify user in context", accessToken)
             }
             return response.json()
         })
         .then((data) => {
-            _getAppUserAndInitApi(data)
+            return data
         }).catch((err) => {
-            console.log("Error fetching user data", err)
+            console.log("Err", err)
         })
+    }
+
+    async function getRecollectiveUser() {
+        return fetch(`https://auth-server-bold-sun-934.fly.dev/users/me`, {
+            credentials: "include"
+        }).then((response) => {
+            if(!response.ok) {
+                throw new Error
+            }
+            return response.json()
+        }).then((data) => {
+            return data
+        }).catch((err) => {
+            console.log("Error fetching users from recollective api", err)
+        })
+    }
+    async function initUser() {
+        // create a user object
+        let userObj = {
+            spotify: {}, 
+            recollective: {} 
+        }
+        // fetch spotify user data
+        try {
+            const [spotifyResponse, recollectiveResponse] = await Promise.all([
+                getSpotifyUser(),
+                getRecollectiveUser()
+            ]);
+
+            if(!spotifyResponse) {
+                throw new Error ("error getting spotify user in context")
+            }
+            if(!recollectiveResponse) {
+                throw new Error ("error getting recollective user in context")
+            }
+
+            userObj['spotify'] = spotifyResponse
+            userObj['recollective'] = recollectiveResponse
+        } catch (err){
+            console.log("err in init user", err)
+        }
+
+        // set both to the created user object
+        setUser(userObj)
     }
 
     useEffect(() => {
