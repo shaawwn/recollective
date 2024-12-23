@@ -89,7 +89,6 @@ export default function UserProvider({children}) {
             return response.json()
         })
         .then((data) => {
-            console.log("DATA", data)
             return data
         }).catch((err) => {
             console.log("Err", err)
@@ -131,7 +130,6 @@ export default function UserProvider({children}) {
             const spotifyResponse = await getSpotifyUser()
             const recollectiveResponse = await getRecollectiveUser()
 
-            console.log("API RESPONSES", spotifyResponse, recollectiveResponse)
             if(!spotifyResponse) {
                 throw new Error ("error getting spotify user in context")
             }

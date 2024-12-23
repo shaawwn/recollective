@@ -39,8 +39,6 @@ export default function useBinsPlaylistsAlbums() {
             }
             // format playlists
             const userPlaylists = response.items.filter(playlist => playlist?.owner.id === user.recollective.spotifyID) 
-
-            console.log("SETTING PLAYLISTS TO USER PLAYLISTS", userPlaylists, response, user, accessToken) // ### User is empty at this point
             setPlaylists(userPlaylists)
         } catch (err) {
             console.log("err: ", err)
@@ -54,7 +52,6 @@ export default function useBinsPlaylistsAlbums() {
                 throw new Error ("error getting albums from spotify")
             }
             const formattedAlbums = response.items.map(album => album.album)
-            console.log("SETTING ALBUMS", formattedAlbums, accessToken)
             setAlbums(formattedAlbums)
         } catch (err) {
             console.log("Err: ", err)
@@ -66,7 +63,6 @@ export default function useBinsPlaylistsAlbums() {
     // so now, I just need to refresh this when I add new bins, albums, or playlists
     useEffect(() => {
         if(user && accessToken && spotifyApi && recollectiveApi) {
-            console.log("USER", user)
             if(user.spotify?.id) {
                 getBins()
                 getPlaylists()
