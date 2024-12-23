@@ -55,7 +55,7 @@ export default function Dashboard() {
     // active album
     const {album: activeAlbum, setAlbuMID: setActiveAlbumID} = useAlbum()
 
-    const {webPlayback, player, is_paused, is_active, current_track, appDeviceId, activeDevices, setActiveDevices} = useWebplayer()
+    const {webPlayback, player, is_paused, is_active, current_track, shuffle, toggleShuffle, appDeviceId, activeDevices, setActiveDevices} = useWebplayer()
 
     // render checks
     // const renderCount = useRef(0)
@@ -112,6 +112,8 @@ export default function Dashboard() {
         is_paused,
         is_active,
         current_track,
+        shuffle, 
+        toggleShuffle,
         appDeviceId,
         activeDevices,
         setActiveDevices

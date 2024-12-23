@@ -7,8 +7,9 @@ import {faPlay} from '@fortawesome/free-solid-svg-icons'
 
 
 export default function BinPlaybackButton({bin}) {
-    const {startPlayback} = useBinPlayback(bin)
+    // bin = bin.overview
 
+    const {startPlayback} = useBinPlayback(bin)
     function handleClick(e) {
         e.stopPropagation()
         startPlayback()
@@ -28,6 +29,10 @@ export default function BinPlaybackButton({bin}) {
 BinPlaybackButton.propTypes = {
     bin: PropTypes.object.isRequired
 }
+
+
+
+
 // I BELIEVE EVERYTHING WAS MOVED TO THE USEBINPLAYBACK HOOK
     // function startBinPlayback() {
     //     // return an array of uris to randomly draw tracks from

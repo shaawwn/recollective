@@ -33,6 +33,7 @@ export default function useWebplayer() {
     const [premium, setPremium] = useState(false)
     const [is_paused, setPaused] = useState(null)
     const [is_active, setActive] = useState(false)
+    const [shuffle, setShuffle] = useState(false) // shuffle is a state that is either true or false, default false
     const [current_track, setTrack] = useState()
     const [appDeviceId, setAppDeviceId] = useState()
     const [activeDevices, setActiveDevices] = useState()
@@ -63,41 +64,6 @@ export default function useWebplayer() {
 
     function initWebplayer() {
 
-        // if(window.Spotify) {
-        //     console.log("WINDOW SPOTIFY")
-        //     player.current = new window.Spotify.Player({
-        //         name: 'RecollectiveApp',
-        //         getOAuthToken: cb => { cb(accessToken); },
-        //         volume: 0.5
-        //     });
-        //     player.current.addListener('ready', ({ device_id }) => {
-        //         setAppDeviceId(device_id)
-        //         getActiveDevices()
-
-        //     });
-
-        //     player.current.addListener('not_ready', ({ device_id }) => {
-        //         console.log('Device ID has gone offline', device_id);
-        //     });
-
-        //     player.current.addListener('player_state_changed', ( state => {
-        //         if (!state) {
-        //             return;
-        //         }
-        //         setTrack(state.track_window.current_track);
-        //         setPaused(state.paused); // pause on switch
-
-            
-        //         player.current.getCurrentState().then( state => { 
-        //             (!state)? setActive(false) : setActive(true) 
-        //         });
-            
-        //     }));
-        //     // console.log("Connecting player", player)
-        //     player.current.connect();
-        // } else {
-        //     console.log("No window spotify")
-        // }
 
         window.onSpotifyWebPlaybackSDKReady = () => {
             // console.log("Calling on webplayback ready")
@@ -127,6 +93,8 @@ export default function useWebplayer() {
                 }
                 setTrack(state.track_window.current_track);
                 setPaused(state.paused); // pause on switch
+                setShuffle(state.shuffle) // default is false
+                console.log("PLAYER STATE CHANGE EVENT", state)
 
             
                 player.current.getCurrentState().then( state => { 
@@ -137,6 +105,14 @@ export default function useWebplayer() {
             // console.log("Connecting player", player)
             player.current.connect();
         };
+    }
+
+    function toggleShuffle() {
+
+        // console.log("setting shuffle from:", shuffle, "to: ", !shuffle)
+        console.log("Checking shuffle state", is_paused, is_active, player)
+        const activeDeviceID= activeDevices.find(device => device.name === "RecollectiveApp");
+        spotifyPlayerApi.setShuffle(!shuffle, activeDeviceID.id)
     }
 
     useEffect(() => {
@@ -171,6 +147,8 @@ export default function useWebplayer() {
                 player,
                 is_paused,
                 current_track,
+                shuffle,
+                toggleShuffle,
                 appDeviceId,
                 activeDevices,
                 spotifyPlayerApi,
@@ -182,5 +160,5 @@ export default function useWebplayer() {
         return cleanup
     }, [accessToken, spotifyPlayerApi])
 
-    return {webPlayback, player, is_paused, is_active, current_track, appDeviceId, activeDevices, setActiveDevices}
+    return {webPlayback, player, is_paused, is_active, current_track, shuffle, toggleShuffle, appDeviceId, activeDevices, setActiveDevices}
 }

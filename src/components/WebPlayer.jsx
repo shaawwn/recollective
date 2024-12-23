@@ -13,7 +13,7 @@ import {useWebplayerContext} from '../Dashboard'
 
 export default function WebPlayer() {
 
-    const {webPlayback, player, is_paused, is_active, current_track, appDeviceId, activeDevices} = useWebplayerContext()
+    const {webPlayback, player, is_paused, is_active, current_track, shuffle, toggleShuffle, appDeviceId, activeDevices} = useWebplayerContext()
 
 
     return(
@@ -23,6 +23,7 @@ export default function WebPlayer() {
                     <WebplayerControls 
                         player={player?.current}
                         isActive={is_active}
+                        toggleShuffle={toggleShuffle}
                         />
                     <PlaybackMenu device={activeDevices}/>
                 </>
@@ -41,7 +42,7 @@ function CustomAudioTag({audioSource}) {
     )
 }
 
-function WebplayerControls({player, isActive}) {
+function WebplayerControls({player, isActive, toggleShuffle}) {
 
     /**
      * 
@@ -115,7 +116,10 @@ function WebplayerControls({player, isActive}) {
                     icon={faForwardStep} 
                     size="2x"/>
             <div className="vertical-margin-center">
-                <FontAwesomeIcon icon={faShuffle} size="1x"/>
+                <FontAwesomeIcon 
+                    onClick={toggleShuffle}
+                    icon={faShuffle} 
+                    size="1x"/>
             </div>
             {/* <ProgressBar /> */}
         </div>            

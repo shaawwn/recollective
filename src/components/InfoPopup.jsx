@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import {createPortal} from 'react-dom'
 // import DefaultImage from '../assets/images/default.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {faPlay} from '@fortawesome/free-solid-svg-icons'
+import {faPlay, faShuffle} from '@fortawesome/free-solid-svg-icons'
 import {useApiContext} from '../context/barrel'
 import {useWebplayerContext} from '../Dashboard'
 import {BinPlaybackButton} from './barrel'
@@ -98,14 +98,22 @@ export default function InfoPopup({item, coords}) { // removed coords
                     <p className="track-table__cell-link">{item.name}</p>
                     {renderContent()}
                     {item.type === 'bin' ? 
-                        // Bin playback requires some extra steps than album/playlist
+                        // Bin playback requires some extra steps than album/playlist hence seperate comp
                         <BinPlaybackButton bin={item}/>
-                    :<div 
-                    onClick={(e) => handleClick(e)}
-                    className="playback-btn play-btn"
-                    >
-                    <FontAwesomeIcon icon={faPlay} size="2x"/>
-                </div>
+                    :<div className="flex gap-[10px]">
+                        <div 
+                            onClick={(e) => handleClick(e)}
+                            className="playback-btn play-btn"
+                            >
+                            <FontAwesomeIcon icon={faPlay} size="2x"/>
+                        </div>
+                        <div 
+                            onClick={(e) => handleClick(e)}
+                            className="playback-btn"
+                            >
+                            <FontAwesomeIcon icon={faShuffle} size="2x"/>
+                        </div>
+                    </div>
                     }
                     <p>Track list here or other miscelania</p>
                 </div>

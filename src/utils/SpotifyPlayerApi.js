@@ -66,6 +66,34 @@ export default class SpotifyPlayerApi {
         })
     }
 
+    async shufflePlay() {
+        // shuffle and 'play' are two different things. 'Shuffle' just sets a boolean value "shuffle" to true or false, where "play" starts playback at some point.  
+
+        // for the purpose of a "shuffle" button, shuffle needs to be set, then palyback needs to start after it has been set. Two instances, a shuffle "button" which shuffles, and playback when selecting an individual track, in which case "shuffle" needs to be set globally. ()
+
+
+    }
+
+    async setShuffle(shuffleState, deviceID) {
+        // current shuffle state?
+        return fetch(this.apiUrl + `me/player/shuffle?state=${shuffleState}&device_id=${deviceID}`, {
+            method: "PUT",
+            headers: {
+                'Authorization': `Bearer ${this.accessToken}`
+            }
+        }).then((response) => {
+            if(!response.ok) {
+                throw new Error ("Error setting shuffle state")
+            }
+
+            // returns a 204 response, no json
+            console.log("Shuffle set")
+        }).catch((err) => {
+            console.log("err: ", err)
+        })
+    }
+
+
     async play(context, uris, contextOffset, deviceID) {
         const payload = {
             ...(context ? { context_uri: context } : {}),

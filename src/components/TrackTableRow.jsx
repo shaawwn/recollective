@@ -16,7 +16,7 @@ import {useDashboardContext, usePlaylistContext, useWebplayerContext} from '../D
 // I think it is an error here to load playlist from context, if I just passed the relevant information as props, this wouldn' tbe a problem.
 
 export default function TrackTableRow({context, track, type, offset}) {
-    console.log("TRACK", track)
+    // console.log("TRACK", track)
     // type = album, playlist, explore (explore tracks are found in search results and can be added to playlists)
     const {spotifyPlayerApi, spotifyApi} = useApiContext()
     const {activeDevices, current_track, is_paused} = useWebplayerContext() || {} // is_paused can be null if no playback

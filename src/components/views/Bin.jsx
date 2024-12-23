@@ -7,7 +7,7 @@ import {faTrashCan} from '@fortawesome/free-solid-svg-icons'
 import {StaticGrid, GridItem} from '../barrel'
 import RecordBin from '../../assets/images/recordbin.png'
 import {BinManager} from '../playlist_search/barrel'
-import {ModalOverlay} from '../barrel'
+import {ModalOverlay, BinPlaybackButton} from '../barrel'
 import {useApiContext} from '../../context/ApiContext'
 import {useDashboardContext, useBinContext} from '../../Dashboard'
 import {useUserContext} from '../../context/UserContext'
@@ -43,27 +43,13 @@ export default function Bin({bin}) {
         })
 
         // adding to bin takes id, name, images, and uri
-
-
     }
 
-    // function dragItem(e, item) {
-    //     console.log("item", item)
-    //     const toAdd = {
-    //         image: item.images[0].url,
-    //         id: item.id,
-    //         uri: item.uri,
-    //         name: item.name
-    //     }
-    //     e.dataTransfer.setData('item', JSON.stringify(toAdd))
-    // }
 
 
     return(
         // Create a 'dropable zone' to add bins
         <section
-            // onDragOver={(e) => handleDragOver(e)}
-            // onDrop={(e) => handleDrop(e)}
         >
 
             {bin ? 
@@ -144,8 +130,7 @@ function BinHeader({bin, isOwner}) {
 
                 <div className="flex flex-col">
                     <p>{bin.overview.name}</p>
-                    {/* <p>{name}</p>
-                    <p>{description}</p> */}
+                    <BinPlaybackButton bin={bin.overview}/>
                 </div>
             </div>
 

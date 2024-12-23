@@ -12,7 +12,7 @@ import {TrackTableRow} from './barrel'
 
 export default function TrackTable({content, type}) {
 
-    console.log("TRACK TABLE CONTENT", content)
+    // console.log("TRACK TABLE CONTENT", content)
     return(
         <section className="track-table">
             <hr></hr>
