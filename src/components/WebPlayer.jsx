@@ -24,6 +24,7 @@ export default function WebPlayer() {
                         player={player?.current}
                         isActive={is_active}
                         toggleShuffle={toggleShuffle}
+                        shuffle={shuffle}
                         />
                     <PlaybackMenu device={activeDevices}/>
                 </>
@@ -42,7 +43,7 @@ function CustomAudioTag({audioSource}) {
     )
 }
 
-function WebplayerControls({player, isActive, toggleShuffle}) {
+function WebplayerControls({player, isActive, toggleShuffle, shuffle}) {
 
     /**
      * 
@@ -86,9 +87,9 @@ function WebplayerControls({player, isActive, toggleShuffle}) {
         }
     }
 
-    function shuffle() {
-        // shuffle player state
-    }
+    // function shuffle() {
+    //     // shuffle player state
+    // }
 
     useEffect(() => {
         if(player) {
@@ -115,7 +116,7 @@ function WebplayerControls({player, isActive, toggleShuffle}) {
                     onClick={forward}
                     icon={faForwardStep} 
                     size="2x"/>
-            <div className="vertical-margin-center">
+            <div className={shuffle === true ? "text-green vertical-margin-center" :"vertical-margin-center"}>
                 <FontAwesomeIcon 
                     onClick={toggleShuffle}
                     icon={faShuffle} 

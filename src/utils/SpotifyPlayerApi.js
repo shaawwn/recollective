@@ -17,8 +17,16 @@ export default class SpotifyPlayerApi {
             if(!response.ok) {
                 throw new Error ('error getting playback state', response)
             }
-            return response.json()
+
+            if(response.status === 200) {
+                return response.json()
+            } else {
+                return response
+            }
         }).then((data) => {
+
+            // will only return valid playback state if there is an *active* playback
+            console.log("PlaybackState: ", data)
             return data
         }).catch((err) => {
             console.log("error:", err)
@@ -66,16 +74,9 @@ export default class SpotifyPlayerApi {
         })
     }
 
-    async shufflePlay() {
-        // shuffle and 'play' are two different things. 'Shuffle' just sets a boolean value "shuffle" to true or false, where "play" starts playback at some point.  
-
-        // for the purpose of a "shuffle" button, shuffle needs to be set, then palyback needs to start after it has been set. Two instances, a shuffle "button" which shuffles, and playback when selecting an individual track, in which case "shuffle" needs to be set globally. ()
-
-
-    }
-
+    
     async setShuffle(shuffleState, deviceID) {
-        // current shuffle state?
+        // will start playback if no current playback state, otherwise will jsut toggle shuffle on and off.
         return fetch(this.apiUrl + `me/player/shuffle?state=${shuffleState}&device_id=${deviceID}`, {
             method: "PUT",
             headers: {
@@ -87,10 +88,16 @@ export default class SpotifyPlayerApi {
             }
 
             // returns a 204 response, no json
-            console.log("Shuffle set")
+            // console.log("Shuffle set")
         }).catch((err) => {
             console.log("err: ", err)
         })
+    }
+
+    async shufflePlay() {
+        // I may be overthinking this too, I mean what are the instances in which I would toggleshuffle with NO playback happening?
+        console.log("Toggling shuffle with no playback")
+        this.getPlaybackState()
     }
 
 

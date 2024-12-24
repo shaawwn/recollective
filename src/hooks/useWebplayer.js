@@ -38,7 +38,9 @@ export default function useWebplayer() {
     const [appDeviceId, setAppDeviceId] = useState()
     const [activeDevices, setActiveDevices] = useState()
     const [webPlayback, setWebplayback] = useState()
+
     const player = useRef()
+    const firstLoad = useRef(true) // change to false after
     
 
     function disconnect() {
@@ -72,7 +74,7 @@ export default function useWebplayer() {
                 getOAuthToken: cb => { cb(accessToken); },
                 volume: 0.5
             });
-            // console.log("init webplayer", player)
+     
             player.current.addListener('ready', ({ device_id }) => {
                 // console.log('Ready with Device ID', device_id);
                 setAppDeviceId(device_id)
@@ -91,16 +93,15 @@ export default function useWebplayer() {
                 if (!state) {
                     return;
                 }
+                console.log("Player state changed, and starting playback?")
                 setTrack(state.track_window.current_track);
-                setPaused(state.paused); // pause on switch
-                setShuffle(state.shuffle) // default is false
-                console.log("PLAYER STATE CHANGE EVENT", state)
+                setPaused(state.paused); 
 
+                setShuffle(state.shuffle) 
             
                 player.current.getCurrentState().then( state => { 
                     (!state)? setActive(false) : setActive(true) 
                 });
-            
             }));
             // console.log("Connecting player", player)
             player.current.connect();
@@ -109,13 +110,15 @@ export default function useWebplayer() {
 
     function toggleShuffle() {
 
-        // console.log("setting shuffle from:", shuffle, "to: ", !shuffle)
-        console.log("Checking shuffle state", is_paused, is_active, player)
+        console.log("setting shuffle from:", shuffle, "to: ", !shuffle)
+
         const activeDeviceID= activeDevices.find(device => device.name === "RecollectiveApp");
         spotifyPlayerApi.setShuffle(!shuffle, activeDeviceID.id)
+        setShuffle(!shuffle)
     }
 
     useEffect(() => {
+
         const cleanup = () => {
             if (player.current) {
                 disconnect(); // Ensure disconnect runs fully

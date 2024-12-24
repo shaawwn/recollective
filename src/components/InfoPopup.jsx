@@ -14,7 +14,7 @@ export default function InfoPopup({item, coords}) { // removed coords
     const {spotifyPlayerApi} = useApiContext() || {}
     const {activeDevices = []} = useWebplayerContext() || {}
 
-    function handleClick(e) {
+    function handleClick(e, shuffle=false) {
         e.stopPropagation()
         const activeDeviceID= activeDevices.find(device => device.name === "RecollectiveApp");
 
@@ -22,9 +22,7 @@ export default function InfoPopup({item, coords}) { // removed coords
             alert("Error on playback: No active device.")
             return
         }
-        // if(item.type === 'bin') {
-        //     // const playlistPool = recollectiveApi.startBinPlayback(item)
-        //     // console.log("Get all the uris for the bin and use that", item)
+
 
         //     // create
         //     // need to have some kind of method to get tracks for this.
@@ -37,17 +35,30 @@ export default function InfoPopup({item, coords}) { // removed coords
 
         //     // pick a small seletion of songs at random, then create that playback array. While those songs are playing, add a larger array.
 
-        //     // the problem is spotify's rate limit.
-        //     return
-        // }
-        // spotifyPlayerApi.play(item.uri, null, 0, activeDeviceID.id)
-
-        // the reson there is no context here and offset = 0 is that THIS BUTTON essentially plays a playlist or album with the default setting (shuffle or straight through)
-
         // should probably have a shuffle option as well
-        play(item.uri, null, 0, activeDeviceID.id)
+        if(shuffle) {
+            // console.log("Start shuffle playback", item)
+
+            // check currently playing against the item to play here
+            const currentlyPlaying = async () => {
+                const response = await spotifyPlayerApi.getPlaybackState()
+                if(!response) {
+                    // no currenly playing, start playback
+                }
+                
+
+
+            }
+
+            spotifyPlayerApi.setShuffle(true, activeDeviceID.id)
+        } else {
+            console.log("Start normal playback")
+            play(item.uri, null, 0, activeDeviceID.id)   
+        }
+        // play(item.uri, null, 0, activeDeviceID.id)
 
     }
+
 
     function play(uri, context, offset, deviceID) {
         spotifyPlayerApi.play(uri, context, offset, deviceID)
@@ -108,10 +119,12 @@ export default function InfoPopup({item, coords}) { // removed coords
                             <FontAwesomeIcon icon={faPlay} size="2x"/>
                         </div>
                         <div 
-                            onClick={(e) => handleClick(e)}
+                            onClick={(e) => handleClick(e, true)}
                             className="playback-btn"
                             >
-                            <FontAwesomeIcon icon={faShuffle} size="2x"/>
+                            <FontAwesomeIcon 
+                                icon={faShuffle} 
+                                size="2x"/>
                         </div>
                     </div>
                     }
