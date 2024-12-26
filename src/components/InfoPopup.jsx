@@ -46,13 +46,32 @@ export default function InfoPopup({item, coords}) { // removed coords
                     // no currenly playing, start playback
                 }
                 
+                // response is null if playing bin
 
+                // so if the response and item DONT MATCH, start new playback
+                if(response.context) {
+                    // console.log('current and new item match: ', response.context.uri === item.uri)
+                    if(response.context.uri === item.uri) {
+                        // jsut shuffle
+                        // console.log("Just shufflin'")
+                        // spotifyPlayerApi.setShuffle(true, activeDeviceID.id)
+                    } else {
+                        // start playback on new item
+                        
+                        play(item.uri, null, 0, activeDeviceID.id) 
+                    }
+                } else {
+                    // console.log("null context for bin playback?", response) // this will just start shuffle playback? Yes, yes it will.
+                    play(item.uri, null, 0, activeDeviceID.id) 
+                }
 
             }
+            currentlyPlaying()
 
             spotifyPlayerApi.setShuffle(true, activeDeviceID.id)
         } else {
-            console.log("Start normal playback")
+            // console.log("Start normal playback") // except if it is shuffled then it will start in shuffle state
+            spotifyPlayerApi.setShuffle(false, activeDeviceID.id)
             play(item.uri, null, 0, activeDeviceID.id)   
         }
         // play(item.uri, null, 0, activeDeviceID.id)

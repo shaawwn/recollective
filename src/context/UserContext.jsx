@@ -109,7 +109,7 @@ export default function UserProvider({children}) {
     }
 
     async function getRecollectiveUser() {
-        return fetch(`https://auth-server-bold-sun-934.fly.dev/users/me`, {
+        return fetch(`http://localhost:3001/users/me`, {
             credentials: "include"
         }).then((response) => {
             if(!response.ok) {

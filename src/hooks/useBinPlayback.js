@@ -35,8 +35,8 @@ export default function useBinPlayback(bin) {
 
                 spotifyPlayerApi.play(null, shuffledArray.slice(0, 20), 0, activeDevice.id)
 
-                setTimeout(() => {
-                    spotifyApi.getUsersQueue()
+                setTimeout(async () => {
+                    const queue = await spotifyApi.getUsersQueue()
                 }, 1000)
             }
         } else {

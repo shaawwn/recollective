@@ -21,6 +21,7 @@ export default class SpotifyPlayerApi {
             if(response.status === 200) {
                 return response.json()
             } else {
+                console.log("No current playback")
                 return response
             }
         }).then((data) => {

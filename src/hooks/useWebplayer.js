@@ -93,7 +93,12 @@ export default function useWebplayer() {
                 if (!state) {
                     return;
                 }
-                console.log("Player state changed, and starting playback?")
+                console.log("PLAYER STATE", state)
+                if(state.track_window.next_tracks.length < 1) {
+                    // generate more content from bins
+                    // bins won't have a uri, but search result tracks ALSO won't have a uri, or next_track value
+                    console.log("Need to generate more songs for the bin playback")
+                }
                 setTrack(state.track_window.current_track);
                 setPaused(state.paused); 
 
