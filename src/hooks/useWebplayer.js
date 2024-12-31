@@ -35,6 +35,7 @@ export default function useWebplayer() {
     const [is_active, setActive] = useState(false)
     const [shuffle, setShuffle] = useState(false) // shuffle is a state that is either true or false, default false
     const [current_track, setTrack] = useState()
+    const bufferTrackState = useRef()
     const [appDeviceId, setAppDeviceId] = useState()
     const [activeDevices, setActiveDevices] = useState()
     const [webPlayback, setWebplayback] = useState()
@@ -66,7 +67,7 @@ export default function useWebplayer() {
 
     function initWebplayer() {
 
-
+ 
         window.onSpotifyWebPlaybackSDKReady = () => {
             // console.log("Calling on webplayback ready")
             player.current = new window.Spotify.Player({
@@ -89,24 +90,91 @@ export default function useWebplayer() {
                 console.log('Device ID has gone offline', device_id);
             });
 
+            console.log("Init before listener")
+            let debounceTimeout;
+
             player.current.addListener('player_state_changed', ( state => {
                 if (!state) {
                     return;
                 }
-                console.log("PLAYER STATE", state)
-                if(state.track_window.next_tracks.length < 1) {
-                    // generate more content from bins
-                    // bins won't have a uri, but search result tracks ALSO won't have a uri, or next_track value
-                    console.log("Need to generate more songs for the bin playback")
-                }
-                setTrack(state.track_window.current_track);
-                setPaused(state.paused); 
 
-                setShuffle(state.shuffle) 
-            
-                player.current.getCurrentState().then( state => { 
-                    (!state)? setActive(false) : setActive(true) 
-                });
+                clearTimeout(debounceTimeout)
+
+                //
+                // console.log('state change trigger', bufferTrackState.current)
+
+                if(bufferTrackState.current && state.track_window.current_track) {
+                    const bufferString = JSON.stringify(bufferTrackState.current)
+                    const incomingString = JSON.stringify(state.track_window.current_track)
+                    if(bufferString !== incomingString) {
+                        bufferTrackState.current = null
+                    }
+                }
+                debounceTimeout = setTimeout(() => {
+
+                    // handling bin playlists
+                    // if(state.track_window.next_tracks.length < 1) {
+                    //     // generate more content from bins
+                    //     // bins won't have a uri, but search result tracks ALSO won't have a uri, or next_track value
+                    //     console.log("Need to generate more songs for the bin playback")
+                    // }
+
+                    // if(!bufferTrackState.current && state.track_window.current_track) {
+                    //     // set the buffer state on init load
+                    //     bufferTrackState.current = state.track_window.current_track
+                    //     console.log("set buffer before setting state", bufferTrackState.current)
+                    // } else if(bufferTrackState.current) {
+                    //     const bufferString = JSON.stringify(bufferTrackState.current)
+                    //     const incomingString = JSON.stringify(state.track_window.current_track)
+                    //     console.log("buffer exists", bufferTrackState.current)
+                    //     // because this event listener triggrers like 8 times, only update state one of those times. This is also why the if statement above is triggering, because I am setting buffer to null once again
+                    //     if(bufferString === incomingString) {
+                    //         // set track only?
+                    //         // setTrack(state.track_window.current_track);
+
+                    //         setTrack((prevTrack) => {
+                    //             if(prevTrack?.name === state.track_window.current_track.name) {
+                    //                 console.log("same track, not setting state new", prevTrack.name)
+                    //                 return prevTrack
+                    //             }
+                    //             console.log("new track, setting state", state.track_window.current_track.name)
+                    //             return state.track_window.current_track
+                    //         })
+                    //         bufferTrackState.current = null
+                    //     }
+
+                    // }
+
+                    setTrack((prevTrack) => {
+                        if(prevTrack?.name === state.track_window.current_track.name) {
+                            return prevTrack
+                        }
+                        return state.track_window.current_track
+                    })
+
+                    // setPaused(state.paused); 
+                    setPaused((prevPaused) => {
+                        if(prevPaused === state.paused) {
+                            return prevPaused
+                        }
+                        return state.paused
+                    })
+
+                    setShuffle((prevShuffle) => {
+                        if(prevShuffle === state.shuffle) {
+                            return prevShuffle
+                        }
+                        return state.prevShuffle
+                    })
+    
+                    // setShuffle(state.shuffle) 
+                
+                    player.current.getCurrentState().then( state => { 
+                        (!state)? setActive(false) : setActive(true) 
+                    });
+                }, 500)
+                
+                // here is after the debounce timer
             }));
             // console.log("Connecting player", player)
             player.current.connect();

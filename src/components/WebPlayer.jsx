@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {faPlay, faPause, faForwardStep, faBackwardStep, faShuffle, faRepeat, faLaptop} from '@fortawesome/free-solid-svg-icons'
 import DefaultImage from '../assets/images/default.png'
 
-import {PlaybackButton} from './barrel'
+import {PlaybackButton, ProgressBar} from './barrel'
 import {useUserContext} from '../context/barrel'
 import {useWebplayerContext} from '../Dashboard'
 // import {useAuthContext} from '../context/AuthContext'
@@ -15,16 +15,24 @@ export default function WebPlayer() {
 
     const {webPlayback, player, is_paused, is_active, current_track, shuffle, toggleShuffle, appDeviceId, activeDevices} = useWebplayerContext()
 
+    useEffect(() => {
+
+    }, [current_track])
+
 
     return(
+
+        // so I want this to update as CLOSE AS POSSIBLE with playback changes.
         <div className="webplayer">
                 <>
                     <TrackDetails track={current_track}/>
                     <WebplayerControls 
                         player={player?.current}
                         isActive={is_active}
+                        isPaused={is_paused}
                         toggleShuffle={toggleShuffle}
                         shuffle={shuffle}
+                        current_track={current_track}
                         />
                     <PlaybackMenu device={activeDevices}/>
                 </>
@@ -43,7 +51,7 @@ function CustomAudioTag({audioSource}) {
     )
 }
 
-function WebplayerControls({player, isActive, toggleShuffle, shuffle}) {
+function WebplayerControls({player, isActive, isPaused, toggleShuffle, shuffle, current_track}) {
 
     /**
      * 
@@ -73,7 +81,7 @@ function WebplayerControls({player, isActive, toggleShuffle, shuffle}) {
 
     function forward() {
         try {
-            player.nextTrack()
+            player.nextTrack() // nextTrack() built in webplayer SDK, same with rpevious
         } catch (err) {
             console.log("cannot advance track")
         }
@@ -94,7 +102,7 @@ function WebplayerControls({player, isActive, toggleShuffle, shuffle}) {
     useEffect(() => {
         if(player) {
             // when playbacks starts, update the playback.current
-
+            
         }
     }, [player])
 
@@ -123,30 +131,45 @@ function WebplayerControls({player, isActive, toggleShuffle, shuffle}) {
                     size="1x"/>
             </div>
             {/* <ProgressBar /> */}
+            {/* <ProgressBar 
+                player={player}
+                current_track={current_track}
+                /> */}
         </div>            
             :<CustomAudioTag audioSource={'some url'}/>
             }
-            <ProgressBar />
+
+            {player ? 
+                <ProgressBar 
+                    player={player}
+                    isPaused={isPaused}
+                    current_track={current_track}
+                />
+            :<ProgressBar 
+                current_track={current_track}
+            />
+            }
+
         </div>
     )
 }
 
-function ProgressBar() {
-    const {current_track} = useWebplayerContext()
-    // console.log("CURRENT_TRACK", current_track)
-    return(
-        <div className="flex gap-[5px]">
-        <p>6:50</p>
-        <div className="flex flex-col justify-center w-full">
-            <div className="progress-bar">
-                <div className="progress"></div>
-            </div>
-        </div>
+// function ProgressBar() {
+//     const {current_track} = useWebplayerContext()
+//     // console.log("CURRENT_TRACK", current_track)
+//     return(
+//         <div className="flex gap-[5px]">
+//         <p>6:50</p>
+//         <div className="flex flex-col justify-center w-full">
+//             <div className="progress-bar">
+//                 <div className="progress"></div>
+//             </div>
+//         </div>
 
-        <p>7:30</p>
-    </div>
-    )
-}
+//         <p>7:30</p>
+//     </div>
+//     )
+// }
 
 function TrackDetails({track}) {
 

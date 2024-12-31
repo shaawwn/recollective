@@ -654,12 +654,14 @@ button:focus-visible {
 }
 
 .progress {
-  width: 70%;
+  width: 0%;
   height: 2px;
   color: white;
   background-color: white;
   /* background-color: red; */
 }
+
+
 
 .progress-bar {
   width: 100%;

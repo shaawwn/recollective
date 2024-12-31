@@ -1,22 +1,96 @@
-import {useState, useRef} from 'react'
+import {useState, useEffect, useRef} from 'react'
 
 import {msToMinutesAndSeconds} from '../utils/utils'
+import {useWebplayerContext} from '../Dashboard'
+
+export default function ProgressBar({player, current_track}) {
+
+    const current_track_ref = useRef(current_track)
+    const init = useRef(false)
+    const {is_paused} = useWebplayerContext() || {}
+    const t = useRef(0) // time progression counter
+    const progressMs = useRef(0) // multiply by t to get current time
+    const intervalRef = useRef()
+    const progress = useRef(0) // width % of slider, increment by % when checking the progress
+
+    const bar = useRef() // empty value progress bar
+    const progressTime = useRef() // progress bar relative to current progress of song.
+
+    function calculatePercentage(progress) {
+        // given the song lengh and the current progress, calculate the percentage 
+        return Math.floor(((progress * 1000) / current_track.duration_ms) * 100)
+    }
 
 
-export default function ProgressBar({current_track}) {
+    
 
-    // const {current_track} = useWebplayerContext() || {}
-    const [progressMs, setProgressMs] = useState(0)
+    function progressPercent() {
 
+        intervalRef.current = setInterval(() => {
+            t.current = t.current + 1
+            progressMs.current = t.current * 1000 // this can persist outside of interval
+            const percentVal = calculatePercentage(t.current)
+
+            bar.current.style.width = `${percentVal}%`
+            progressTime.current.innerText = msToMinutesAndSeconds(progressMs.current)
+        }, 1000)
+    }
+
+    function handlePause() {
+   
+        if(is_paused === true) {
+            clearInterval(intervalRef.current)
+            // console.log("Paused, stop timer", t.current)
+            return
+        } else if(is_paused === false) {
+            // console.log("Resume, start time from: ", t.current, init.current)
+            progressPercent() 
+            return
+        }
+    }
+
+    useEffect(() => {
+
+        if(current_track) {
+            if(!current_track_ref.current) {
+                // initializes as undefined, set when no longer undefined. This is the only time it will be undefined, it should have some value as soon as any playback starts
+                current_track_ref.current = current_track
+            }
+
+            // if the current_track changes, need to reset t
+            if(JSON.stringify(current_track.id) !== JSON.stringify(current_track_ref.current.id)) {
+                // console.log("different songs, reset", current_track.name)
+                // reset time values for progress bar for incoming song
+                current_track_ref.current = current_track
+                t.current = 0
+                progressMs.current = 0
+            }
+
+            if(intervalRef.current) {
+                clearInterval(intervalRef.current)
+            }
+            handlePause()
+        } 
+
+        return () => {
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+                intervalRef.current = null; 
+            }
+        };
+
+    }, [current_track, is_paused]) 
+
+    
     return(
         <div role="progressbar" className="flex gap-[5px]">
         {current_track ?
         <>
             {/* Current time in track */}
-            <p>{msToMinutesAndSeconds(progressMs)}</p>
+            <p id="progress-current" ref={progressTime}>{msToMinutesAndSeconds(progressMs.current)}</p>
             <div className="flex flex-col justify-center w-full">
-                <div className="progress-bar">
-                    <div className="progress"></div>
+                <div className="progress-bar" >
+                    <div className="progress" ref={bar}></div>
                 </div>
             </div>
 

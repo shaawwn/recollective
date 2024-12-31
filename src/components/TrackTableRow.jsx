@@ -1,4 +1,4 @@
-import {useRef} from 'react'
+import {useEffect, useRef} from 'react'
 import PropTypes from 'prop-types'
 import DefaultImage from '../assets/images/default.png'
 import {msToMinutesAndSeconds} from '../utils/utils'
@@ -158,9 +158,14 @@ export default function TrackTableRow({context, track, type, offset}) {
 
     }
     
-    if(context && activeContent?.current) {
-        checkCurrent()
-    }
+    useEffect(() => {
+        if(context && activeContent?.current) {
+            checkCurrent()
+        }
+    }, [current_track])
+    // if(context && activeContent?.current) {
+    //     checkCurrent()
+    // }
     // checkCurrent()
 
     return(
