@@ -626,11 +626,25 @@ button:focus-visible {
   display: flex;
 }
 
+/*  */
 .webplayer__section {
   width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+.webplayer__subsection {
+	/* width: 100%; */
+	display: flex;
+	flex-direction: column;
+	justify-content:center;
+	padding: 0 35px;
+	/* background-color:  red; */
+}
+
+.webplayer__subsection:nth-child(even) {
+	/* background-color: green; */
 }
 
 .webplayer__controls {
@@ -655,20 +669,82 @@ button:focus-visible {
 
 .progress {
   width: 0%;
-  height: 2px;
+  height: 5px;
   color: white;
   background-color: white;
-  /* background-color: red; */
+  border-radius: 10px;
 }
 
 
 
 .progress-bar {
   width: 100%;
-  height: 2px;
+  height: 5px;
   color: grey;
   background-color: var(--grey);
+  border-radius: 10px;
 }
+
+.progress-bar:hover {
+  cursor: pointer;
+}
+
+.bar {
+  width: 75px;
+  height: 5px;
+  color: grey;
+  background-color: var(--grey);
+  border-radius: 10px;
+
+}
+
+#current-volume {
+	/* width: 50%; */
+	background-color: white;
+	height: 5px;
+	border-radius: 10px;
+	display: flex;
+	justify-content: flex-end;
+	/* overflow: visible; */
+}
+
+#volume-knob {
+	min-width: 10px;
+	min-height: 10px;
+	border-radius: 25px;
+	background-color: white;
+	transform: translateY(-25%);
+	/* transform: translateX(50%) translateY(-30%); */
+	
+}
+
+/* SLIDER */
+
+.slider-container {
+	width: 75px;
+	height: 5px;
+	color: grey;
+	background-color: var(--grey);
+	border-radius: 10px;
+}
+
+.slider-track {
+	width: 50%;
+	background-color: white;
+	height: 5px;
+	border-radius: 10px;
+	display: flex;
+	justify-content: flex-end;
+}
+
+.slider-knob {
+	min-width: 10px;
+	min-height: 10px;
+	border-radius: 25px;
+	background-color: white;
+	transform: translateY(-25%);
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;

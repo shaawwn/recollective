@@ -46,11 +46,11 @@ export default function PlaybackButton({context}) {
         if(is_paused === true) {
             // setPause icon
             player.current.resume()
-            console.log("Need to resume progress here")
+            // console.log("Need to resume progress here")
         } else {
             // set Play icon
             player.current.pause() 
-            console.log("Need to pause progress here")
+            // console.log("Need to pause progress here")
         }
     }
 

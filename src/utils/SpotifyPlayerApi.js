@@ -132,6 +132,7 @@ export default class SpotifyPlayerApi {
         })
     }
 
+    // pause, previous, next these are handled by the player sdk and not needed, keeping for posterity
     async pause() {
         
     }
@@ -143,4 +144,40 @@ export default class SpotifyPlayerApi {
     async next() {
 
     }
+
+    async seek(position, deviceID) {
+        fetch(this.apiUrl + `me/player/seek?position_ms=${position}&device_id=${deviceID}`, {
+            method: "PUT",
+            headers: {
+                'Authorization': `Bearer ${this.accessToken}`
+            }, 
+            // body: JSON.stringify(payload)
+        }).then((response) => {
+            if(!response.ok) {
+                throw new Error ("error on seek")
+            }
+        }).catch((err) => {
+            console.log("err: ", err)
+        })
+    }
+
+    
+    async setPlaybackVolume(percent, deviceId) {
+        // raise, lower, or mute volume in playback with percentage
+        return fetch(this.apiUrl + `me/player/volume?volume_percent=${percent}&device_id=${deviceId}`, {
+            method: "PUT",
+            headers: {
+                'Authorization': `Bearer ${this.accessToken}`
+            }
+        }).then((response) => {
+            if(!response.ok) {
+                throw new Error ("error raising volume")
+            }
+            // returns 204 for successful request
+        }).catch((err) => {
+            console.log("err: ", err)
+        })
+    }
+
+
 }

@@ -2,10 +2,10 @@ import PropTypes from 'prop-types'
 import {useEffect, useState, useRef} from 'react'
 import {useApiContext} from '../context/ApiContext'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {faPlay, faPause, faForwardStep, faBackwardStep, faShuffle, faRepeat, faLaptop} from '@fortawesome/free-solid-svg-icons'
+import {faPlay, faPause, faForwardStep, faBackwardStep, faShuffle, faRepeat, faLaptop, faVolumeHigh, faVolumeLow, faVolumeXmark} from '@fortawesome/free-solid-svg-icons'
 import DefaultImage from '../assets/images/default.png'
 
-import {PlaybackButton, ProgressBar} from './barrel'
+import {PlaybackButton, ProgressBar, VolumeControl} from './barrel'
 import {useUserContext} from '../context/barrel'
 import {useWebplayerContext} from '../Dashboard'
 // import {useAuthContext} from '../context/AuthContext'
@@ -34,6 +34,13 @@ export default function WebPlayer() {
                         shuffle={shuffle}
                         current_track={current_track}
                         />
+
+                        {/* This needs to be a new comp I think or, the volume needs to be in the playback menu */}
+                    {/* <div className="flex w-full justify-center">
+                        <VolumeControl />
+                        <PlaybackMenu device={activeDevices}/>
+                    </div> */}
+                    {/* <VolumeControl /> */}
                     <PlaybackMenu device={activeDevices}/>
                 </>
         </div>
@@ -130,13 +137,8 @@ function WebplayerControls({player, isActive, isPaused, toggleShuffle, shuffle, 
                     icon={faShuffle} 
                     size="1x"/>
             </div>
-            {/* <ProgressBar /> */}
-            {/* <ProgressBar 
-                player={player}
-                current_track={current_track}
-                /> */}
         </div>            
-            :<CustomAudioTag audioSource={'some url'}/>
+            :<CustomAudioTag audioSource={'audio source url in audio tag'}/>
             }
 
             {player ? 
@@ -149,38 +151,11 @@ function WebplayerControls({player, isActive, isPaused, toggleShuffle, shuffle, 
                 current_track={current_track}
             />
             }
-
         </div>
     )
 }
 
-// function ProgressBar() {
-//     const {current_track} = useWebplayerContext()
-//     // console.log("CURRENT_TRACK", current_track)
-//     return(
-//         <div className="flex gap-[5px]">
-//         <p>6:50</p>
-//         <div className="flex flex-col justify-center w-full">
-//             <div className="progress-bar">
-//                 <div className="progress"></div>
-//             </div>
-//         </div>
-
-//         <p>7:30</p>
-//     </div>
-//     )
-// }
-
 function TrackDetails({track}) {
-
-    /**
-     * 
-     * Navigation needed here, navigate to album, artist page
-     */
-    // unneeded useEffect?
-    // useEffect(() => {
-    //     console.log("trACK", track)
-    // }, [track])
 
     return(
         <div className="webplayer__section">
@@ -198,9 +173,7 @@ function TrackDetails({track}) {
     )
 }
 
-
-function PlaybackMenu() {
-
+function DeviceMenu() {
     const {activeDevices, setActiveDevices} = useWebplayerContext() || {}
     const {spotifyPlayerApi} = useApiContext() || {}
     const [toggleMenu, setToggleMenu] = useState(true)
@@ -228,21 +201,17 @@ function PlaybackMenu() {
         } catch(err) {
             console.log("err transfering devices", err)
         }
-    }
+    }  
 
-    return(
-        <div className="webplayer__section">
-            <div className="flex flex-col">
-                <div className="flex justify-center">
-                    <FontAwesomeIcon 
-                        className="mx-auto cursor-pointer"
-                        onClick={toggle}
-                        icon={faLaptop} 
-                        size="2x" 
-                    />
-                </div>
+    return (
+        <div className="webplayer__subsection">
+            <FontAwesomeIcon 
+                className="mx-auto cursor-pointer"
+                onClick={toggle}
+                icon={faLaptop} 
+                size="1x" 
+            />
 
-            </div>
             {toggleMenu === false ? 
                 <div className="device-menu">
                     {activeDevices ? 
@@ -266,11 +235,73 @@ function PlaybackMenu() {
                     :null
                     }
                 </div>
-            :null}
-
+                :null}
         </div>
     )
 }
+function PlaybackMenu() {
+
+    return(
+        // I Want the section to take up equal space in the bar, but the actual items to take up much less space
+        <div className="webplayer__section">
+            <div className="flex justify-center">
+                <VolumeControl />
+                <DeviceMenu />
+            </div>
+        </div>
+    )
+}
+
+// function VolumeControl() {
+//     // set with default volume that is stored in playbackback state
+
+//     // I guess volum control could be independent of any current_tracks that are playing?
+
+//     const [volume, setVolume] = useState(0.5) // default volume for spotify playback
+
+//     // volume increments in tenths
+
+//     function volumeUp() {
+
+//     }
+
+//     function volumeDown() {
+
+//     }
+
+//     function volumeMute() {
+
+//     }
+
+//     function renderVolumeLevel() {
+//         if(volume === 0) {
+//             return <FontAwesomeIcon icon={faVolumeXmark}/>
+//         } else if(volume < 0.5) {
+//             return <FontAwesomeIcon icon={faVolumeLow}/>
+//         } else if(volume >= 0.5) {
+//             return <FontAwesomeIcon icon={faVolumeHigh}/>
+//         }
+//     }
+
+//     return(
+//         <div role="volumebar" className="webplayer__subsection">
+
+//             <div className="flex gap-[5px]">
+
+//                 {renderVolumeLevel()}
+//                 {/* <FontAwesomeIcon icon={faVolumeLow} size="1x"/> */}
+
+//                 {/* the bar with a fixed width */}
+//                 <div id="volumebar" className="bar vertical-margin-center">
+//                     <div id="current-volume" className="w-1/2">
+
+//                     </div>
+//                 </div>
+//             </div>
+//         </div>
+//     )
+// }
+
 
 TrackDetails.propTypes = {
     track: PropTypes.object

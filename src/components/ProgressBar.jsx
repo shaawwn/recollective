@@ -1,17 +1,19 @@
-import {useState, useEffect, useRef} from 'react'
+import PropTypes from 'prop-types'
 
+import {useEffect, useRef} from 'react'
+import {useApiContext} from '../context/barrel'
 import {msToMinutesAndSeconds} from '../utils/utils'
 import {useWebplayerContext} from '../Dashboard'
 
-export default function ProgressBar({player, current_track}) {
-
+export default function ProgressBar({current_track}) {
+    const {spotifyPlayerApi} = useApiContext() || {}
     const current_track_ref = useRef(current_track)
-    const init = useRef(false)
-    const {is_paused} = useWebplayerContext() || {}
+    // const init = useRef(false)
+    const {is_paused, activeDevices} = useWebplayerContext() || {}
     const t = useRef(0) // time progression counter
     const progressMs = useRef(0) // multiply by t to get current time
     const intervalRef = useRef()
-    const progress = useRef(0) // width % of slider, increment by % when checking the progress
+    // const progress = useRef(0) // width % of slider, increment by % when checking the progress
 
     const bar = useRef() // empty value progress bar
     const progressTime = useRef() // progress bar relative to current progress of song.
@@ -22,13 +24,24 @@ export default function ProgressBar({player, current_track}) {
     }
 
 
-    
+    function progressPercent(percentage=0,positionMs=0) {
 
-    function progressPercent() {
+        // updates progressbar width, default at 0%
+        bar.current.style.width = `${percentage}%`
 
+        // clears the interval counter which resets the track timer
+        clearInterval(intervalRef.current)
+
+        // sets a new initial time value (in seconds) that is incremented during the interval, default 0
+        t.current = Math.floor(positionMs / 1000) 
+
+        // updates UI to display current time in track
+        progressTime.current.innerText = msToMinutesAndSeconds(positionMs)
+
+        // updates the UI each second to reflect time location in track.
         intervalRef.current = setInterval(() => {
             t.current = t.current + 1
-            progressMs.current = t.current * 1000 // this can persist outside of interval
+            progressMs.current = t.current * 1000 
             const percentVal = calculatePercentage(t.current)
 
             bar.current.style.width = `${percentVal}%`
@@ -37,17 +50,40 @@ export default function ProgressBar({player, current_track}) {
     }
 
     function handlePause() {
-   
         if(is_paused === true) {
             clearInterval(intervalRef.current)
-            // console.log("Paused, stop timer", t.current)
             return
         } else if(is_paused === false) {
-            // console.log("Resume, start time from: ", t.current, init.current)
-            progressPercent() 
+            const percentage = Math.floor((t.current * 1000) / current_track.duration_ms * 100);
+            progressPercent(percentage, t.current * 1000) 
             return
         }
     }
+
+    function handleClick(e) {
+        const activeDeviceID= activeDevices.find(device => device.name === "RecollectiveApp");
+        
+        // location of the click in the progress bar
+        const clickLoc = e.clientX
+
+        // // get width of bar
+        // const {width} = e.currentTarget.getBoundingClientRect()
+
+        // left boundary of progress bar relative to the viewport and width of progress bar
+        const {width, left} = e.currentTarget.getBoundingClientRect() 
+
+        // use this percentage to find where in the track
+        const percentage = Math.round(((clickLoc - left) / width) * 100);
+
+        // use raw * duration_ms to get the location to start playback
+        const raw = Math.round(((clickLoc - left) / width) * 100) / 100
+
+        const toSeek = Math.floor(raw * current_track.duration_ms)
+
+        spotifyPlayerApi.seek(toSeek, activeDeviceID.id)
+        progressPercent(percentage,toSeek)
+    }
+
 
     useEffect(() => {
 
@@ -59,7 +95,6 @@ export default function ProgressBar({player, current_track}) {
 
             // if the current_track changes, need to reset t
             if(JSON.stringify(current_track.id) !== JSON.stringify(current_track_ref.current.id)) {
-                // console.log("different songs, reset", current_track.name)
                 // reset time values for progress bar for incoming song
                 current_track_ref.current = current_track
                 t.current = 0
@@ -89,7 +124,9 @@ export default function ProgressBar({player, current_track}) {
             {/* Current time in track */}
             <p id="progress-current" ref={progressTime}>{msToMinutesAndSeconds(progressMs.current)}</p>
             <div className="flex flex-col justify-center w-full">
-                <div className="progress-bar" >
+                {/* the actual progress bar, clickable */}
+                <div className="progress-bar" onClick={(e) => handleClick(e)}>
+                    {/* the dynamic progress that increases from a value of 0-100% during the course of the track */}
                     <div className="progress" ref={bar}></div>
                 </div>
             </div>
@@ -108,54 +145,9 @@ export default function ProgressBar({player, current_track}) {
     )
 }
 
-// So the question here is, how can I track progress in real time without constantly making network requests to the server?
 
-
-// example current track
-// {
-//     "id": "273mbu6N6W9SMUY6mqquqz",
-//     "uri": "spotify:track:273mbu6N6W9SMUY6mqquqz",
-//     "type": "track",
-//     "uid": "ba0fff777bfc1430",
-//     "linked_from": {
-//         "uri": null,
-//         "id": null
-//     },
-//     "media_type": "audio",
-//     "track_type": "audio",
-//     "name": "Spinach Rag",
-//     "duration_ms": 136133,
-//     "artists": [
-//         {
-//             "name": "Nobuo Uematsu",
-//             "uri": "spotify:artist:3V79CTgRnsDdJSTqKitROv",
-//             "url": "https://api.spotify.com/v1/artists/3V79CTgRnsDdJSTqKitROv"
-//         }
-//     ],
-//     "album": {
-//         "name": "FINAL FANTASY VI Original Soundtrack",
-//         "uri": "spotify:album:76XVjMzhQNv2pOQF3WVmeY",
-//         "images": [
-//             {
-//                 "url": "https://i.scdn.co/image/ab67616d00001e02108a0a766eead40065e0723f",
-//                 "height": 300,
-//                 "width": 300,
-//                 "size": "UNKNOWN"
-//             },
-//             {
-//                 "url": "https://i.scdn.co/image/ab67616d00004851108a0a766eead40065e0723f",
-//                 "height": 64,
-//                 "width": 64,
-//                 "size": "SMALL"
-//             },
-//             {
-//                 "url": "https://i.scdn.co/image/ab67616d0000b273108a0a766eead40065e0723f",
-//                 "height": 640,
-//                 "width": 640,
-//                 "size": "LARGE"
-//             }
-//         ]
-//     },
-//     "is_playable": true,
-//     "metadata": {}
-// }
+ProgressBar.propTypes = {
+    // no need isRequired because a null playback state is expected behaviour on load
+    player: PropTypes.object,
+    current_track: PropTypes.object
+}

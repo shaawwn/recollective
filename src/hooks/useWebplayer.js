@@ -83,7 +83,6 @@ export default function useWebplayer() {
                 // fetch devices
                 // spotifyPlayerApi.getDevices()
                 getActiveDevices()
-
             });
 
             player.current.addListener('not_ready', ({ device_id }) => {
@@ -97,7 +96,7 @@ export default function useWebplayer() {
                 if (!state) {
                     return;
                 }
-
+                console.log("PLAYER STATE", state)
                 clearTimeout(debounceTimeout)
 
                 //
