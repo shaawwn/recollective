@@ -89,14 +89,14 @@ export default function useWebplayer() {
                 console.log('Device ID has gone offline', device_id);
             });
 
-            console.log("Init before listener")
+            // console.log("Init before listener")
             let debounceTimeout;
 
             player.current.addListener('player_state_changed', ( state => {
                 if (!state) {
                     return;
                 }
-                console.log("PLAYER STATE", state)
+                // console.log("PLAYER STATE", state)
                 clearTimeout(debounceTimeout)
 
                 //
