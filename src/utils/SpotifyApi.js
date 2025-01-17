@@ -1,4 +1,4 @@
-import {handleResponse} from '../utils/utils'
+import {handleResponse, backOffRetryAfter} from '../utils/utils'
 
 export default class SpotifyApi {
 
@@ -7,6 +7,31 @@ export default class SpotifyApi {
         this.userID = userID
         this.apiUrl = 'https://api.spotify.com/v1/'
     }
+
+    // backOffRequests(response) {
+    //     // handle 429 status code returns
+
+    //     if(response.status === 429) {
+    //         // too many requests
+    //         console.log("RESPONSE 429")
+    //         // const retryAfter = response.headers.get('Retry-After') // in seconds
+
+    //         // if(retryAfter) {
+    //         //     const cooldown = parseInt(retryAfter * 10) * 1000
+
+    //         //     console.log("Cooldown for network requests in seconds: ", cooldown)
+
+    //         //     return new Promise((resolve) => setTimeout(resolve, cooldown));
+    //         // } else {
+    //         //     console.warn("Retry-After header not found. Using default cooldown...");
+    //         //     return new Promise((resolve) => setTimeout(resolve, 30000)); // Default to 30s
+    //         // }
+
+    //         // wait for the cooldown
+    //     } else {
+    //         console.log("No response.429")
+    //     }
+    // }
 
     getUserID() {
         return this.userID
@@ -37,8 +62,14 @@ export default class SpotifyApi {
             }
         }).then((response) => {
             if(!response.ok) {
+
+                // this.backOffRequests(response)
                 throw new Error
             }
+
+            // const test = {status: 429}
+            // backOffRetryAfter(test)
+            // this.backOffRequests(test)
 
             return response.json()
         }).then((data) => {

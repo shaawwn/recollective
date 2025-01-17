@@ -8,6 +8,11 @@ export default class SpotifyPlayerApi {
         this.apiUrl = 'https://api.spotify.com/v1/'
     }
 
+    backOffRequests(response) {
+        // handle 429 status code returns
+        console.log("Response in backoff function", response)
+    }
+
     async getPlaybackState() {
         return fetch(this.apiUrl + `me/player`, {
             headers: {
@@ -18,6 +23,7 @@ export default class SpotifyPlayerApi {
                 throw new Error ('error getting playback state', response)
             }
 
+            this.backOffRequests(response)
             if(response.status === 200) {
                 return response.json()
             } else {

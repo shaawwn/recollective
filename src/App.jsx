@@ -21,6 +21,13 @@ import { UserProvider, ApiProvider} from './context/barrel.js' // removed AuthPr
 function App() {
 
 	const accessToken = useAuth(code)
+	const [isRateLimited, setIsRateLimited] = useState(false)
+
+	useEffect(() => {
+		if(accessToken) {
+			console.log("Check rate limit")
+		}
+	}, [accessToken])
 
 	return (
 		<>

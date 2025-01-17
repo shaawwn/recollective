@@ -2,9 +2,11 @@ import React, {useState, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
 
 
+
 // import SpotifyApi from '../utils/SpotifyApi'
 // import RecollectiveApi from '../utils/RecollectiveApi'
 // import {useAuthContext} from './AuthContext'
+import {backOffRetryAfter} from '../utils/utils'
 import {useAuthContext} from '../App'
 const UserContext = React.createContext()
 
@@ -97,8 +99,14 @@ export default function UserProvider({children}) {
             }
         }).then((response) => {
             if(!response.ok) {
+
+                // if responst.status === 429 then apply the backOff strategy
                 throw new Error("error getting spotify user in context", accessToken)
             }
+            // const init = {status: 429}
+            // backOffRetryAfter(init)
+
+            // throw new Error("429 error")
             return response.json()
         })
         .then((data) => {
