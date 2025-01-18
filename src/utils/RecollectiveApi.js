@@ -9,7 +9,6 @@ export default class RecollectiveApi {
 
 
     async getUser() {
-        console.log("RECOLLECTIVE URL", this.apiUrl)
         return fetch(this.apiUrl + `/me`, {
             credentials: "include"
         }).then((response) => {
